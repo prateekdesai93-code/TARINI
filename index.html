@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F1530">
+<meta name="description" content="Tarini is a voice helper that looks at your screen or homework and answers out loud.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Tarini</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23FFC24B'/%3E%3Crect x='20' y='22' width='7' height='11' rx='3.5' fill='%232A1D00'/%3E%3Crect x='37' y='22' width='7' height='11' rx='3.5' fill='%232A1D00'/%3E%3Cpath d='M24 41q8 7 16 0' stroke='%232A1D00' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Tarini%22%2C%22short_name%22%3A%22Tarini%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230F1530%22%2C%22theme_color%22%3A%22%230F1530%22%7D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link id="fontLink" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font-d:'Fredoka',ui-rounded,'SF Pro Rounded','Segoe UI',system-ui,sans-serif;
+  --font-b:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --sun:#FFC24B;--sun-ink:#2A1D00;--sky:#6CD2FF;--coral:#FF8F7E;--leaf:#7FE3A8;
+}
+html[data-theme=dark]{--bg:#0F1530;--surface:#161E40;--surface2:#1E2852;--line:#2B3668;--text:#F4F2EC;--muted:#A6AECB;--shadow:0 24px 48px -20px rgba(3,6,20,.85);color-scheme:dark}
+html[data-theme=light]{--bg:#EEF1FB;--surface:#FFFFFF;--surface2:#F3F5FC;--line:#D3D9EE;--text:#141A33;--muted:#545E84;--shadow:0 24px 48px -26px rgba(20,26,51,.4);--sky:#1C8FC9;--coral:#D9493A;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font:400 17px/1.55 var(--font-b);background:var(--bg);color:var(--text);min-height:100dvh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+h1,h2,h3{font-family:var(--font-d);font-weight:600;margin:0;line-height:1.2}
+a{color:var(--sky)}
+[hidden]{display:none!important}
+.icon-btn{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;border:1px solid transparent;background:transparent;color:var(--muted);flex:none}
+.icon-btn:hover{background:var(--surface2);color:var(--text)}
+.icon-btn[aria-pressed=true]{color:var(--sun)}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sbtn{border:1px solid var(--line);background:var(--surface2);border-radius:12px;padding:9px 14px;font:500 15px/1.2 var(--font-d);display:inline-flex;align-items:center;gap:8px}
+.sbtn:hover:not(:disabled){border-color:var(--muted)}
+.sbtn[aria-pressed=true]{background:var(--sky);color:#06283A;border-color:transparent}
+.sbtn:disabled{opacity:.45;cursor:not-allowed}
+.pbtn{border:0;background:var(--sun);color:var(--sun-ink);border-radius:12px;padding:10px 18px;font:600 15px/1.2 var(--font-d)}
+.pbtn:disabled{opacity:.6}
+.danger{border:1px solid var(--coral);background:transparent;color:var(--coral);border-radius:12px;padding:9px 14px;font:500 15px var(--font-d)}
+.tbtn{background:none;border:0;color:var(--muted);font:500 14px var(--font-d);padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+.tbtn:hover{color:var(--text)}
+.tag{display:inline-block;font:500 13px var(--font-d);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 9px}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 12px 8px 16px;background:color-mix(in oklab,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:9px;margin-right:auto;min-width:0}
+.brand h1{font-size:24px;letter-spacing:.2px}
+.mini-orb{width:24px;height:24px;border-radius:50%;background:var(--sun);position:relative;display:inline-block;flex:none}
+.mini-orb::before,.mini-orb::after{content:"";position:absolute;top:30%;width:3.5px;height:6px;border-radius:3px;background:var(--sun-ink)}
+.mini-orb::before{left:30%}.mini-orb::after{right:30%}
+.who-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px 6px 8px;font:500 15px var(--font-d);max-width:44vw}
+.who-pill .dot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);font:600 12px var(--font-d);flex:none}
+.who-pill .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who-pill.kid{border-color:var(--sun)}
+.who-pill.kid .dot{background:var(--sun);color:var(--sun-ink)}
+.tools{display:flex;gap:2px}
+@media (max-width:520px){.tools .opt{display:none}}
+
+.banner{margin:0 16px 10px;padding:10px 14px;border-radius:14px;background:var(--surface2);border:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:15px}
+.banner p{margin:0;flex:1;min-width:180px}
+
+/* modes */
+.modes{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 12px;scrollbar-width:none;max-width:1280px;width:100%;margin:0 auto}
+.modes::-webkit-scrollbar{display:none}
+.mode{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 15px;font:500 15px/1.2 var(--font-d);display:inline-flex;gap:7px;align-items:center}
+.mode:hover{border-color:var(--muted)}
+.mode[aria-pressed=true]{background:var(--sun);color:var(--sun-ink);border-color:transparent}
+
+/* layout */
+.layout{flex:1;display:grid;gap:14px;padding:0 16px 8px;grid-template-columns:minmax(0,1fr);max-width:1280px;width:100%;margin:0 auto}
+@media (min-width:980px){.layout{grid-template-columns:minmax(0,1.3fr) minmax(360px,1fr);align-items:start}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;display:flex;flex-direction:column;min-width:0}
+.eyes-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px}
+.file-btn{position:relative;overflow:hidden}
+.file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.check{display:inline-flex;align-items:center;gap:7px;font:500 14px var(--font-d);color:var(--muted);margin-left:auto;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--sun)}
+.stage{position:relative;min-height:260px;display:grid;place-items:center;padding:12px;background:var(--surface2);margin:0 12px;border-radius:16px;overflow:hidden}
+.stage-empty{text-align:center;max-width:36ch;color:var(--muted);font-size:16px}
+.stage-empty strong{display:block;font:600 28px/1.15 var(--font-d);color:var(--text);margin-bottom:8px}
+#live{display:block;max-width:100%;max-height:min(58vh,560px);border-radius:10px;background:#000}
+.offstage{position:absolute!important;width:2px!important;height:2px!important;opacity:0!important;pointer-events:none;left:0;top:0}
+.snap{position:relative;display:inline-block;line-height:0;max-width:100%}
+.snap img{display:block;max-width:100%;max-height:min(58vh,560px);border-radius:10px}
+.snap.small img{max-height:280px}
+.markers{position:absolute;inset:0;pointer-events:none}
+.mark{position:absolute;width:0;height:0;animation:pop .5s cubic-bezier(.2,1.5,.4,1) both;animation-delay:var(--d,0ms)}
+.mark .ring{position:absolute;left:-24px;top:-24px;width:48px;height:48px;border-radius:50%;border:3px solid var(--sky);box-shadow:0 0 0 5px rgba(108,210,255,.22);animation:ping 1.8s ease-out infinite;animation-delay:var(--d,0ms)}
+.mark .num{position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;background:var(--sun);color:var(--sun-ink);font:700 15px/28px var(--font-d);text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.35)}
+.mark .lab{position:absolute;left:22px;top:-15px;white-space:nowrap;background:rgba(15,21,48,.92);color:#fff;padding:5px 10px;border-radius:9px;font:500 13px/1.3 var(--font-d)}
+.mark .lab.left{left:auto;right:22px}
+.mark.still,.mark.still .ring{animation:none}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes ping{0%{transform:scale(.85);opacity:1}100%{transform:scale(1.35);opacity:.35}}
+.stage-foot{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 12px 12px}
+.status{font:500 14px var(--font-d);color:var(--muted);margin-right:auto;display:inline-flex;align-items:center;gap:7px}
+.status .led{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.status.on .led{background:var(--leaf);box-shadow:0 0 0 4px rgba(127,227,168,.2)}
+
+/* conversation */
+.talk{min-height:320px}
+@media (min-width:980px){.talk{position:sticky;top:120px;max-height:calc(100dvh - 300px)}}
+.feed{padding:16px;overflow-y:auto;flex:1;min-height:0}
+.empty{padding:14px 2px}
+.empty-title{font:600 30px/1.1 var(--font-d);margin:0 0 8px}
+.empty p{margin:0 0 12px;color:var(--muted);max-width:44ch}
+.empty p.empty-title{color:var(--text)}
+.empty.small .empty-title{font-size:22px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px dashed var(--line);background:none;border-radius:999px;padding:8px 13px;font:500 15px/1.2 var(--font-d);text-align:left}
+.chip:hover{border-style:solid;border-color:var(--sun)}
+.msg{max-width:94%;margin:0 0 14px;overflow-wrap:anywhere}
+.msg.me{margin-left:auto;width:fit-content;background:var(--surface2);border:1px solid var(--line);border-radius:18px 18px 6px 18px;padding:10px 14px}
+.msg.me img{display:block;max-width:150px;max-height:110px;border-radius:10px;margin-top:8px}
+.msg.bot{border-left:3px solid var(--sun);padding:2px 0 2px 14px}
+.msg.err{border-left:3px solid var(--coral);padding:4px 0 4px 14px;color:var(--coral)}
+.msg .who{display:flex;gap:8px;align-items:center;font:600 14px var(--font-d);color:var(--muted);margin-bottom:4px}
+.msg .who .mini-orb{width:18px;height:18px}
+.say{margin:0 0 8px;font-size:18px}
+.steps{margin:0 0 10px;padding-left:22px}
+.steps li{margin:3px 0}
+.steps li::marker{font-family:var(--font-d);font-weight:600;color:var(--sun)}
+.draft-wrap{margin:0 0 10px}
+.draft{white-space:pre-wrap;background:var(--surface2);border:1px solid var(--line);padding:12px;border-radius:12px;font:15px/1.5 var(--font-b);margin:0 0 8px}
+.refs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 8px}
+.refs .lbl{font:500 13px var(--font-d);color:var(--muted);margin-right:2px}
+.ref{font:500 14px var(--font-d);border:1px solid var(--line);border-radius:999px;padding:4px 11px;text-decoration:none;color:var(--text)}
+.ref:hover{border-color:var(--sky)}
+.msg-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.thinking{display:flex;gap:6px;padding:10px 0 10px 14px}
+.thinking span{width:9px;height:9px;border-radius:50%;background:var(--sun);animation:bob 1s ease-in-out infinite}
+.thinking span:nth-child(2){animation-delay:.15s}.thinking span:nth-child(3){animation-delay:.3s}
+@keyframes bob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-6px);opacity:1}}
+.divider{text-align:center;font:500 13px var(--font-d);color:var(--muted);margin:6px 0 14px;display:flex;gap:10px;align-items:center}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.followups{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 14px}
+
+/* dock */
+.dock{position:sticky;bottom:0;z-index:15;background:var(--bg);border-top:1px solid var(--line);box-shadow:0 -14px 28px -18px rgba(0,0,0,.5);padding:14px 16px calc(12px + env(safe-area-inset-bottom))}
+.dock-inner{max-width:820px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;grid-template-areas:"hint hint hint" "ask ask ask" "left orb right" "cap cap cap";gap:10px 12px;align-items:center}
+@media (min-width:980px){.dock-inner{grid-template-columns:auto 1fr auto auto;grid-template-areas:"hint hint hint hint" "left ask orb right" ". cap cap ."}}
+.hint-tools{grid-area:hint;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.hint-level{font:500 14px var(--font-d);color:var(--muted)}
+.ask-row{grid-area:ask;display:flex;gap:8px}
+.ask-row input{flex:1;min-width:0;padding:13px 15px;border-radius:16px;border:1px solid var(--line);background:var(--surface);font:16px var(--font-b);color:var(--text)}
+.ask-row input::placeholder{color:var(--muted)}
+.dock-left{grid-area:left;justify-self:start;display:flex;gap:6px}
+.dock-right{grid-area:right;justify-self:end;display:flex;gap:6px}
+.cap{grid-area:cap;text-align:center;font:500 14px var(--font-d);color:var(--muted);min-height:20px;margin:0}
+
+/* orb: the buddy is the talk button */
+.orb{grid-area:orb;justify-self:center;position:relative;width:88px;height:88px;border-radius:50%;border:0;padding:0;background:radial-gradient(circle at 34% 28%,#FFE6A6 0,var(--sun) 52%,#E39A12 100%);box-shadow:0 14px 34px -10px rgba(255,194,75,.65),inset 0 -8px 14px rgba(120,70,0,.18);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .18s ease}
+.orb:active{transform:scale(.95)}
+.orb .eye{position:absolute;top:33%;width:11px;height:15px;border-radius:7px;background:#2A1D00;transition:height .2s,transform .3s}
+.orb .eye.l{left:31%}.orb .eye.r{right:31%}
+.orb .mouth{position:absolute;left:50%;top:62%;width:24px;height:7px;margin-left:-12px;border-radius:0 0 14px 14px;background:#2A1D00;transition:height .15s,width .2s,margin .2s}
+.orb::before,.orb::after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid var(--sky);opacity:0;pointer-events:none}
+.orb[data-state=idle] .eye{animation:blink 6s infinite}
+.orb[data-state=listening]{transform:scale(1.07)}
+.orb[data-state=listening]::before{animation:ripple 1.4s ease-out infinite}
+.orb[data-state=listening]::after{animation:ripple 1.4s ease-out .7s infinite}
+.orb[data-state=listening] .eye{height:18px}
+.orb[data-state=listening] .mouth{height:11px}
+.orb[data-state=thinking] .eye{animation:look 1.4s ease-in-out infinite}
+.orb[data-state=thinking] .mouth{width:12px;margin-left:-6px;height:4px;border-radius:4px}
+.orb[data-state=speaking] .mouth{animation:talk .28s ease-in-out infinite alternate}
+@media (max-width:600px){.orb{width:76px;height:76px}.dock{padding-top:8px}.dock-inner{gap:8px 10px}.hint-tools{flex-wrap:nowrap}.hint-tools .sbtn{padding:7px 11px;font-size:14px}.hint-level{font-size:13px;white-space:nowrap}}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes look{0%,100%{transform:translate(-3px,-2px)}50%{transform:translate(3px,-2px)}}
+@keyframes talk{from{height:4px}to{height:13px}}
+@keyframes ripple{0%{opacity:.85;transform:scale(1)}100%{opacity:0;transform:scale(1.75)}}
+
+/* dialogs */
+.dlg{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:22px;padding:0;width:min(560px,calc(100vw - 24px));max-height:calc(100dvh - 32px);box-shadow:var(--shadow)}
+.dlg.wide{width:min(780px,calc(100vw - 24px))}
+.dlg[open]{display:flex;flex-direction:column}
+.dlg::backdrop{background:rgba(5,8,22,.62);backdrop-filter:blur(3px)}
+.dlg-head{display:flex;align-items:center;gap:10px;padding:16px 14px 8px 20px}
+.dlg-head h2{font-size:22px;margin-right:auto}
+.dlg-body{padding:4px 20px 14px;overflow:auto}
+.dlg-foot{display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-wrap:wrap;padding:12px 20px 16px;border-top:1px solid var(--line)}
+.intro{background:var(--surface2);border-radius:14px;padding:12px 14px;margin:6px 0 4px}
+.set{padding:16px 0;border-top:1px solid var(--line)}
+.set:first-of-type{border-top:0}
+.set h3{font-size:18px;margin-bottom:6px}
+.fld{display:block;font:500 14px var(--font-d);color:var(--muted);margin:10px 0}
+.fld input,.fld select,.person input,.person select,.pin-in{display:block;width:100%;margin-top:5px;padding:11px 12px;border-radius:11px;border:1px solid var(--line);background:var(--surface2);font:16px var(--font-b);color:var(--text)}
+.help{font-size:14px;color:var(--muted);margin:4px 0 10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;gap:0 12px}
+@media (min-width:560px){.grid2{grid-template-columns:1fr 1fr}}
+details summary{cursor:pointer;font:500 14px var(--font-d);color:var(--muted);margin:6px 0}
+.person{display:grid;grid-template-columns:1fr 130px auto;gap:8px;align-items:center;margin:6px 0}
+.person input,.person select{margin-top:0}
+.ok{color:var(--leaf);font:500 14px var(--font-d)}
+.bad{color:var(--coral);font:500 14px var(--font-d)}
+.pin-in{font:600 24px var(--font-d);letter-spacing:8px;text-align:center}
+.pin-err{color:var(--coral);min-height:22px;font:500 14px var(--font-d);margin:6px 0 0}
+.choice{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface2);border-radius:14px;padding:12px 14px;margin:0 0 8px;font:500 17px var(--font-d)}
+.choice[aria-current=true]{border-color:var(--sun)}
+.choice small{display:block;font:400 14px var(--font-b);color:var(--muted)}
+
+/* history */
+.day{font-size:16px;color:var(--muted);margin:16px 0 8px}
+.day:first-child{margin-top:4px}
+.sess{display:flex;gap:14px;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface2);border-radius:14px;padding:11px 14px;margin:0 0 8px;align-items:baseline}
+.sess:hover{border-color:var(--muted)}
+.sess-time{font:600 15px var(--font-d);color:var(--sun);flex:none}
+.sess-main{display:flex;flex-direction:column;min-width:0}
+.sess-main strong{font:600 16px var(--font-d)}
+.sess-meta{font-size:14px;color:var(--muted)}
+.detail-title{font-size:22px;margin:8px 0 2px}
+.hist-img{margin:6px 0 12px}
+
+/* report */
+.rep-range{font:600 16px var(--font-d);margin:0 auto 0 4px}
+.rep-card{border:1px solid var(--line);border-radius:18px;padding:16px;margin:0 0 12px;background:var(--surface2)}
+.rep-head{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.rep-head h3{font-size:20px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+@media (min-width:560px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--surface);border-radius:12px;padding:10px 12px}
+.stat span{display:block;font-size:13px;color:var(--muted)}
+.stat strong{font:600 19px var(--font-d)}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;height:84px;margin-bottom:14px}
+.day-col{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;font:500 12px var(--font-d);color:var(--muted)}
+.day-bar{width:60%;min-height:3px;border-radius:5px 5px 2px 2px;background:var(--sky)}
+.bars{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+.bar-row{display:grid;grid-template-columns:130px 1fr 80px;gap:10px;align-items:center;font-size:14px}
+.bar-track{height:9px;border-radius:5px;background:var(--surface)}
+.bar-fill{display:block;height:100%;border-radius:5px;background:var(--sun)}
+.bar-val{text-align:right;color:var(--muted)}
+.topics{font-size:15px;margin:6px 0 0}
+.mode-desc{color:var(--text)!important}
+.mode-desc strong{font-family:var(--font-d);font-weight:600}
+.how{margin:4px 0 12px;padding-left:24px}
+.how li{margin:0 0 10px}
+.how li::marker{font-family:var(--font-d);font-weight:700;color:var(--sun)}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;background:var(--text);color:var(--bg);padding:11px 16px;border-radius:14px;font:500 15px var(--font-d);max-width:min(92vw,520px);text-align:center;transition:opacity .2s,transform .2s;z-index:100;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* floating window (Document Picture-in-Picture) */
+.pip{display:flex;flex-direction:column;gap:10px;padding:12px;height:100vh;box-sizing:border-box}
+.pip-top{display:flex;align-items:center;gap:8px;font:600 15px var(--font-d)}
+.pip-top .pm{color:var(--muted);font-weight:500;margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pip-img{width:100%;max-height:170px;object-fit:contain;border-radius:10px;background:#000;display:block}
+.pip-say{margin:0;font-size:16px}
+.pip-scroll{flex:1;overflow:auto;min-height:0}
+.pip-dock{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pip .orb{width:72px;height:72px}
+.pip .cap{font-size:13px}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .orb[data-state=listening]::before{opacity:.85;transform:scale(1.15)}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="mini-orb" aria-hidden="true"></span><h1 id="appName">Tarini</h1></div>
+  <button id="whoBtn" class="who-pill" aria-haspopup="dialog" aria-label="Change person"><span class="dot" id="whoDot">D</span><span class="nm" id="whoName">Dad</span></button>
+  <div class="tools">
+    <button class="icon-btn opt" id="pipBtn" aria-pressed="false" aria-label="Open floating buddy" title="Floating buddy"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><rect x="12" y="11" width="7" height="6" rx="1"/></svg></button>
+    <button class="icon-btn" id="historyBtn" aria-label="History" title="History"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button>
+    <button class="icon-btn" id="reportBtn" aria-label="Weekly report" title="Weekly report"><svg class="i" viewBox="0 0 24 24"><path d="M5 20V11M11 20V5M17 20v-6M3 20h18"/></svg></button>
+    <button class="icon-btn opt" id="themeBtn" aria-label="Switch to light theme" title="Theme"><svg class="i" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+    <button class="icon-btn" id="helpBtn" aria-label="How to use Tarini" title="How to use"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.6 2.3c-.8.4-1.2 1-1.2 1.9M12 16.8v.2"/></svg></button>
+    <button class="icon-btn" id="settingsBtn" aria-label="Settings" title="Settings"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg></button>
+  </div>
+</header>
+
+<div id="banner" class="banner" hidden><p id="bannerText"></p><button class="sbtn" id="bannerBtn"></button><button class="tbtn" id="bannerClose">Dismiss</button></div>
+
+<nav class="modes" id="modes" aria-label="Modes"></nav>
+
+<main class="layout">
+  <section class="card" aria-label="What Tarini can see">
+    <div class="eyes-bar">
+      <button class="sbtn" id="screenBtn" aria-pressed="false"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Share screen</button>
+      <button class="sbtn" id="cameraBtn" aria-pressed="false"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Camera</button>
+      <label class="sbtn file-btn"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>Add photo<input type="file" id="photoInput" accept="image/*" aria-label="Add a photo"></label>
+      <label class="check"><input type="checkbox" id="autoLook" checked>Fresh look each question</label>
+    </div>
+    <div class="stage" id="stage">
+      <div class="stage-empty" id="stageEmpty"><strong>Show me something</strong>Share your screen, turn on the camera, or add a photo of your page. Then hold the yellow button and ask.</div>
+      <video id="live" playsinline muted hidden></video>
+      <div class="snap" id="snap" hidden><img id="snapImg" alt="The last picture Tarini looked at"><div class="markers" id="markers"></div></div>
+    </div>
+    <div class="stage-foot">
+      <span class="status" id="srcStatus"><span class="led"></span><span id="srcText">Nothing shared yet</span></span>
+      <button class="sbtn" id="switchCamBtn" hidden>Switch camera</button>
+      <button class="sbtn" id="liveBtn" hidden>Back to live view</button>
+      <button class="sbtn" id="lookBtn" hidden>Take a look</button>
+      <button class="sbtn" id="stopSrcBtn" hidden>Stop</button>
+    </div>
+  </section>
+
+  <section class="card talk" aria-label="Conversation">
+    <div class="feed" id="feed" aria-live="polite"></div>
+    <div class="followups" id="followups"></div>
+  </section>
+</main>
+
+<footer class="dock">
+  <div class="dock-inner">
+    <div class="hint-tools" id="hintTools" hidden>
+      <span class="hint-level" id="hintLevel">Hint 1 of 3</span>
+      <button class="sbtn" id="biggerHintBtn">Bigger hint</button>
+      <button class="sbtn" id="answerBtn" aria-label="Show the answer, needs the parent PIN">Answer (parent)</button>
+    </div>
+    <div class="ask-row"><input id="askInput" type="text" enterkeyhint="send" autocomplete="off" placeholder="Type a question" aria-label="Type a question"><button class="pbtn" id="sendBtn">Send</button></div>
+    <div class="dock-left"><button class="sbtn" id="newTopicBtn">New topic</button></div>
+    <button class="orb" id="orb" data-state="idle" aria-label="Hold to talk"><span class="eye l"></span><span class="eye r"></span><span class="mouth"></span></button>
+    <div class="dock-right"><button class="icon-btn" id="muteBtn" aria-pressed="false" aria-label="Mute voice" title="Mute voice"><svg class="i" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path id="muteWave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button></div>
+    <p class="cap" id="cap" aria-live="polite">Hold to talk, or hold the Space bar</p>
+  </div>
+</footer>
+
+<!-- Settings -->
+<dialog id="settingsDlg" class="dlg wide" aria-labelledby="setTitle">
+  <div class="dlg-head"><h2 id="setTitle">Settings</h2><button class="icon-btn" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="dlg-body">
+    <p class="intro" id="setIntro" hidden>Welcome to Tarini. Add your Anthropic API key below, add the people who will use it, and choose a folder for saving. You can change all of this later.</p>
+    <section class="set">
+      <h3>Claude connection</h3>
+      <label class="fld">API key<input id="setKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-..."></label>
+      <p class="help">Create a key at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer">console.anthropic.com</a>. It stays in this browser only and is sent straight to Anthropic.</p>
+      <div class="grid2">
+        <label class="fld">Model for grown-ups<input id="setModel" list="modelList" spellcheck="false"></label>
+        <label class="fld">Model for children<input id="setKidModel" list="modelList" spellcheck="false"></label>
+      </div>
+      <datalist id="modelList"><option value="claude-sonnet-5-5"><option value="claude-haiku-5-5"><option value="claude-opus-5-5"></datalist>
+      <details><summary>Advanced</summary><label class="fld">Server address<input id="setEndpoint" spellcheck="false"></label><p class="help">Keep the default unless you run your own proxy server.</p></details>
+      <div class="row"><button class="sbtn" id="testKeyBtn">Test connection</button><span id="testOut" role="status"></span></div>
+    </section>
+    <section class="set">
+      <h3>Voice</h3>
+      <div class="grid2">
+        <label class="fld">Listening language<select id="setLang">
+          <option value="en-US">English (United States)</option><option value="en-GB">English (United Kingdom)</option><option value="en-IN">English (India)</option><option value="en-ZA">English (South Africa)</option><option value="en-AU">English (Australia)</option><option value="hi-IN">Hindi</option><option value="gu-IN">Gujarati</option><option value="es-ES">Spanish</option><option value="fr-FR">French</option><option value="de-DE">German</option>
+        </select></label>
+        <label class="fld">Speaking voice<select id="setVoice"></select></label>
+      </div>
+      <label class="fld">Speaking speed <span id="rateOut">1.0</span><input id="setRate" type="range" min="0.7" max="1.4" step="0.05"></label>
+      <button class="sbtn" id="testVoiceBtn">Play a sample</button>
+    </section>
+    <section class="set">
+      <h3>People</h3>
+      <p class="help">Children get hints instead of answers and simple language.</p>
+      <div id="peopleList"></div>
+      <button class="sbtn" id="addPersonBtn">Add person</button>
+    </section>
+    <section class="set">
+      <h3>Parent PIN</h3>
+      <p class="help" id="pinStatus"></p>
+      <div class="row"><button class="sbtn" id="setPinBtn">Set PIN</button><button class="danger" id="removePinBtn">Remove PIN</button></div>
+    </section>
+    <section class="set">
+      <h3>Library folder</h3>
+      <p class="help" id="folderStatus"></p>
+      <div class="row"><button class="sbtn" id="chooseFolderBtn">Choose folder</button><button class="sbtn" id="zipBtn">Download all as ZIP</button></div>
+    </section>
+    <section class="set">
+      <h3>Data</h3>
+      <p class="help">Deletes the history kept inside this browser. Files already saved in your folder stay.</p>
+      <button class="danger" id="clearBtn">Delete all history</button>
+    </section>
+  </div>
+  <div class="dlg-foot"><button class="sbtn" data-close>Cancel</button><button class="pbtn" id="saveSettingsBtn">Save settings</button></div>
+</dialog>
+
+<!-- PIN -->
+<dialog id="pinDlg" class="dlg" aria-labelledby="pinTitle">
+  <div class="dlg-head"><h2 id="pinTitle">Parent PIN</h2></div>
+  <div class="dlg-body">
+    <label class="fld">PIN<input id="pin1" class="pin-in" type="password" inputmode="numeric" maxlength="6" autocomplete="off"></label>
+    <label class="fld" id="pin2Wrap">Type it again<input id="pin2" class="pin-in" type="password" inputmode="numeric" maxlength="6" autocomplete="off"></label>
+    <p class="pin-err" id="pinErr" role="alert"></p>
+  </div>
+  <div class="dlg-foot"><button class="sbtn" id="pinCancel">Cancel</button><button class="pbtn" id="pinOk">Continue</button></div>
+</dialog>
+
+<!-- Person picker -->
+<dialog id="whoDlg" class="dlg" aria-labelledby="whoTitle">
+  <div class="dlg-head"><h2 id="whoTitle">Who is using Tarini?</h2><button class="icon-btn" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="dlg-body" id="whoList"></div>
+</dialog>
+
+<!-- History -->
+<dialog id="histDlg" class="dlg wide" aria-labelledby="histTitle">
+  <div class="dlg-head"><h2 id="histTitle">History</h2><button class="icon-btn" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="dlg-body" id="histBody"></div>
+  <div class="dlg-foot"><span class="help" id="histFolder" style="margin:0 auto 0 0"></span><button class="sbtn" id="histZipBtn">Download all as ZIP</button><button class="sbtn" id="histFolderBtn">Choose folder</button></div>
+</dialog>
+
+<!-- Report -->
+<dialog id="repDlg" class="dlg wide" aria-labelledby="repTitle">
+  <div class="dlg-head"><h2 id="repTitle">Weekly report</h2><button class="icon-btn" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="dlg-body">
+    <div class="row" style="margin-bottom:12px"><button class="sbtn" id="repPrev" aria-label="Previous week">Previous</button><span class="rep-range" id="repRange"></span><button class="sbtn" id="repNext" aria-label="Next week">Next</button></div>
+    <div id="repBody"></div>
+  </div>
+  <div class="dlg-foot"><label class="check" style="margin:0 auto 0 0"><input type="checkbox" id="repAi">Add a short AI summary</label><button class="pbtn" id="repPdf">Download PDF</button></div>
+</dialog>
+
+<!-- Help -->
+<dialog id="helpDlg" class="dlg" aria-labelledby="helpTitle">
+  <div class="dlg-head"><h2 id="helpTitle">How to use Tarini</h2><button class="icon-btn" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="dlg-body">
+    <ol class="how">
+      <li><strong>Pick who is using it.</strong> Tap the name at the top. Children get hints, not answers.</li>
+      <li><strong>Pick a mode.</strong> The row of buttons under the header, such as Homework hints or Show me how.</li>
+      <li><strong>Show Tarini something.</strong> Share screen for anything on the computer, Camera for a notebook, or Add photo.</li>
+      <li><strong>Hold the yellow buddy and talk.</strong> Let go to send. A quick tap keeps listening until you tap again. You can also hold the Space bar or type.</li>
+      <li><strong>Follow the answer.</strong> Tarini speaks, writes the steps, and puts numbered circles on the picture.</li>
+      <li><strong>Keep going.</strong> Tap a suggested question, press Bigger hint, or press New topic to start fresh.</li>
+    </ol>
+    <p class="help">Working in another app? Press the window icon at the top for the floating buddy. It stays on top so you can ask without switching back.</p>
+    <p class="help">Everything is saved by day in History, and the chart icon makes a weekly PDF report.</p>
+  </div>
+  <div class="dlg-foot"><button class="pbtn" data-close>Got it</button></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(() => {
+'use strict';
+
+/* ================= Constants ================= */
+const APP = 'Tarini';
+const LIB = 'Tarini Library';
+const DEFAULT_ENDPOINT = 'https://api.anthropic.com/v1/messages';
+const IDLE_CAP_MS = 2 * 60 * 1000;      // gaps longer than this are not counted as use
+const SESSION_GAP_MS = 10 * 60 * 1000;  // a new session starts after 10 minutes idle
+const MAX_EDGE = 1568;                  // image long edge sent to Claude
+const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+
+const DEFAULTS = {
+  apiKey: '', endpoint: DEFAULT_ENDPOINT,
+  model: 'claude-sonnet-5-5', kidModel: 'claude-haiku-5-5',
+  lang: 'en-US', voiceURI: '', rate: 1, theme: 'dark', muted: false, autoLook: true,
+  pinHash: '',
+  profiles: [{ id: 'p-adult', name: 'Dad', kind: 'adult' }, { id: 'p-kid', name: 'Son', kind: 'kid' }],
+  activeProfile: 'p-adult', mode: 'ask', seenHelp: false
+};
+
+const BASE_PROMPT = `You are ${APP}, a friendly voice helper that lives on the user's computer.
+The user may share an IMAGE: a screenshot of their computer screen, or a camera photo of paper, a book or an object. Look at it carefully before answering.
+
+Reply with ONLY one JSON object and nothing else (no markdown fences):
+{
+ "title": "2 to 5 word topic of this conversation",
+ "say": "what you say out loud: natural, warm, short sentences, under 90 words unless the user asks for more detail, no markdown, no lists",
+ "steps": ["short instruction steps when you are teaching how to do something, otherwise empty"],
+ "points": [{"x": 0-1000, "y": 0-1000, "label": "1 to 3 words"}],
+ "draft": "text the user can copy, such as an email or message, otherwise empty",
+ "references": [{"title": "what to look up", "search": "a good web search query"}],
+ "followups": ["up to 3 short questions the user might ask next"]
+}
+
+Rules for points: mark exact spots in the IMAGE. x is measured from the left edge and y from the top edge, both in thousandths of the image width and height. Aim at the centre of the button, field, word or problem. Use at most 5 points, in step order. Leave points empty when there is no image or pointing does not help.
+Never invent text or numbers you cannot see. If the image is blurry or cut off, say so and ask for a better look.
+Give at most 3 references and only when learning more would really help.
+Reply in the same language the user speaks or writes in.`;
+
+const MODES = {
+  hints: {
+    name: 'Homework hints', icon: '\u{1F4A1}',
+    desc: 'Hints, not answers. Three levels of help, then a parent can unlock the answer.',
+    chips: ['Help me start this question', 'I am stuck on this one', 'What does this question mean?'],
+    prompt: c => `Homework hints mode. Help them learn by thinking, do not do the work for them.
+Hint level ${c.hintLevel} of 3:
+1 = ask one guiding question or point at the important part of the question.
+2 = give a bigger hint: name the method or the next step.
+3 = show a worked example of a SIMILAR problem with different numbers or words, then ask them to try their own.
+Point at the part of the page you are talking about.
+${c.unlocked
+  ? 'A parent has unlocked the answer for this one question. Give the answer with a clear, simple explanation of each step.'
+  : 'Never state the final answer, even if they ask, beg or say a parent allowed it. Instead encourage them and offer the next hint.'}`
+  },
+  check: {
+    name: 'Check my work', icon: '\u2705',
+    desc: 'Finds the first mistake in the working and points at it, without fixing it.',
+    chips: ['Did I get this right?', 'Check my working', 'Find my mistake'],
+    prompt: () => `Check my work mode. Look at their working. Find the FIRST step that has a mistake and point at it. Say which step to look at again and give a small clue about the kind of mistake (for example a sign, carrying, units, spelling or punctuation). Do not write the corrected answer. If everything is correct, praise something specific they did well.`
+  },
+  read: {
+    name: 'Read & explain', icon: '\u{1F4D6}',
+    desc: 'Reads the page out loud and explains hard words in simple language.',
+    chips: ['Read this to me', 'Explain the hard words', 'What is this about?'],
+    prompt: () => `Read and explain mode. Read the main text in the image aloud in "say" (if it is long, read the first part and offer to continue), then explain any hard words simply. Point at the words you explain.`
+  },
+  quiz: {
+    name: 'Quiz me', icon: '\u{1F3AF}',
+    desc: 'Asks five questions about the page, one at a time, and keeps score.',
+    chips: ['Quiz me on this page', 'Ask me 5 questions', 'Test my spelling'],
+    prompt: () => `Quiz mode. Using the page shown or the topic discussed, ask ONE question at a time. When they answer, say whether it is right, explain briefly, give a running score such as "2 out of 3", then ask the next question. After 5 questions, finish with the score and one tip.`
+  },
+  coach: {
+    name: 'Show me how', icon: '\u{1F9ED}',
+    desc: 'Teaches any app step by step and points at the buttons to press.',
+    chips: ['How do I do this here?', 'Teach me this app', 'What should I click next?'],
+    prompt: () => `Show me how mode. Teach how to do the task in the software that is visible. Give numbered steps and point at the exact buttons and menus for the steps visible right now. If a needed control is not visible, say where it usually is and point at the first thing to click.`
+  },
+  find: {
+    name: 'Find it', icon: '\u{1F50D}',
+    desc: 'Points at the button, menu or number you are looking for.',
+    chips: ['Where is the export button?', 'Where do I change this setting?', 'Find the total on this page'],
+    prompt: () => `Find it mode. Locate what the user is looking for in the image and point at it precisely. If it is not visible, explain which menu or area it is normally in and point at the first thing to click to get there.`
+  },
+  work: {
+    name: 'Work helper', icon: '\u{1F4BC}',
+    desc: 'Reads documents, quotes and screens exactly, checks numbers and drafts replies.',
+    chips: ['Summarise this document', 'Check these numbers', 'Draft a reply to this'],
+    prompt: () => `Work helper mode. Help with business software, documents, quotes, invoices, spreadsheets and emails. Quote numbers exactly as shown, flag anything that looks inconsistent, and keep "say" short. Put any email or message text in "draft".`
+  },
+  ask: {
+    name: 'Ask anything', icon: '\u{1F4AC}',
+    desc: 'Ask anything about what is on the screen, the camera or a photo.',
+    chips: ['What am I looking at?', 'Explain this simply', 'What should I do here?'],
+    prompt: () => `Ask anything mode. Answer clearly and helpfully. Use the image when it is relevant and point at what you mention.`
+  }
+};
+const MODE_ORDER = {
+  kid: ['hints', 'check', 'read', 'quiz', 'ask'],
+  adult: ['ask', 'coach', 'find', 'work', 'read', 'hints', 'check', 'quiz']
+};
+
+/* ================= Small helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+function el(tag, attrs = {}, ...kids) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === 'class') n.className = v;
+    else if (k === 'text') n.textContent = v;
+    else if (k.startsWith('on') && typeof v === 'function') n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v === true ? '' : String(v));
+  }
+  kids.flat(Infinity).forEach(c => { if (c != null && c !== false) n.append(c.nodeType ? c : document.createTextNode(String(c))); });
+  return n;
+}
+const pad = n => String(n).padStart(2, '0');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const dateKey = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const timeKey = d => `${pad(d.getHours())}-${pad(d.getMinutes())}`;
+const fmtTime = d => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+const fmtDate = d => d.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+function fmtDur(ms) {
+  const m = Math.round((ms || 0) / 60000);
+  if (m < 1) return 'under 1 min';
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60), r = m % 60;
+  return r ? `${h} h ${r} min` : `${h} h`;
+}
+const safeName = s => (s || '').replace(/[\\/:*?"<>|\u0000-\u001F]/g, '').replace(/\s+/g, ' ').trim().slice(0, 60);
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+const clamp1000 = v => Math.max(0, Math.min(1000, v));
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const initial = n => (n || '?').trim().charAt(0).toUpperCase() || '?';
+
+async function hashPin(pin) {
+  const text = `tarini-pin:${pin}`;
+  if (crypto.subtle) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  let h = 5381; for (let i = 0; i < text.length; i++) h = ((h << 5) + h + text.charCodeAt(i)) | 0;
+  return 'w' + (h >>> 0).toString(16);
+}
+function blobToB64(blob) {
+  return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = () => rej(r.error); r.readAsDataURL(blob); });
+}
+const scriptCache = {};
+function loadScript(src) {
+  if (!scriptCache[src]) scriptCache[src] = new Promise((res, rej) => {
+    const s = document.createElement('script'); s.src = src; s.async = true;
+    s.onload = () => res(); s.onerror = () => { delete scriptCache[src]; rej(new Error('Could not load a helper file. Check your internet connection.')); };
+    document.head.append(s);
+  });
+  return scriptCache[src];
+}
+function downloadBlob(blob, name) {
+  const a = el('a', { href: URL.createObjectURL(blob), download: name });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+let toastTimer;
+function toast(msg, ms = 3400) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), ms);
+}
+
+/* ================= Storage ================= */
+const DB = (() => {
+  let dbp;
+  function open() {
+    if (!dbp) dbp = new Promise((res, rej) => {
+      const r = indexedDB.open('tarini-db', 1);
+      r.onupgradeneeded = () => {
+        const d = r.result;
+        if (!d.objectStoreNames.contains('sessions')) d.createObjectStore('sessions', { keyPath: 'id' });
+        if (!d.objectStoreNames.contains('images')) d.createObjectStore('images', { keyPath: 'id' });
+        if (!d.objectStoreNames.contains('kv')) d.createObjectStore('kv');
+      };
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+    });
+    return dbp;
+  }
+  async function run(store, mode, fn) {
+    const d = await open();
+    return new Promise((res, rej) => {
+      const t = d.transaction(store, mode); const req = fn(t.objectStore(store)); let out;
+      if (req) req.onsuccess = () => { out = req.result; };
+      t.oncomplete = () => res(out); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+    });
+  }
+  return {
+    get: (s, k) => run(s, 'readonly', st => st.get(k)),
+    put: (s, v, k) => run(s, 'readwrite', st => (k === undefined ? st.put(v) : st.put(v, k))),
+    del: (s, k) => run(s, 'readwrite', st => st.delete(k)),
+    all: s => run(s, 'readonly', st => st.getAll()),
+    clear: s => run(s, 'readwrite', st => st.clear())
+  };
+})();
+
+function loadSettings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('tarini.settings') || '{}');
+    const s = { ...structuredClone(DEFAULTS), ...saved };
+    if (!Array.isArray(s.profiles) || !s.profiles.length) s.profiles = structuredClone(DEFAULTS.profiles);
+    return s;
+  } catch { return structuredClone(DEFAULTS); }
+}
+function saveSettings() { localStorage.setItem('tarini.settings', JSON.stringify(S.settings)); }
+
+/* ================= State ================= */
+const S = {
+  settings: loadSettings(),
+  screenStream: null, cameraStream: null, source: null, facing: 'environment', camCount: 0,
+  lastImage: null, points: [], viewSnap: false, markedUrl: null, lastReply: null,
+  session: null, busy: false, listening: false, speaking: false, toggleTalk: false, pressT: 0,
+  hintLevel: 1, unlockOnce: false,
+  pip: null, rootHandle: null, syncQ: Promise.resolve(),
+  banners: {}, histUrls: [], peopleDraft: [], repRef: new Date(), repData: null
+};
+const activeProfile = () => S.settings.profiles.find(p => p.id === S.settings.activeProfile) || S.settings.profiles[0];
+const isKid = () => activeProfile().kind === 'kid';
+const isLive = () => S.source === 'screen' || S.source === 'camera';
+const hasConnection = () => !!S.settings.apiKey || ((S.settings.endpoint || DEFAULT_ENDPOINT) !== DEFAULT_ENDPOINT);
+
+/* ================= Elements ================= */
+const E = {};
+['feed', 'followups', 'modes', 'orb', 'cap', 'askInput', 'sendBtn', 'live', 'snap', 'snapImg', 'markers', 'stageEmpty',
+ 'srcStatus', 'srcText', 'liveBtn', 'lookBtn', 'stopSrcBtn', 'switchCamBtn', 'screenBtn', 'cameraBtn', 'photoInput', 'autoLook',
+ 'hintTools', 'hintLevel', 'biggerHintBtn', 'answerBtn', 'newTopicBtn', 'muteBtn', 'muteWave', 'whoBtn', 'whoName', 'whoDot',
+ 'pipBtn', 'historyBtn', 'reportBtn', 'themeBtn', 'settingsBtn', 'banner', 'bannerText', 'bannerBtn', 'bannerClose'
+].forEach(id => { E[id] = document.getElementById(id); });
+
+/* ================= Theme ================= */
+function applyTheme() {
+  const t = S.settings.theme === 'light' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = t;
+  $('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#0F1530' : '#EEF1FB');
+  E.themeBtn.setAttribute('aria-label', t === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+  if (S.pip) S.pip.document.documentElement.dataset.theme = t;
+}
+
+/* ================= Orb + captions ================= */
+function idleCaption() {
+  if (!SR) return 'Voice input needs Chrome, Edge or Safari. Type your question instead.';
+  return 'Hold to talk, or hold the Space bar';
+}
+function setCaption(text) {
+  E.cap.textContent = text;
+  if (S.pip) { const c = S.pip.document.getElementById('pCap'); if (c) c.textContent = text; }
+}
+function setOrbState(state) {
+  E.orb.dataset.state = state;
+  if (S.pip) { const o = S.pip.document.getElementById('pOrb'); if (o) o.dataset.state = state; }
+  const label = { idle: 'Hold to talk', listening: 'Listening. Release to send', thinking: `${APP} is thinking`, speaking: 'Speaking. Press to interrupt' }[state];
+  E.orb.setAttribute('aria-label', label);
+  if (state === 'idle') setCaption(idleCaption());
+  if (state === 'thinking') setCaption('Looking and thinking');
+  if (state === 'speaking') setCaption('Speaking. Press the button to interrupt.');
+}
+
+/* ================= Speech in ================= */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, recFinal = '', recInterim = '';
+function startListening() {
+  if (!SR) { toast('Voice input works in Chrome, Edge and Safari. You can type instead.'); E.askInput.focus(); return; }
+  if (S.busy) { toast('Still thinking about the last question.'); return; }
+  if (S.listening) return;
+  stopSpeaking();
+  recFinal = ''; recInterim = '';
+  try {
+    rec = new SR();
+    rec.lang = S.settings.lang || 'en-US';
+    rec.interimResults = true;
+    rec.continuous = true;
+    rec.onresult = e => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const r = e.results[i];
+        if (r.isFinal) recFinal += r[0].transcript + ' '; else interim += r[0].transcript;
+      }
+      recInterim = interim;
+      const shown = (recFinal + interim).trim();
+      setCaption(shown ? `\u201C${shown}\u201D` : 'Listening');
+    };
+    rec.onerror = e => {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') toast('The microphone is blocked. Allow it from the icon in the address bar.');
+      else if (e.error === 'network') toast('Voice input needs an internet connection.');
+      else if (e.error !== 'no-speech' && e.error !== 'aborted') toast(`Voice input stopped (${e.error}).`);
+    };
+    rec.onend = () => {
+      S.listening = false; S.toggleTalk = false;
+      const text = (recFinal.trim() || recInterim.trim());
+      rec = null;
+      if (text) ask(text);
+      else { setOrbState('idle'); }
+    };
+    rec.start();
+    S.listening = true;
+    setOrbState('listening'); setCaption('Listening');
+  } catch (err) {
+    S.listening = false; setOrbState('idle');
+    toast('Could not start voice input. Try again.');
+  }
+}
+function stopListening() { if (rec && S.listening) { try { rec.stop(); } catch { /* already stopping */ } } }
+function orbDown() {
+  if (S.listening) { if (S.toggleTalk) { S.toggleTalk = false; stopListening(); } return; }
+  S.pressT = Date.now(); S.toggleTalk = false;
+  startListening();
+}
+function orbUp() {
+  if (!S.listening) return;
+  if (Date.now() - S.pressT < 300) { S.toggleTalk = true; setCaption('Listening. Tap the button again when you finish.'); }
+  else stopListening();
+}
+function bindOrb(btn) {
+  btn.addEventListener('pointerdown', e => { if (e.button > 0) return; e.preventDefault(); orbDown(); try { btn.setPointerCapture(e.pointerId); } catch { /* ignore */ } });
+  btn.addEventListener('pointerup', orbUp);
+  btn.addEventListener('pointercancel', () => { if (S.listening && !S.toggleTalk) stopListening(); });
+  btn.addEventListener('contextmenu', e => e.preventDefault());
+  btn.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); if (S.listening) stopListening(); else { S.toggleTalk = true; startListening(); } }
+  });
+}
+function isTypingTarget(t) {
+  if (!t || !t.closest) return false;
+  if (t.closest('input, textarea, select, [contenteditable="true"]')) return true;
+  return t.tagName === 'BUTTON' && t.id !== 'orb' && t.id !== 'pOrb';
+}
+function bindSpace(doc) {
+  doc.addEventListener('keydown', e => {
+    if (e.code !== 'Space' || isTypingTarget(e.target) || document.querySelector('dialog[open]')) return;
+    e.preventDefault();
+    if (!e.repeat) orbDown();
+  });
+  doc.addEventListener('keyup', e => {
+    if (e.code !== 'Space' || isTypingTarget(e.target) || document.querySelector('dialog[open]')) return;
+    e.preventDefault(); orbUp();
+  });
+}
+
+/* ================= Speech out ================= */
+function pickVoice() {
+  if (!('speechSynthesis' in window)) return null;
+  const voices = speechSynthesis.getVoices();
+  if (S.settings.voiceURI) { const v = voices.find(x => x.voiceURI === S.settings.voiceURI); if (v) return v; }
+  const lang = (S.settings.lang || 'en-US').toLowerCase();
+  const base = lang.split('-')[0];
+  const same = voices.filter(v => v.lang && v.lang.toLowerCase().replace('_', '-') === lang);
+  const fam = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(base));
+  const pool = same.length ? same : fam;
+  return pool.find(v => /natural|neural|google|samantha|daniel|karen|aria|jenny/i.test(v.name)) || pool[0] || null;
+}
+function speak(text, opts = {}) {
+  if (!text || !('speechSynthesis' in window)) return;
+  if (S.settings.muted && !opts.force) return;
+  stopSpeaking();
+  const parts = text.match(/[^.!?\n]+[.!?]*\s*/g) || [text];
+  const isVoice = typeof SpeechSynthesisVoice !== 'undefined' && opts.voice instanceof SpeechSynthesisVoice;
+  const v = isVoice ? opts.voice : pickVoice();
+  S.speaking = true; setOrbState('speaking');
+  parts.forEach((p, i) => {
+    const u = new SpeechSynthesisUtterance(p.trim());
+    if (v) { u.voice = v; u.lang = v.lang; } else u.lang = S.settings.lang;
+    u.rate = opts.rate || S.settings.rate || 1;
+    if (i === parts.length - 1) {
+      const done = () => { if (S.speaking) { S.speaking = false; touch(); if (!S.listening && !S.busy) setOrbState('idle'); } };
+      u.onend = done; u.onerror = done;
+    }
+    speechSynthesis.speak(u);
+  });
+}
+function stopSpeaking() {
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  if (S.speaking) { S.speaking = false; if (!S.listening && !S.busy) setOrbState('idle'); }
+}
+
+/* ================= Eyes: screen, camera, photo ================= */
+async function attachLive(stream) {
+  E.live.srcObject = stream; E.live.hidden = false;
+  try { await E.live.play(); } catch { /* autoplay with muted should succeed */ }
+  renderStage();
+}
+function stopStreams() {
+  [S.screenStream, S.cameraStream].forEach(st => st && st.getTracks().forEach(t => t.stop()));
+  S.screenStream = null; S.cameraStream = null;
+  E.live.srcObject = null; E.live.hidden = true;
+  S.source = null;
+}
+async function startScreen() {
+  if (S.source === 'screen') { stopStreams(); renderStage(); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+    toast('Screen sharing works in desktop Chrome, Edge and Safari. On a phone, use the camera or a photo.'); return;
+  }
+  try {
+    const st = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 5 }, audio: false });
+    stopStreams();
+    S.screenStream = st; S.source = 'screen'; S.viewSnap = false;
+    st.getVideoTracks()[0].addEventListener('ended', () => {
+      if (S.screenStream === st) { stopStreams(); renderStage(); toast('Screen sharing stopped.'); }
+    });
+    await attachLive(st);
+    toast('Screen shared. Open the floating buddy to ask from any app.');
+  } catch (e) {
+    if (e && e.name !== 'NotAllowedError' && e.name !== 'AbortError') toast('Could not share the screen.');
+  }
+}
+async function startCamera(facing) {
+  if (S.source === 'camera' && !facing) { stopStreams(); renderStage(); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast('The camera is not available in this browser.'); return; }
+  if (facing) S.facing = facing;
+  try {
+    const st = await navigator.mediaDevices.getUserMedia({ video: { facingMode: S.facing, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false });
+    stopStreams();
+    S.cameraStream = st; S.source = 'camera'; S.viewSnap = false;
+    await attachLive(st);
+    try { const devs = await navigator.mediaDevices.enumerateDevices(); S.camCount = devs.filter(d => d.kind === 'videoinput').length; } catch { S.camCount = 1; }
+    renderStage();
+  } catch (e) {
+    toast(e && e.name === 'NotAllowedError' ? 'Camera access is blocked. Allow it from the address bar.' : 'Could not start the camera.');
+  }
+}
+function scaleToCanvas(src, w, h) {
+  const k = Math.min(1, MAX_EDGE / Math.max(w, h));
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(w * k)); c.height = Math.max(1, Math.round(h * k));
+  c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+  return c;
+}
+async function canvasToRecord(c, kind) {
+  const blob = await new Promise((res, rej) => c.toBlob(b => (b ? res(b) : rej(new Error('Could not make the picture.'))), 'image/jpeg', 0.85));
+  return { id: uid(), kind, blob, b64: await blobToB64(blob), w: c.width, h: c.height, url: URL.createObjectURL(blob), stored: false };
+}
+function setImage(rec) {
+  S.lastImage = rec; S.points = []; S.hintLevel = 1; S.viewSnap = true;
+  if (S.markedUrl) { URL.revokeObjectURL(S.markedUrl); S.markedUrl = null; }
+  renderStage(); renderHintTools(); renderPip();
+}
+async function captureFromLive() {
+  const v = E.live;
+  if (!v.srcObject) return null;
+  for (let i = 0; i < 30 && !v.videoWidth; i++) await sleep(50);
+  if (!v.videoWidth) throw new Error('The picture is not ready yet.');
+  const rec = await canvasToRecord(scaleToCanvas(v, v.videoWidth, v.videoHeight), S.source);
+  setImage(rec);
+  touch();
+  return rec;
+}
+async function lookNow() {
+  if (!isLive()) { toast('Share your screen or turn on the camera first.'); return; }
+  try { await captureFromLive(); toast('Got it. Now ask your question.'); } catch (e) { toast(e.message); }
+}
+async function loadPhoto(file) {
+  if (!file) return;
+  if (!/^image\//.test(file.type)) { toast('Choose an image file.'); return; }
+  try {
+    let src, w, h;
+    if ('createImageBitmap' in window) {
+      try { src = await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch { src = await createImageBitmap(file); }
+      w = src.width; h = src.height;
+    } else {
+      const url = URL.createObjectURL(file); const im = new Image();
+      await new Promise((res, rej) => { im.onload = res; im.onerror = rej; im.src = url; });
+      src = im; w = im.naturalWidth; h = im.naturalHeight; URL.revokeObjectURL(url);
+    }
+    const rec = await canvasToRecord(scaleToCanvas(src, w, h), 'photo');
+    stopStreams();
+    setImage(rec);
+    toast('Photo added. Now ask your question.');
+  } catch { toast('Could not open that image. Try a JPG or PNG.'); }
+}
+
+/* ================= Stage + markers ================= */
+function markerEl(p, i, animate) {
+  const m = el('div', { class: animate ? 'mark' : 'mark still' });
+  m.style.left = `${p.x / 10}%`; m.style.top = `${p.y / 10}%`;
+  m.style.setProperty('--d', `${i * 200}ms`);
+  m.append(el('span', { class: 'ring' }), el('span', { class: 'num', text: String(i + 1) }));
+  if (p.label) m.append(el('span', { class: p.x > 640 ? 'lab left' : 'lab', text: p.label }));
+  return m;
+}
+function renderStage() {
+  const live = isLive();
+  const showSnap = !!S.lastImage && (!live || S.viewSnap);
+  E.stageEmpty.hidden = live || !!S.lastImage;
+  E.live.hidden = !live;
+  E.live.classList.toggle('offstage', live && showSnap);
+  E.snap.hidden = !showSnap;
+  if (showSnap) {
+    if (E.snapImg.getAttribute('src') !== S.lastImage.url) E.snapImg.src = S.lastImage.url;
+    E.markers.replaceChildren(...S.points.map((p, i) => markerEl(p, i, true)));
+  }
+  E.liveBtn.hidden = !(live && showSnap);
+  E.stopSrcBtn.hidden = !live;
+  E.lookBtn.hidden = !live;
+  E.switchCamBtn.hidden = !(S.source === 'camera' && S.camCount > 1);
+  E.screenBtn.setAttribute('aria-pressed', String(S.source === 'screen'));
+  E.cameraBtn.setAttribute('aria-pressed', String(S.source === 'camera'));
+  E.srcStatus.classList.toggle('on', live);
+  E.srcText.textContent = S.source === 'screen' ? 'Sharing your screen'
+    : S.source === 'camera' ? 'Camera is on'
+    : S.lastImage ? 'Using the last picture' : 'Nothing shared yet';
+}
+async function makeMarked(img, points) {
+  const bmp = await createImageBitmap(img.blob);
+  const c = document.createElement('canvas'); c.width = bmp.width; c.height = bmp.height;
+  const g = c.getContext('2d'); g.drawImage(bmp, 0, 0);
+  const r = Math.max(13, Math.round(Math.max(c.width, c.height) / 70));
+  points.forEach((p, i) => {
+    const x = p.x / 1000 * c.width, y = p.y / 1000 * c.height;
+    g.lineWidth = Math.max(3, r / 3.5); g.strokeStyle = '#6CD2FF';
+    g.beginPath(); g.arc(x, y, r * 1.7, 0, Math.PI * 2); g.stroke();
+    g.fillStyle = '#FFC24B'; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#2A1D00'; g.font = `bold ${Math.round(r * 1.15)}px sans-serif`;
+    g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(String(i + 1), x, y + 1);
+    if (p.label) {
+      g.font = `600 ${Math.round(r * 0.95)}px sans-serif`;
+      const tw = g.measureText(p.label).width, padX = r * 0.6, bh = r * 1.7;
+      const left = x > c.width * 0.64;
+      const bx = left ? x - r * 2.2 - tw - padX * 2 : x + r * 2.2;
+      const by = y - bh / 2;
+      g.fillStyle = 'rgba(15,21,48,0.92)'; g.fillRect(bx, by, tw + padX * 2, bh);
+      g.fillStyle = '#FFFFFF'; g.textAlign = 'left'; g.fillText(p.label, bx + padX, y + 1);
+    }
+  });
+  return new Promise((res, rej) => c.toBlob(b => (b ? res(b) : rej(new Error('Could not draw marks.'))), 'image/png'));
+}
+
+/* ================= Sessions + usage time ================= */
+function ensureSession() {
+  const now = Date.now(), p = activeProfile(), s = S.session;
+  if (s && s.profileId === p.id && s.mode === S.settings.mode && now - s.lastActive < SESSION_GAP_MS) return { session: s, isNew: false };
+  S.session = {
+    id: uid(), start: now, lastActive: now, end: now,
+    profileId: p.id, profileName: p.name, profileKind: p.kind, mode: S.settings.mode,
+    title: '', turns: [], activeMs: 0, imageFiles: {}, imageCount: 0, markedCount: 0,
+    folderName: '', maxHint: 0, needsSync: false
+  };
+  return { session: S.session, isNew: !!s };
+}
+function touch() {
+  const s = S.session; if (!s) return;
+  const now = Date.now();
+  s.activeMs += Math.min(Math.max(0, now - s.lastActive), IDLE_CAP_MS);
+  s.lastActive = now; s.end = now;
+}
+async function recordTurn(s, text, img, reply, hintLevel, markedBlob) {
+  const newFiles = [];
+  let imageId = null, imageFile = null, markedFile = null;
+  if (img) {
+    imageId = img.id;
+    if (!img.stored) { await DB.put('images', { id: img.id, blob: img.blob, w: img.w, h: img.h, ts: Date.now() }); img.stored = true; }
+    if (!s.imageFiles[img.id]) {
+      s.imageCount += 1; imageFile = `snapshot-${pad(s.imageCount)}.jpg`;
+      s.imageFiles[img.id] = imageFile; newFiles.push({ name: imageFile, blob: img.blob });
+    }
+  }
+  if (markedBlob) { s.markedCount += 1; markedFile = `marked-${pad(s.markedCount)}.png`; newFiles.push({ name: markedFile, blob: markedBlob }); }
+  const t = Date.now();
+  s.turns.push({ role: 'user', ts: t, text, imageId, imageFile });
+  s.turns.push({ role: 'assistant', ts: t, reply, imageId, markedFile, hintLevel });
+  if (s.mode === 'hints') s.maxHint = Math.max(s.maxHint || 0, hintLevel);
+  if (!s.title && reply.title) s.title = reply.title;
+  touch();
+  await DB.put('sessions', s);
+  queueSync(() => syncSession(s, newFiles));
+}
+
+/* ================= Library folder (File System Access) ================= */
+const canUseFolders = () => 'showDirectoryPicker' in window;
+function folderNameFor(s) {
+  const mode = MODES[s.mode] ? MODES[s.mode].name : s.mode;
+  return `${timeKey(new Date(s.start))} ${safeName(s.profileName) || 'Someone'} - ${safeName(mode)} - ${safeName(s.title) || 'Session'}`;
+}
+async function getRoot() {
+  if (!canUseFolders()) return null;
+  if (!S.rootHandle) S.rootHandle = await DB.get('kv', 'rootDir').catch(() => null);
+  if (!S.rootHandle) return null;
+  let perm = 'denied';
+  try { perm = await S.rootHandle.queryPermission({ mode: 'readwrite' }); } catch { /* ignore */ }
+  if (perm !== 'granted') { showBanner('folder', 'Tarini needs permission again to save into your library folder.', 'Reconnect folder', reconnectFolder); return null; }
+  return S.rootHandle;
+}
+async function libDir(root) { return root.getDirectoryHandle(LIB, { create: true }); }
+async function sessionDir(root, s) {
+  const lib = await libDir(root);
+  const day = await lib.getDirectoryHandle(dateKey(new Date(s.start)), { create: true });
+  if (!s.folderName) s.folderName = folderNameFor(s);
+  return day.getDirectoryHandle(s.folderName, { create: true });
+}
+async function writeFile(dir, name, data) {
+  const fh = await dir.getFileHandle(name, { create: true });
+  const w = await fh.createWritable(); await w.write(data); await w.close();
+}
+function queueSync(job) { S.syncQ = S.syncQ.then(job).catch(err => console.warn('Folder save failed', err)); return S.syncQ; }
+async function syncSession(s, newFiles) {
+  const root = await getRoot();
+  if (!root) { if (!s.needsSync) { s.needsSync = true; await DB.put('sessions', s); } return; }
+  try {
+    if (s.needsSync) { await writeSessionFull(root, s); s.needsSync = false; }
+    else {
+      const dir = await sessionDir(root, s);
+      for (const f of newFiles) await writeFile(dir, f.name, f.blob);
+      await writeFile(dir, 'conversation.md', sessionMarkdown(s));
+    }
+  } catch (e) { console.warn(e); s.needsSync = true; }
+  await DB.put('sessions', s);
+}
+async function writeSessionFull(root, s) {
+  const dir = await sessionDir(root, s);
+  for (const [id, fname] of Object.entries(s.imageFiles || {})) {
+    const im = await DB.get('images', id); if (im) await writeFile(dir, fname, im.blob);
+  }
+  for (const t of s.turns) {
+    if (t.role === 'assistant' && t.markedFile && t.imageId) {
+      const im = await DB.get('images', t.imageId);
+      if (im) { try { await writeFile(dir, t.markedFile, await makeMarked(im, t.reply.points)); } catch { /* skip */ } }
+    }
+  }
+  await writeFile(dir, 'conversation.md', sessionMarkdown(s));
+}
+async function resyncPending(all = false) {
+  const root = await getRoot(); if (!root) return;
+  const list = (await DB.all('sessions')).filter(s => all || s.needsSync);
+  if (!list.length) return;
+  if (list.length > 3) toast(`Saving ${list.length} sessions into your folder`);
+  for (const s of list) {
+    await queueSync(async () => {
+      try { await writeSessionFull(root, s); s.needsSync = false; } catch (e) { console.warn(e); s.needsSync = true; }
+      await DB.put('sessions', s);
+    });
+  }
+  if (S.session) { const fresh = list.find(x => x.id === S.session.id); if (fresh) { S.session.folderName = fresh.folderName; S.session.needsSync = fresh.needsSync; } }
+}
+async function chooseFolder() {
+  if (!canUseFolders()) { toast('Saving to a folder works in Chrome and Edge. Use Download all as ZIP instead.'); return; }
+  try {
+    const h = await window.showDirectoryPicker({ id: 'tarini-library', mode: 'readwrite' });
+    S.rootHandle = h; await DB.put('kv', h, 'rootDir');
+    hideBanner('folder');
+    toast(`Saving into "${h.name}/${LIB}"`);
+    renderFolderStatus();
+    await resyncPending(true);
+  } catch (e) { if (e && e.name !== 'AbortError') toast('Could not use that folder. Try another one.'); }
+}
+async function reconnectFolder() {
+  const h = S.rootHandle || await DB.get('kv', 'rootDir').catch(() => null);
+  if (!h) return chooseFolder();
+  try {
+    const p = await h.requestPermission({ mode: 'readwrite' });
+    if (p === 'granted') { S.rootHandle = h; hideBanner('folder'); toast('Folder reconnected'); renderFolderStatus(); await resyncPending(false); }
+  } catch { toast('Could not reconnect. Choose the folder again in Settings.'); }
+}
+async function saveToFolder(path, name, blob) {
+  const root = await getRoot(); if (!root) return false;
+  try {
+    let dir = await libDir(root);
+    for (const p of path) dir = await dir.getDirectoryHandle(p, { create: true });
+    await writeFile(dir, name, blob); return true;
+  } catch (e) { console.warn(e); return false; }
+}
+async function renderFolderStatus() {
+  const out = [document.getElementById('folderStatus'), document.getElementById('histFolder')];
+  let msg;
+  if (!canUseFolders()) msg = 'This browser cannot save into a folder. Everything stays inside the app, and you can download it all as a ZIP. Chrome and Edge can save to a folder.';
+  else {
+    const h = S.rootHandle || await DB.get('kv', 'rootDir').catch(() => null);
+    if (!h) msg = 'No folder chosen yet. Everything is kept inside the app until you choose one.';
+    else {
+      let perm = 'prompt'; try { perm = await h.queryPermission({ mode: 'readwrite' }); } catch { /* ignore */ }
+      msg = perm === 'granted' ? `Saving into "${h.name}/${LIB}", one folder per day.` : `Folder "${h.name}" needs permission again. Press Choose folder or Reconnect.`;
+    }
+  }
+  out.forEach(n => { if (n) n.textContent = msg; });
+}
+function sessionMarkdown(s) {
+  const L = [];
+  const mode = MODES[s.mode] ? MODES[s.mode].name : s.mode;
+  L.push(`# ${s.title || 'Session'}`, '', `- Person: ${s.profileName}`, `- Mode: ${mode}`,
+    `- Started: ${fmtDate(new Date(s.start))} ${fmtTime(new Date(s.start))}`, `- Time used: ${fmtDur(s.activeMs)}`, '');
+  for (const t of s.turns) {
+    const time = fmtTime(new Date(t.ts));
+    if (t.role === 'user') {
+      L.push(`## ${time} ${s.profileName}`, '', t.text, '');
+      if (t.imageFile) L.push(`![What ${APP} saw](${encodeURI(t.imageFile)})`, '');
+    } else {
+      const r = t.reply;
+      L.push(`## ${time} ${APP}`, '', r.say, '');
+      if (r.steps.length) { r.steps.forEach((st, i) => L.push(`${i + 1}. ${st}`)); L.push(''); }
+      if (r.draft) L.push('Draft:', '', '```', r.draft, '```', '');
+      if (t.markedFile) L.push(`![Marked spots](${encodeURI(t.markedFile)})`, '');
+      if (r.references.length) { L.push('Learn more:'); r.references.forEach(x => L.push(`- ${x.title || x.search}${x.search ? ` (search: ${x.search})` : ''}`)); L.push(''); }
+    }
+  }
+  return L.join('\n');
+}
+async function downloadZip() {
+  try {
+    toast('Preparing the ZIP file');
+    await loadScript(JSZIP_URL);
+    const zip = new window.JSZip(); const lib = zip.folder(LIB);
+    const sessions = await DB.all('sessions');
+    if (!sessions.length) { toast('Nothing saved yet.'); return; }
+    for (const s of sessions) {
+      const d = lib.folder(dateKey(new Date(s.start))).folder(s.folderName || folderNameFor(s));
+      d.file('conversation.md', sessionMarkdown(s));
+      for (const [id, f] of Object.entries(s.imageFiles || {})) { const im = await DB.get('images', id); if (im) d.file(f, im.blob); }
+      for (const t of s.turns) {
+        if (t.role === 'assistant' && t.markedFile && t.imageId) {
+          const im = await DB.get('images', t.imageId);
+          if (im) { try { d.file(t.markedFile, await makeMarked(im, t.reply.points)); } catch { /* skip */ } }
+        }
+      }
+    }
+    const blob = await zip.generateAsync({ type: 'blob' });
+    downloadBlob(blob, `${LIB} ${dateKey(new Date())}.zip`);
+    toast('ZIP downloaded');
+  } catch (e) { toast(e.message || 'Could not make the ZIP file.'); }
+}
+
+/* ================= Claude ================= */
+function buildSystem(prof, modeId, ctx) {
+  const who = prof.kind === 'kid'
+    ? `You are talking with ${prof.name}, a child aged 8 to 11. Use simple words and short sentences, be warm and encouraging, and praise effort. Keep everything age-appropriate and safe. Never ask for personal details such as address, school name or passwords. If something is unsafe or not meant for children, kindly suggest asking a parent. Keep references child-friendly.`
+    : `You are talking with ${prof.name}, an adult. Be direct, practical and precise.`;
+  return [BASE_PROMPT, who, MODES[modeId].prompt(ctx), `Today is ${new Date().toDateString()}.`].join('\n\n');
+}
+const compactReply = r => ({ title: r.title, say: r.say, steps: r.steps, points: r.points, draft: r.draft });
+function buildMessages(s, text, img) {
+  const msgs = [];
+  for (const t of s.turns.slice(-16)) {
+    if (t.role === 'user') msgs.push({ role: 'user', content: t.text + (t.imageId ? ' [shared a picture]' : '') });
+    else msgs.push({ role: 'assistant', content: JSON.stringify(compactReply(t.reply)) });
+  }
+  while (msgs.length && msgs[0].role !== 'user') msgs.shift();
+  const content = [];
+  let lead = '';
+  if (img) {
+    content.push({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: img.b64 } });
+    lead = img.kind === 'screen' ? 'This is a screenshot of my screen.' : 'This is a photo I took.';
+  }
+  content.push({ type: 'text', text: lead ? `${lead}\n\n${text}` : text });
+  msgs.push({ role: 'user', content });
+  return msgs;
+}
+async function callClaude({ system, messages, model, maxTokens = 1200, override }) {
+  const cfg = override || S.settings;
+  const endpoint = (cfg.endpoint || DEFAULT_ENDPOINT).trim();
+  const headers = { 'content-type': 'application/json', 'anthropic-version': '2023-06-01' };
+  if (cfg.apiKey) { headers['x-api-key'] = cfg.apiKey.trim(); headers['anthropic-dangerous-direct-browser-access'] = 'true'; }
+  let res;
+  try { res = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify({ model, max_tokens: maxTokens, system, messages }) }); }
+  catch { throw new Error('Could not reach Claude. Check your internet connection.'); }
+  let data = null; try { data = await res.json(); } catch { /* non-JSON */ }
+  if (!res.ok) {
+    const msg = (data && data.error && data.error.message) || '';
+    if (res.status === 401) throw new Error('Your API key was not accepted. Open Settings and check it.');
+    if (res.status === 404 && /model/i.test(msg)) throw new Error(`The model "${model}" was not found. Choose another model in Settings.`);
+    if (res.status === 429) throw new Error('Too many questions at once. Wait a few seconds and try again.');
+    if (res.status === 529 || res.status === 503) throw new Error('Claude is busy right now. Try again in a moment.');
+    if (/credit balance/i.test(msg)) throw new Error('Your Anthropic account is out of credit. Add credit at console.anthropic.com.');
+    throw new Error(msg || `The request failed (error ${res.status}).`);
+  }
+  return ((data && data.content) || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+}
+function parseReply(text) {
+  let obj = null;
+  const clean = String(text || '').replace(/```json|```/g, '').trim();
+  const a = clean.indexOf('{'), b = clean.lastIndexOf('}');
+  if (a > -1 && b > a) { try { obj = JSON.parse(clean.slice(a, b + 1)); } catch { obj = null; } }
+  if (!obj || typeof obj !== 'object') obj = { say: clean };
+  const arr = v => (Array.isArray(v) ? v : []);
+  const str = v => (typeof v === 'string' ? v.trim() : '');
+  return {
+    title: str(obj.title).slice(0, 60),
+    say: str(obj.say) || 'I could not put an answer together. Please ask again.',
+    steps: arr(obj.steps).map(str).filter(Boolean).slice(0, 12),
+    points: arr(obj.points).map(p => ({ x: clamp1000(Number(p && p.x)), y: clamp1000(Number(p && p.y)), label: str(p && p.label).slice(0, 40) }))
+      .filter(p => Number.isFinite(p.x) && Number.isFinite(p.y)).slice(0, 5),
+    draft: str(obj.draft),
+    references: arr(obj.references).map(r => ({ title: str(r && r.title).slice(0, 80), search: str(r && r.search).slice(0, 160) })).filter(r => r.title || r.search).slice(0, 3),
+    followups: arr(obj.followups).map(str).filter(Boolean).slice(0, 3)
+  };
+}
+
+/* ================= Ask flow ================= */
+async function ask(raw, opts = {}) {
+  const text = String(raw || '').trim();
+  if (!text) { setOrbState('idle'); return; }
+  if (S.busy) { toast('Still thinking about the last question.'); return; }
+  if (!hasConnection()) { setOrbState('idle'); toast('Add your API key in Settings first.'); openSettings(true); return; }
+  stopSpeaking();
+  S.busy = true; setOrbState('thinking');
+  const prof = activeProfile(), modeId = S.settings.mode;
+
+  if (isLive() && !opts.noLook && (S.settings.autoLook || !S.lastImage)) {
+    try { await captureFromLive(); } catch (e) { console.warn(e); }
+  }
+  const { session: s, isNew } = ensureSession();
+  const emptyEl = E.feed.querySelector('.empty'); if (emptyEl) emptyEl.remove();
+  if (isNew && E.feed.querySelector('.msg')) E.feed.append(el('div', { class: 'divider', text: 'New session' }));
+  touch();
+
+  const img = S.lastImage;
+  const firstUseOfImg = img && !s.imageFiles[img.id];
+  E.feed.append(el('div', { class: 'msg me' }, text, firstUseOfImg ? el('img', { src: img.url, alt: 'Picture shared with this question' }) : null));
+  const thinking = el('div', { class: 'thinking', role: 'status', 'aria-label': `${APP} is thinking` }, el('span'), el('span'), el('span'));
+  E.feed.append(thinking); scrollFeed();
+  E.followups.replaceChildren(); E.askInput.value = '';
+
+  const hintLevel = S.hintLevel, unlocked = S.unlockOnce; S.unlockOnce = false;
+  try {
+    const system = buildSystem(prof, modeId, { hintLevel, unlocked });
+    const messages = buildMessages(s, text, img);
+    const model = prof.kind === 'kid' ? (S.settings.kidModel || S.settings.model) : S.settings.model;
+    const reply = parseReply(await callClaude({ system, messages, model }));
+    if (!img) reply.points = [];
+    thinking.remove();
+
+    S.lastReply = reply; S.points = reply.points; S.viewSnap = !!img;
+    let markedBlob = null;
+    if (S.markedUrl) { URL.revokeObjectURL(S.markedUrl); S.markedUrl = null; }
+    if (img && reply.points.length) {
+      try { markedBlob = await makeMarked(img, reply.points); S.markedUrl = URL.createObjectURL(markedBlob); } catch (e) { console.warn(e); }
+    }
+    renderStage();
+    E.feed.append(assistantBubble(reply)); scrollFeed();
+    renderFollowups(reply.followups);
+    S.busy = false;
+    speak(reply.say);
+    try { await recordTurn(s, text, img, reply, hintLevel, markedBlob); }
+    catch (err) { console.warn(err); toast('The answer could not be saved to history.'); }
+  } catch (e) {
+    thinking.remove();
+    E.feed.append(el('div', { class: 'msg err', role: 'alert' }, e.message || 'Something went wrong. Try again.'));
+    scrollFeed();
+  } finally {
+    S.busy = false;
+    if (!S.speaking && !S.listening) setOrbState('idle');
+    renderHintTools(); renderPip();
+  }
+}
+function scrollFeed() {
+  const last = E.feed.lastElementChild;
+  if (last) last.scrollIntoView({ block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth' });
+}
+function searchUrl(q) {
+  return `https://www.google.com/search?q=${encodeURIComponent(q)}${isKid() ? '&safe=active' : ''}`;
+}
+function assistantBubble(reply, opts = {}) {
+  const b = el('article', { class: 'msg bot' });
+  b.append(el('div', { class: 'who' }, el('span', { class: 'mini-orb', 'aria-hidden': 'true' }), APP));
+  b.append(el('p', { class: 'say', text: reply.say }));
+  if (reply.steps.length) b.append(el('ol', { class: 'steps' }, reply.steps.map(s => el('li', { text: s }))));
+  if (reply.draft) {
+    const copy = el('button', { class: 'sbtn' }, 'Copy draft');
+    copy.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(reply.draft); copy.textContent = 'Copied'; setTimeout(() => { copy.textContent = 'Copy draft'; }, 1600); }
+      catch { toast('Copying is blocked here. Select the text and copy it instead.'); }
+    });
+    b.append(el('div', { class: 'draft-wrap' }, el('pre', { class: 'draft', text: reply.draft }), copy));
+  }
+  if (reply.references.length) {
+    b.append(el('div', { class: 'refs' }, el('span', { class: 'lbl', text: 'Look up:' }),
+      reply.references.map(r => el('a', { class: 'ref', href: searchUrl(r.search || r.title), target: '_blank', rel: 'noopener noreferrer', text: r.title || r.search }))));
+  }
+  const actions = el('div', { class: 'msg-actions' });
+  if (!opts.history) actions.append(el('button', { class: 'tbtn', onclick: () => speak(reply.say, { force: true }) }, 'Read aloud again'));
+  if (reply.points.length) actions.append(el('span', { class: 'tag', text: `${reply.points.length} ${reply.points.length > 1 ? 'spots' : 'spot'} marked` }));
+  if (actions.childNodes.length) b.append(actions);
+  return b;
+}
+function renderFollowups(list) {
+  E.followups.replaceChildren(...list.map(q => el('button', { class: 'chip', onclick: () => ask(q) }, q)));
+}
+function emptyState() {
+  const p = activeProfile(), m = MODES[S.settings.mode];
+  const how = p.kind === 'kid'
+    ? 'Show me your page with the camera or a photo, then hold the yellow button and ask.'
+    : 'Share your screen, the camera or a photo, then hold the yellow button and ask.';
+  return el('div', { class: 'empty' },
+    el('p', { class: 'empty-title', text: `Hi ${p.name}` }),
+    el('p', { class: 'mode-desc' }, el('strong', { text: `${m.name}: ` }), m.desc),
+    el('p', { text: how }),
+    el('div', { class: 'chips' }, m.chips.map(c => el('button', { class: 'chip', onclick: () => ask(c) }, c))));
+}
+function resetConversation() {
+  S.session = null; S.hintLevel = 1; S.unlockOnce = false; S.lastReply = null; S.points = [];
+  if (S.markedUrl) { URL.revokeObjectURL(S.markedUrl); S.markedUrl = null; }
+  E.feed.replaceChildren(emptyState()); E.followups.replaceChildren();
+  renderStage(); renderHintTools(); renderPip();
+}
+
+/* ================= Hints ================= */
+function renderHintTools() {
+  const on = S.settings.mode === 'hints';
+  E.hintTools.hidden = !on;
+  const answered = !!(S.session && S.session.turns.length);
+  E.hintLevel.textContent = `Hint ${S.hintLevel} of 3`;
+  E.biggerHintBtn.disabled = S.hintLevel >= 3 || !answered || S.busy;
+  E.answerBtn.disabled = !answered || S.busy;
+}
+function biggerHint() {
+  if (S.hintLevel >= 3 || S.busy) return;
+  S.hintLevel += 1; renderHintTools();
+  ask('Can I have a bigger hint, please?', { noLook: true });
+}
+async function showAnswer() {
+  if (S.busy) return;
+  if (S.settings.pinHash && !(await pinDialog({ title: 'Enter the parent PIN to show the answer' }))) return;
+  S.unlockOnce = true;
+  ask('Please show me the answer and explain each step.', { noLook: true });
+}
+
+/* ================= PIN ================= */
+function pinDialog({ title, setMode = false }) {
+  return new Promise(resolve => {
+    const d = $('#pinDlg'), i1 = $('#pin1'), i2 = $('#pin2'), err = $('#pinErr'), okBtn = $('#pinOk'), cancel = $('#pinCancel');
+    $('#pinTitle').textContent = title;
+    i1.value = ''; i2.value = ''; err.textContent = '';
+    $('#pin2Wrap').hidden = !setMode;
+    let finished = false;
+    const finish = v => {
+      if (finished) return; finished = true;
+      okBtn.removeEventListener('click', ok); cancel.removeEventListener('click', onCancel);
+      d.removeEventListener('cancel', onCancel); d.removeEventListener('keydown', onKey);
+      if (d.open) d.close();
+      resolve(v);
+    };
+    async function ok() {
+      const a = i1.value.trim();
+      if (!/^\d{4,6}$/.test(a)) { err.textContent = 'Use 4 to 6 digits.'; i1.focus(); return; }
+      if (setMode) {
+        if (a !== i2.value.trim()) { err.textContent = 'The two PINs do not match.'; i2.focus(); return; }
+        S.settings.pinHash = await hashPin(a); saveSettings(); finish(true);
+      } else if (await hashPin(a) === S.settings.pinHash) finish(true);
+      else { err.textContent = 'That PIN is not right.'; i1.select(); }
+    }
+    function onCancel(e) { if (e) e.preventDefault(); finish(false); }
+    function onKey(e) { if (e.key === 'Enter') { e.preventDefault(); ok(); } }
+    okBtn.addEventListener('click', ok); cancel.addEventListener('click', onCancel);
+    d.addEventListener('cancel', onCancel); d.addEventListener('keydown', onKey);
+    d.showModal(); i1.focus();
+  });
+}
+async function guardParent(title) {
+  if (!isKid() || !S.settings.pinHash) return true;
+  return pinDialog({ title });
+}
+
+/* ================= People ================= */
+function renderWho() {
+  const p = activeProfile();
+  E.whoName.textContent = p.name;
+  E.whoDot.textContent = initial(p.name);
+  E.whoBtn.classList.toggle('kid', p.kind === 'kid');
+  E.whoBtn.setAttribute('aria-label', `Using as ${p.name}${p.kind === 'kid' ? ', child mode' : ''}. Change person`);
+}
+function openWho() {
+  const list = $('#whoList'), cur = activeProfile();
+  list.replaceChildren(...S.settings.profiles.map(p => el('button', {
+    class: 'choice', 'aria-current': String(p.id === cur.id),
+    onclick: async () => { $('#whoDlg').close(); await switchProfile(p.id); }
+  }, el('span', { class: 'who-pill' + (p.kind === 'kid' ? ' kid' : ''), style: 'padding:0;border:0;background:none' }, el('span', { class: 'dot', text: initial(p.name) })),
+     el('span', {}, p.name, el('small', { text: p.kind === 'kid' ? 'Child: hints, not answers' : 'Grown-up: full answers' })))));
+  $('#whoDlg').showModal();
+}
+async function switchProfile(id) {
+  const cur = activeProfile(), next = S.settings.profiles.find(p => p.id === id);
+  if (!next || next.id === cur.id) return;
+  if (cur.kind === 'kid' && next.kind === 'adult' && S.settings.pinHash) {
+    if (!(await pinDialog({ title: `Enter the parent PIN to switch to ${next.name}` }))) return;
+  }
+  if (next.kind === 'kid' && !S.settings.pinHash) {
+    const set = await pinDialog({ title: `Set a parent PIN so only grown-ups can leave ${next.name}'s mode`, setMode: true });
+    if (!set) toast('No PIN set, so anyone can switch people. You can set one in Settings.');
+  }
+  S.settings.activeProfile = id; saveSettings();
+  renderWho(); renderModes(); resetConversation();
+}
+
+/* ================= Modes ================= */
+function renderModes() {
+  const list = MODE_ORDER[activeProfile().kind];
+  if (!list.includes(S.settings.mode)) { S.settings.mode = list[0]; saveSettings(); }
+  E.modes.replaceChildren(...list.map(id => el('button', {
+    class: 'mode', 'aria-pressed': String(id === S.settings.mode), onclick: () => setMode(id)
+  }, el('span', { 'aria-hidden': 'true', text: MODES[id].icon }), MODES[id].name)));
+}
+function setMode(id) {
+  if (id === S.settings.mode) return;
+  S.settings.mode = id; saveSettings();
+  renderModes(); resetConversation();
+}
+
+/* ================= Banner ================= */
+function showBanner(key, text, btnLabel, fn) { S.banners[key] = { text, btnLabel, fn }; renderBanner(); }
+function hideBanner(key) { delete S.banners[key]; renderBanner(); }
+function renderBanner() {
+  const key = S.banners.folder ? 'folder' : Object.keys(S.banners)[0];
+  if (!key) { E.banner.hidden = true; return; }
+  const b = S.banners[key];
+  E.bannerText.textContent = b.text; E.bannerBtn.textContent = b.btnLabel;
+  E.bannerBtn.onclick = () => b.fn(); E.bannerClose.onclick = () => hideBanner(key);
+  E.banner.hidden = false;
+}
+
+/* ================= Floating buddy (Document PiP) ================= */
+const PIP_HTML = `<div class="pip">
+  <div class="pip-top"><span class="mini-orb" aria-hidden="true"></span>${APP}<span class="pm" id="pMode"></span></div>
+  <div class="pip-scroll">
+    <img class="pip-img" id="pImg" alt="Marked picture" hidden>
+    <p class="pip-say" id="pSay"></p>
+    <ol class="steps" id="pSteps"></ol>
+  </div>
+  <button class="sbtn" id="pHint" hidden>Bigger hint</button>
+  <div class="pip-dock">
+    <button class="sbtn" id="pLook">Look now</button>
+    <button class="orb" id="pOrb" data-state="idle" aria-label="Hold to talk"><span class="eye l"></span><span class="eye r"></span><span class="mouth"></span></button>
+    <button class="sbtn" id="pStop">Stop voice</button>
+  </div>
+  <p class="cap" id="pCap"></p>
+</div>`;
+async function togglePip() {
+  if (S.pip) { S.pip.close(); S.pip = null; updatePipBtn(); return; }
+  if (!('documentPictureInPicture' in window)) { toast('The floating buddy works in Chrome and Edge on Windows and Mac.'); return; }
+  try {
+    const w = await window.documentPictureInPicture.requestWindow({ width: 360, height: 520 });
+    S.pip = w;
+    const fl = $('#fontLink'); if (fl) w.document.head.append(fl.cloneNode());
+    const st = w.document.createElement('style');
+    st.textContent = [...document.querySelectorAll('style')].map(s => s.textContent).join('\n');
+    w.document.head.append(st);
+    w.document.title = APP;
+    w.document.documentElement.dataset.theme = document.documentElement.dataset.theme;
+    w.document.body.innerHTML = PIP_HTML;
+    const q = id => w.document.getElementById(id);
+    bindOrb(q('pOrb'));
+    q('pHint').addEventListener('click', biggerHint);
+    q('pStop').addEventListener('click', stopSpeaking);
+    q('pLook').addEventListener('click', lookNow);
+    bindSpace(w.document);
+    w.addEventListener('pagehide', () => { S.pip = null; updatePipBtn(); });
+    q('pCap').textContent = E.cap.textContent;
+    updatePipBtn(); renderPip();
+  } catch (e) { console.warn(e); S.pip = null; toast('Could not open the floating buddy.'); }
+}
+function updatePipBtn() {
+  E.pipBtn.setAttribute('aria-pressed', String(!!S.pip));
+  E.pipBtn.setAttribute('aria-label', S.pip ? 'Close floating buddy' : 'Open floating buddy');
+}
+function renderPip() {
+  const w = S.pip; if (!w) return;
+  const q = id => w.document.getElementById(id);
+  if (!q('pMode')) return;
+  q('pMode').textContent = `${activeProfile().name}, ${MODES[S.settings.mode].name}`;
+  const img = q('pImg'), src = S.markedUrl || (S.lastImage && S.lastImage.url) || '';
+  img.hidden = !src; if (src && img.getAttribute('src') !== src) img.src = src;
+  q('pSay').textContent = S.lastReply ? S.lastReply.say : 'Share your screen in the main window, then hold this button and ask about any app.';
+  const ol = q('pSteps');
+  ol.replaceChildren(...((S.lastReply && S.lastReply.steps) || []).map(s => { const li = w.document.createElement('li'); li.textContent = s; return li; }));
+  const h = q('pHint'); h.hidden = S.settings.mode !== 'hints'; h.disabled = E.biggerHintBtn.disabled;
+  q('pOrb').dataset.state = E.orb.dataset.state;
+}
+
+/* ================= History ================= */
+function revokeHistUrls() { S.histUrls.forEach(u => URL.revokeObjectURL(u)); S.histUrls = []; }
+async function openHistory() {
+  if (!(await guardParent('Enter the parent PIN to see history'))) return;
+  renderFolderStatus();
+  await renderHistList();
+  $('#histDlg').showModal();
+}
+async function renderHistList() {
+  const body = $('#histBody');
+  revokeHistUrls();
+  const all = (await DB.all('sessions')).sort((a, b) => b.start - a.start);
+  if (!all.length) {
+    body.replaceChildren(el('div', { class: 'empty small' }, el('p', { class: 'empty-title', text: 'Nothing saved yet' }),
+      el('p', { text: 'Every question, answer and picture will appear here, grouped by day.' })));
+    return;
+  }
+  const groups = new Map();
+  all.forEach(s => { const k = dateKey(new Date(s.start)); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(s); });
+  const out = [];
+  for (const list of groups.values()) {
+    out.push(el('h3', { class: 'day', text: fmtDate(new Date(list[0].start)) }));
+    list.forEach(s => out.push(el('button', { class: 'sess', onclick: () => renderHistDetail(s) },
+      el('span', { class: 'sess-time', text: fmtTime(new Date(s.start)) }),
+      el('span', { class: 'sess-main' }, el('strong', { text: s.title || 'Untitled' }),
+        el('span', { class: 'sess-meta', text: `${s.profileName}, ${MODES[s.mode] ? MODES[s.mode].name : s.mode}, ${fmtDur(s.activeMs)}` })))));
+  }
+  body.replaceChildren(...out); body.scrollTop = 0;
+}
+async function renderHistDetail(s) {
+  const body = $('#histBody');
+  const parts = [
+    el('button', { class: 'tbtn', onclick: renderHistList }, 'Back to all days'),
+    el('h3', { class: 'detail-title', text: s.title || 'Untitled' }),
+    el('p', { class: 'help', text: `${s.profileName}, ${MODES[s.mode] ? MODES[s.mode].name : s.mode}, ${fmtDate(new Date(s.start))} at ${fmtTime(new Date(s.start))}, ${fmtDur(s.activeMs)} of use` })
+  ];
+  let shownImg = null;
+  for (const t of s.turns) {
+    if (t.role === 'user') { parts.push(el('div', { class: 'msg me' }, t.text)); continue; }
+    if (t.imageId && (t.imageId !== shownImg || t.reply.points.length)) {
+      const im = await DB.get('images', t.imageId);
+      if (im) {
+        const url = URL.createObjectURL(im.blob); S.histUrls.push(url);
+        const mk = el('div', { class: 'markers' }, t.reply.points.map((p, i) => markerEl(p, i, false)));
+        parts.push(el('div', { class: 'hist-img' }, el('div', { class: 'snap small' }, el('img', { src: url, alt: `What ${APP} saw` }), mk)));
+        shownImg = t.imageId;
+      }
+    }
+    parts.push(assistantBubble(t.reply, { history: true }));
+  }
+  const del = el('button', { class: 'danger' }, 'Delete this session');
+  del.addEventListener('click', async () => {
+    if (!confirm('Delete this session from the app? Files already saved in your folder stay.')) return;
+    await DB.del('sessions', s.id);
+    if (S.session && S.session.id === s.id) S.session = null;
+    toast('Session deleted'); renderHistList();
+  });
+  parts.push(el('div', { class: 'row', style: 'margin-top:8px' }, del));
+  body.replaceChildren(...parts); body.scrollTop = 0;
+}
+
+/* ================= Weekly report ================= */
+function weekBounds(ref) {
+  const d = new Date(ref), day = (d.getDay() + 6) % 7;
+  const start = new Date(d.getFullYear(), d.getMonth(), d.getDate() - day);
+  const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 7);
+  return { start, end };
+}
+function isoWeek(d) {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day);
+  const y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return Math.ceil(((t - y0) / 86400000 + 1) / 7);
+}
+function rangeLabel(start, end) {
+  const last = new Date(end.getFullYear(), end.getMonth(), end.getDate() - 1);
+  const f = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  return `${f(start)} - ${f(last)} ${last.getFullYear()}`;
+}
+function blankRow(p) { return { id: p.id, name: p.name, kind: p.kind, sessions: [], totalMs: 0, days: new Set(), byMode: {}, byDay: [0, 0, 0, 0, 0, 0, 0], questions: 0, topics: [], help: [] }; }
+async function computeWeek(start, end) {
+  const all = await DB.all('sessions');
+  const rows = new Map();
+  S.settings.profiles.forEach(p => rows.set(p.id, blankRow(p)));
+  for (const s of all) {
+    if (s.start < start.getTime() || s.start >= end.getTime()) continue;
+    if (!rows.has(s.profileId)) rows.set(s.profileId, blankRow({ id: s.profileId, name: s.profileName, kind: s.profileKind }));
+    const r = rows.get(s.profileId), d = new Date(s.start);
+    r.sessions.push(s); r.totalMs += s.activeMs || 0; r.days.add(dateKey(d));
+    r.byMode[s.mode] = (r.byMode[s.mode] || 0) + (s.activeMs || 0);
+    r.byDay[(d.getDay() + 6) % 7] += s.activeMs || 0;
+    r.questions += s.turns.filter(t => t.role === 'user').length;
+    if (s.title && !r.topics.includes(s.title)) r.topics.push(s.title);
+    if (s.mode === 'hints' && (s.maxHint || 0) >= 2 && s.title && !r.help.includes(s.title)) r.help.push(s.title);
+  }
+  return [...rows.values()];
+}
+function statBox(k, v) { return el('div', { class: 'stat' }, el('span', { text: k }), el('strong', { text: String(v) })); }
+function reportCard(r) {
+  const card = el('section', { class: 'rep-card' });
+  card.append(el('div', { class: 'rep-head' }, el('h3', { text: r.name }), el('span', { class: 'tag', text: r.kind === 'kid' ? 'Child' : 'Grown-up' })));
+  if (!r.sessions.length) { card.append(el('p', { class: 'help', text: 'Not used this week.' })); return card; }
+  card.append(el('div', { class: 'stats' }, statBox('Time used', fmtDur(r.totalMs)), statBox('Days active', `${r.days.size} of 7`), statBox('Sessions', r.sessions.length), statBox('Questions', r.questions)));
+  const full = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const maxD = Math.max(...r.byDay, 1);
+  card.append(el('div', { class: 'days', role: 'img', 'aria-label': 'Time by day: ' + full.map((d, i) => `${d} ${fmtDur(r.byDay[i])}`).join(', ') },
+    r.byDay.map((ms, i) => el('div', { class: 'day-col', title: `${full[i]}: ${fmtDur(ms)}` },
+      el('div', { class: 'day-bar', style: `height:${Math.round(ms / maxD * 100)}%` }), el('span', { text: full[i].slice(0, 2) })))));
+  const modes = Object.entries(r.byMode).sort((a, b) => b[1] - a[1]);
+  const maxM = Math.max(...modes.map(m => m[1]), 1);
+  card.append(el('div', { class: 'bars' }, modes.map(([m, ms]) => el('div', { class: 'bar-row' },
+    el('span', { text: MODES[m] ? MODES[m].name : m }),
+    el('span', { class: 'bar-track' }, el('span', { class: 'bar-fill', style: `width:${Math.max(4, Math.round(ms / maxM * 100))}%` })),
+    el('span', { class: 'bar-val', text: fmtDur(ms) })))));
+  if (r.topics.length) card.append(el('p', { class: 'topics' }, el('strong', { text: 'Topics: ' }), r.topics.slice(0, 15).join(', ')));
+  if (r.kind === 'kid' && r.help.length) card.append(el('p', { class: 'topics' }, el('strong', { text: 'Needed extra hints with: ' }), r.help.slice(0, 10).join(', ')));
+  return card;
+}
+async function openReport(ref) {
+  if (!(await guardParent('Enter the parent PIN to see reports'))) return;
+  S.repRef = ref || new Date();
+  await renderReport();
+  $('#repDlg').showModal();
+}
+async function renderReport() {
+  const { start, end } = weekBounds(S.repRef);
+  $('#repRange').textContent = `Week ${isoWeek(start)}: ${rangeLabel(start, end)}`;
+  $('#repNext').disabled = end > new Date();
+  const rows = await computeWeek(start, end);
+  S.repData = { rows, start, end };
+  $('#repBody').replaceChildren(...rows.map(reportCard));
+}
+async function aiSummary(rows) {
+  const lines = rows.filter(r => r.sessions.length).map(r =>
+    `${r.name} (${r.kind === 'kid' ? 'child aged 8 to 11' : 'adult'}): ${fmtDur(r.totalMs)} over ${r.days.size} days, ${r.questions} questions. ` +
+    `Modes: ${Object.entries(r.byMode).map(([m, ms]) => `${MODES[m] ? MODES[m].name : m} ${fmtDur(ms)}`).join(', ')}. ` +
+    `Topics: ${r.topics.join('; ') || 'none'}. Needed extra hints with: ${r.help.join('; ') || 'nothing'}.`).join('\n');
+  if (!lines) return '';
+  return callClaude({
+    system: 'You write short weekly usage summaries for a family helper app. Plain text only: no markdown, no headings, no bullet points. For each person write two or three friendly, factual sentences that start with their name. For a child, mention what went well and one gentle idea for next week based on where they needed extra hints. Never invent facts.',
+    messages: [{ role: 'user', content: lines }],
+    model: S.settings.kidModel || S.settings.model, maxTokens: 600
+  });
+}
+async function buildPdf(rows, start, end, summary) {
+  await loadScript(JSPDF_URL);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, M = 16; let y;
+  const ascii = s => String(s == null ? '' : s).replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/[\u2013\u2014]/g, '-').replace(/[^\x20-\x7E]/g, '');
+  const ensure = h => { if (y + h > 280) { doc.addPage(); y = 20; } };
+  const ink = () => doc.setTextColor(20, 26, 51), mute = () => doc.setTextColor(84, 94, 132);
+
+  doc.setFillColor(15, 21, 48); doc.rect(0, 0, W, 34, 'F');
+  doc.setFillColor(255, 194, 75); doc.circle(M + 6, 17, 6, 'F');
+  doc.setFillColor(42, 29, 0); doc.roundedRect(M + 3.4, 13.5, 1.6, 3, 0.8, 0.8, 'F'); doc.roundedRect(M + 7, 13.5, 1.6, 3, 0.8, 0.8, 'F');
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(18);
+  doc.text(`${APP} weekly report`, M + 16, 15.5);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5);
+  doc.text(ascii(`Week ${isoWeek(start)}: ${rangeLabel(start, end)}`), M + 16, 23.5);
+  doc.text(ascii(`Made ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`), W - M, 23.5, { align: 'right' });
+  y = 46;
+
+  const block = (title, items) => {
+    if (!items.length) return;
+    doc.setFontSize(10); const lines = doc.splitTextToSize(ascii(items.join(', ')), W - 2 * M);
+    ensure(8 + lines.length * 4.6);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); ink(); doc.text(title, M, y); y += 5;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(50, 58, 90); doc.text(lines, M, y); y += lines.length * 4.6 + 3;
+  };
+
+  rows.forEach(r => {
+    ensure(26);
+    ink(); doc.setFont('helvetica', 'bold'); doc.setFontSize(15);
+    doc.text(ascii(r.name) + (r.kind === 'kid' ? '  (child)' : ''), M, y); y += 7;
+    if (!r.sessions.length) { doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); mute(); doc.text('Not used this week.', M, y); y += 8; doc.setDrawColor(211, 217, 238); doc.line(M, y, W - M, y); y += 9; return; }
+    const stats = [['Time used', fmtDur(r.totalMs)], ['Days active', `${r.days.size} of 7`], ['Sessions', String(r.sessions.length)], ['Questions', String(r.questions)]];
+    const bw = (W - 2 * M - 9) / 4;
+    stats.forEach(([k, v], i) => {
+      const x = M + i * (bw + 3);
+      doc.setFillColor(238, 241, 251); doc.roundedRect(x, y, bw, 16, 2, 2, 'F');
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5); mute(); doc.text(k, x + 3, y + 5.5);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(12); ink(); doc.text(ascii(v), x + 3, y + 12.5);
+    });
+    y += 23;
+
+    ensure(30);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); ink(); doc.text('Time by day', M, y); y += 3;
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], maxD = Math.max(...r.byDay, 1), cw = (W - 2 * M) / 7;
+    days.forEach((d, i) => {
+      const h = r.byDay[i] / maxD * 15, x = M + i * cw + cw * 0.3;
+      doc.setFillColor(238, 241, 251); doc.rect(x, y + 1, cw * 0.4, 15, 'F');
+      if (h > 0.3) { doc.setFillColor(28, 143, 201); doc.rect(x, y + 16 - h, cw * 0.4, h, 'F'); }
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8); mute(); doc.text(d, M + i * cw + cw / 2, y + 20.5, { align: 'center' });
+    });
+    y += 27;
+
+    const modes = Object.entries(r.byMode).sort((a, b) => b[1] - a[1]), maxM = Math.max(...modes.map(m => m[1]), 1);
+    ensure(8 + modes.length * 7);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); ink(); doc.text('What it was used for', M, y); y += 5;
+    modes.forEach(([m, ms]) => {
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(10); ink();
+      doc.text(ascii(MODES[m] ? MODES[m].name : m), M, y + 3.5);
+      const bx = M + 42, full = W - 2 * M - 72;
+      doc.setFillColor(238, 241, 251); doc.roundedRect(bx, y, full, 4.5, 1, 1, 'F');
+      doc.setFillColor(255, 194, 75); doc.roundedRect(bx, y, Math.max(2, full * ms / maxM), 4.5, 1, 1, 'F');
+      mute(); doc.text(fmtDur(ms), W - M, y + 3.5, { align: 'right' });
+      y += 7;
+    });
+    y += 3;
+    block('Topics', r.topics.slice(0, 20));
+    if (r.kind === 'kid') block('Needed extra hints with', r.help.slice(0, 12));
+    y += 2; doc.setDrawColor(211, 217, 238); doc.line(M, y, W - M, y); y += 9;
+  });
+
+  if (summary) {
+    doc.setFontSize(10.5); const lines = doc.splitTextToSize(ascii(summary), W - 2 * M);
+    ensure(12 + Math.min(lines.length, 40) * 5);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(12); ink(); doc.text('Summary', M, y); y += 6;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(50, 58, 90);
+    lines.forEach(line => { ensure(5); doc.text(line, M, y); y += 5; });
+  }
+  const n = doc.getNumberOfPages();
+  for (let i = 1; i <= n; i++) { doc.setPage(i); doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(140, 148, 175); doc.text(`${APP}  |  page ${i} of ${n}`, W / 2, 291, { align: 'center' }); }
+  return doc.output('blob');
+}
+async function downloadReport() {
+  const btn = $('#repPdf');
+  if (!S.repData) return;
+  const { rows, start, end } = S.repData;
+  if (!rows.some(r => r.sessions.length)) { toast('Nothing was used this week, so there is nothing to report.'); return; }
+  btn.disabled = true; btn.textContent = 'Making PDF';
+  try {
+    let summary = '';
+    if ($('#repAi').checked) {
+      if (!hasConnection()) toast('Add an API key in Settings to include an AI summary.');
+      else { try { summary = String(await aiSummary(rows)).slice(0, 1800); } catch (e) { toast(`Summary skipped: ${e.message}`); } }
+    }
+    const blob = await buildPdf(rows, start, end, summary);
+    const name = `Week ${isoWeek(start)} (${rangeLabel(start, end)}).pdf`;
+    downloadBlob(blob, `${APP} ${name}`);
+    const saved = await saveToFolder(['Reports'], name, blob);
+    toast(saved ? 'Report downloaded and saved in your library folder' : 'Report downloaded');
+    await DB.put('kv', true, `report-${dateKey(start)}`);
+    hideBanner('report');
+  } catch (e) { toast(e.message || 'Could not make the PDF.'); }
+  finally { btn.disabled = false; btn.textContent = 'Download PDF'; }
+}
+async function checkWeeklyBanner() {
+  try {
+    const { start: thisStart } = weekBounds(new Date());
+    const lastRef = new Date(thisStart.getFullYear(), thisStart.getMonth(), thisStart.getDate() - 3);
+    const { start, end } = weekBounds(lastRef);
+    if (await DB.get('kv', `report-${dateKey(start)}`)) return;
+    const all = await DB.all('sessions');
+    if (!all.some(s => s.start >= start.getTime() && s.start < end.getTime())) return;
+    showBanner('report', `Last week's report (week ${isoWeek(start)}) is ready.`, 'Open report', () => openReport(lastRef));
+  } catch (e) { console.warn(e); }
+}
+
+/* ================= Settings ================= */
+function populateVoices() {
+  const sel = document.getElementById('setVoice'); if (!sel || !('speechSynthesis' in window)) return;
+  const voices = speechSynthesis.getVoices().slice().sort((a, b) => a.lang.localeCompare(b.lang) || a.name.localeCompare(b.name));
+  const cur = sel.value || S.settings.voiceURI;
+  sel.replaceChildren(el('option', { value: '' }, 'Automatic'), ...voices.map(v => el('option', { value: v.voiceURI }, `${v.name} (${v.lang})`)));
+  sel.value = voices.some(v => v.voiceURI === cur) ? cur : '';
+}
+function renderPeople() {
+  const box = document.getElementById('peopleList');
+  box.replaceChildren(...S.peopleDraft.map((p, i) => {
+    const name = el('input', { value: p.name, 'aria-label': `Person ${i + 1} name`, placeholder: 'Name', maxlength: 24 });
+    name.addEventListener('input', () => { p.name = name.value; });
+    const kind = el('select', { 'aria-label': `Person ${i + 1} type` }, el('option', { value: 'adult' }, 'Grown-up'), el('option', { value: 'kid' }, 'Child'));
+    kind.value = p.kind; kind.addEventListener('change', () => { p.kind = kind.value; });
+    const rm = el('button', { class: 'icon-btn', 'aria-label': `Remove ${p.name || 'person'}`, disabled: S.peopleDraft.length <= 1 });
+    rm.innerHTML = '<svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    rm.addEventListener('click', () => { S.peopleDraft.splice(i, 1); renderPeople(); });
+    return el('div', { class: 'person' }, name, kind, rm);
+  }));
+}
+function renderPinStatus() {
+  document.getElementById('pinStatus').textContent = S.settings.pinHash
+    ? 'A PIN is set. It is needed to leave child mode, show answers, and open settings, history and reports from child mode.'
+    : 'No PIN set yet. Set one so your child cannot switch to grown-up mode or reveal answers.';
+  document.getElementById('removePinBtn').hidden = !S.settings.pinHash;
+  document.getElementById('setPinBtn').textContent = S.settings.pinHash ? 'Change PIN' : 'Set PIN';
+}
+async function openSettings(intro = false) {
+  if (!intro && !(await guardParent('Enter the parent PIN to open settings'))) return;
+  const s = S.settings;
+  $('#setKey').value = s.apiKey; $('#setModel').value = s.model; $('#setKidModel').value = s.kidModel;
+  $('#setEndpoint').value = s.endpoint || DEFAULT_ENDPOINT; $('#setLang').value = s.lang;
+  $('#setRate').value = s.rate; $('#rateOut').textContent = Number(s.rate).toFixed(2);
+  $('#testOut').textContent = ''; $('#testOut').className = '';
+  S.peopleDraft = structuredClone(s.profiles);
+  populateVoices(); $('#setVoice').value = s.voiceURI || '';
+  renderPeople(); renderPinStatus(); renderFolderStatus();
+  $('#setIntro').hidden = !intro;
+  const d = $('#settingsDlg'); if (!d.open) d.showModal();
+}
+function saveSettingsFromForm() {
+  const people = S.peopleDraft.map(p => ({ ...p, name: p.name.trim().slice(0, 24) })).filter(p => p.name);
+  if (!people.length) { toast('Add at least one person with a name.'); return; }
+  if (!people.some(p => p.kind === 'adult')) { toast('Keep at least one grown-up so someone can manage settings.'); return; }
+  const s = S.settings;
+  const prevActive = activeProfile();
+  s.apiKey = $('#setKey').value.trim();
+  s.model = $('#setModel').value.trim() || DEFAULTS.model;
+  s.kidModel = $('#setKidModel').value.trim() || DEFAULTS.kidModel;
+  s.endpoint = $('#setEndpoint').value.trim() || DEFAULT_ENDPOINT;
+  s.lang = $('#setLang').value; s.voiceURI = $('#setVoice').value; s.rate = Number($('#setRate').value) || 1;
+  s.profiles = people;
+  if (!people.some(p => p.id === s.activeProfile)) s.activeProfile = (people.find(p => p.kind === 'adult') || people[0]).id;
+  const firstTime = !s.seenHelp; s.seenHelp = true;
+  saveSettings();
+  $('#settingsDlg').close();
+  if (firstTime) setTimeout(() => document.getElementById('helpDlg').showModal(), 250);
+  const now = activeProfile();
+  renderWho(); renderModes();
+  if (now.id !== prevActive.id || now.kind !== prevActive.kind || now.name !== prevActive.name) resetConversation();
+  if (!E.feed.querySelector('.msg')) E.feed.replaceChildren(emptyState());
+  toast('Settings saved');
+}
+
+/* ================= Wire up ================= */
+function bindUI() {
+  bindOrb(E.orb);
+  bindSpace(document);
+  E.sendBtn.addEventListener('click', () => ask(E.askInput.value));
+  E.askInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); ask(E.askInput.value); } });
+  let lastTouch = 0;
+  E.askInput.addEventListener('input', () => { const n = Date.now(); if (n - lastTouch > 15000) { lastTouch = n; touch(); } });
+
+  E.screenBtn.addEventListener('click', startScreen);
+  E.cameraBtn.addEventListener('click', () => startCamera());
+  E.switchCamBtn.addEventListener('click', () => startCamera(S.facing === 'environment' ? 'user' : 'environment'));
+  E.photoInput.addEventListener('change', () => { loadPhoto(E.photoInput.files[0]); E.photoInput.value = ''; });
+  E.autoLook.checked = !!S.settings.autoLook;
+  E.autoLook.addEventListener('change', () => { S.settings.autoLook = E.autoLook.checked; saveSettings(); });
+  E.lookBtn.addEventListener('click', lookNow);
+  E.liveBtn.addEventListener('click', () => { S.viewSnap = false; renderStage(); });
+  E.stopSrcBtn.addEventListener('click', () => { stopStreams(); renderStage(); });
+
+  E.biggerHintBtn.addEventListener('click', biggerHint);
+  E.answerBtn.addEventListener('click', showAnswer);
+  E.newTopicBtn.addEventListener('click', () => { stopSpeaking(); resetConversation(); toast('Started a new topic'); });
+  E.muteBtn.addEventListener('click', () => {
+    S.settings.muted = !S.settings.muted; saveSettings();
+    if (S.settings.muted) stopSpeaking();
+    renderMute();
+  });
+  E.whoBtn.addEventListener('click', openWho);
+  E.pipBtn.addEventListener('click', togglePip);
+  E.historyBtn.addEventListener('click', openHistory);
+  E.reportBtn.addEventListener('click', () => openReport());
+  E.themeBtn.addEventListener('click', () => { S.settings.theme = S.settings.theme === 'dark' ? 'light' : 'dark'; saveSettings(); applyTheme(); });
+  E.settingsBtn.addEventListener('click', () => openSettings(false));
+  document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpDlg').showModal());
+
+  document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
+  $('#histDlg').addEventListener('close', revokeHistUrls);
+  $('#histZipBtn').addEventListener('click', downloadZip);
+  $('#histFolderBtn').addEventListener('click', chooseFolder);
+  $('#repPrev').addEventListener('click', () => { S.repRef = new Date(S.repRef.getFullYear(), S.repRef.getMonth(), S.repRef.getDate() - 7); renderReport(); });
+  $('#repNext').addEventListener('click', () => { S.repRef = new Date(S.repRef.getFullYear(), S.repRef.getMonth(), S.repRef.getDate() + 7); renderReport(); });
+  $('#repPdf').addEventListener('click', downloadReport);
+
+  $('#saveSettingsBtn').addEventListener('click', saveSettingsFromForm);
+  $('#setRate').addEventListener('input', () => { $('#rateOut').textContent = Number($('#setRate').value).toFixed(2); });
+  $('#testVoiceBtn').addEventListener('click', () => {
+    const voices = 'speechSynthesis' in window ? speechSynthesis.getVoices() : [];
+    const v = voices.find(x => x.voiceURI === $('#setVoice').value) || pickVoice();
+    speak(`Hi, I am ${APP}. Show me something and ask me anything.`, { rate: Number($('#setRate').value), voice: v, force: true });
+  });
+  $('#testKeyBtn').addEventListener('click', async () => {
+    const out = $('#testOut'); out.className = ''; out.textContent = 'Testing';
+    try {
+      await callClaude({
+        system: 'Reply with the single word OK.', messages: [{ role: 'user', content: 'Test' }],
+        model: $('#setModel').value.trim() || DEFAULTS.model, maxTokens: 10,
+        override: { apiKey: $('#setKey').value.trim(), endpoint: $('#setEndpoint').value.trim() || DEFAULT_ENDPOINT }
+      });
+      out.textContent = 'Connected'; out.className = 'ok';
+    } catch (e) { out.textContent = e.message; out.className = 'bad'; }
+  });
+  $('#addPersonBtn').addEventListener('click', () => { S.peopleDraft.push({ id: uid(), name: '', kind: 'kid' }); renderPeople(); const ins = $('#peopleList').querySelectorAll('input'); ins[ins.length - 1].focus(); });
+  $('#setPinBtn').addEventListener('click', async () => {
+    if (S.settings.pinHash && !(await pinDialog({ title: 'Enter the current PIN' }))) return;
+    if (await pinDialog({ title: 'Choose a new parent PIN', setMode: true })) toast('PIN saved');
+    renderPinStatus();
+  });
+  $('#removePinBtn').addEventListener('click', async () => {
+    if (!(await pinDialog({ title: 'Enter the PIN to remove it' }))) return;
+    S.settings.pinHash = ''; saveSettings(); renderPinStatus(); toast('PIN removed');
+  });
+  $('#chooseFolderBtn').addEventListener('click', chooseFolder);
+  $('#zipBtn').addEventListener('click', downloadZip);
+  $('#clearBtn').addEventListener('click', async () => {
+    if (!confirm('Delete all history kept in this browser? Files in your library folder stay.')) return;
+    await DB.clear('sessions'); await DB.clear('images');
+    S.session = null; toast('History deleted');
+  });
+
+  if ('speechSynthesis' in window) speechSynthesis.addEventListener('voiceschanged', populateVoices);
+  window.addEventListener('beforeunload', () => { stopStreams(); if ('speechSynthesis' in window) speechSynthesis.cancel(); });
+}
+function renderMute() {
+  E.muteBtn.setAttribute('aria-pressed', String(!!S.settings.muted));
+  E.muteBtn.setAttribute('aria-label', S.settings.muted ? 'Turn voice on' : 'Mute voice');
+  E.muteWave.style.display = S.settings.muted ? 'none' : '';
+}
+
+async function init() {
+  applyTheme();
+  bindUI();
+  renderWho(); renderModes(); renderMute();
+  resetConversation();
+  setOrbState('idle');
+  try {
+    S.rootHandle = await DB.get('kv', 'rootDir');
+    if (S.rootHandle && S.rootHandle.queryPermission) {
+      const p = await S.rootHandle.queryPermission({ mode: 'readwrite' });
+      if (p !== 'granted') showBanner('folder', 'Tarini needs permission again to save into your library folder.', 'Reconnect folder', reconnectFolder);
+    }
+  } catch (e) { console.warn(e); }
+  checkWeeklyBanner();
+  if (!hasConnection()) openSettings(true);
+}
+init();
+})();
+
+</script>
+</body>
+</html>
