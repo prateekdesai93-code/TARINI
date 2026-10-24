@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0F1530">
+<meta name="theme-color" content="#000000">
 <meta name="description" content="Tarini is a voice helper that looks at your screen or homework and answers out loud.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Tarini</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23FFC24B'/%3E%3Crect x='20' y='22' width='7' height='11' rx='3.5' fill='%232A1D00'/%3E%3Crect x='37' y='22' width='7' height='11' rx='3.5' fill='%232A1D00'/%3E%3Cpath d='M24 41q8 7 16 0' stroke='%232A1D00' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
-<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Tarini%22%2C%22short_name%22%3A%22Tarini%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230F1530%22%2C%22theme_color%22%3A%22%230F1530%22%7D">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Tarini%22%2C%22short_name%22%3A%22Tarini%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23000000%22%2C%22theme_color%22%3A%22%23000000%22%7D">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link id="fontLink" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
@@ -19,8 +19,8 @@
   --font-b:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --sun:#FFC24B;--sun-ink:#2A1D00;--sky:#6CD2FF;--coral:#FF8F7E;--leaf:#7FE3A8;
 }
-html[data-theme=dark]{--bg:#0F1530;--surface:#161E40;--surface2:#1E2852;--line:#2B3668;--text:#F4F2EC;--muted:#A6AECB;--shadow:0 24px 48px -20px rgba(3,6,20,.85);color-scheme:dark}
-html[data-theme=light]{--bg:#EEF1FB;--surface:#FFFFFF;--surface2:#F3F5FC;--line:#D3D9EE;--text:#141A33;--muted:#545E84;--shadow:0 24px 48px -26px rgba(20,26,51,.4);--sky:#1C8FC9;--coral:#D9493A;color-scheme:light}
+html[data-theme=dark]{--bg:#000000;--surface:#111113;--surface2:#1C1C1F;--line:#2E2E33;--text:#F5F5F5;--muted:#9C9CA4;--shadow:0 24px 48px -20px rgba(0,0,0,.9);color-scheme:dark}
+html[data-theme=light]{--bg:#FFFFFF;--surface:#F6F6F7;--surface2:#EEEEF0;--line:#DCDCE0;--text:#111111;--muted:#5C5C66;--shadow:0 24px 48px -26px rgba(0,0,0,.28);--sky:#1C8FC9;--coral:#D9493A;color-scheme:light}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{font:400 17px/1.55 var(--font-b);background:var(--bg);color:var(--text);min-height:100dvh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
@@ -91,7 +91,7 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke
 .mark{position:absolute;width:0;height:0;animation:pop .5s cubic-bezier(.2,1.5,.4,1) both;animation-delay:var(--d,0ms)}
 .mark .ring{position:absolute;left:-24px;top:-24px;width:48px;height:48px;border-radius:50%;border:3px solid var(--sky);box-shadow:0 0 0 5px rgba(108,210,255,.22);animation:ping 1.8s ease-out infinite;animation-delay:var(--d,0ms)}
 .mark .num{position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;background:var(--sun);color:var(--sun-ink);font:700 15px/28px var(--font-d);text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.35)}
-.mark .lab{position:absolute;left:22px;top:-15px;white-space:nowrap;background:rgba(15,21,48,.92);color:#fff;padding:5px 10px;border-radius:9px;font:500 13px/1.3 var(--font-d)}
+.mark .lab{position:absolute;left:22px;top:-15px;white-space:nowrap;background:rgba(0,0,0,.86);color:#fff;padding:5px 10px;border-radius:9px;font:500 13px/1.3 var(--font-d)}
 .mark .lab.left{left:auto;right:22px}
 .mark.still,.mark.still .ring{animation:none}
 @keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
@@ -178,7 +178,7 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke
 .dlg{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:22px;padding:0;width:min(560px,calc(100vw - 24px));max-height:calc(100dvh - 32px);box-shadow:var(--shadow)}
 .dlg.wide{width:min(780px,calc(100vw - 24px))}
 .dlg[open]{display:flex;flex-direction:column}
-.dlg::backdrop{background:rgba(5,8,22,.62);backdrop-filter:blur(3px)}
+.dlg::backdrop{background:rgba(0,0,0,.62);backdrop-filter:blur(3px)}
 .dlg-head{display:flex;align-items:center;gap:10px;padding:16px 14px 8px 20px}
 .dlg-head h2{font-size:22px;margin-right:auto}
 .dlg-body{padding:4px 20px 14px;overflow:auto}
@@ -194,7 +194,7 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke
 .grid2{display:grid;gap:0 12px}
 @media (min-width:560px){.grid2{grid-template-columns:1fr 1fr}}
 details summary{cursor:pointer;font:500 14px var(--font-d);color:var(--muted);margin:6px 0}
-.person{display:grid;grid-template-columns:1fr 130px auto;gap:8px;align-items:center;margin:6px 0}
+.person{display:grid;grid-template-columns:1fr 160px auto;gap:8px;align-items:center;margin:6px 0}
 .person input,.person select{margin-top:0}
 .ok{color:var(--leaf);font:500 14px var(--font-d)}
 .bad{color:var(--coral);font:500 14px var(--font-d)}
@@ -235,6 +235,16 @@ details summary{cursor:pointer;font:500 14px var(--font-d);color:var(--muted);ma
 .bar-fill{display:block;height:100%;border-radius:5px;background:var(--sun)}
 .bar-val{text-align:right;color:var(--muted)}
 .topics{font-size:15px;margin:6px 0 0}
+.swatches{display:flex;flex-wrap:wrap;gap:10px}
+.engine{display:grid;gap:8px;margin:6px 0 4px}
+@media (min-width:560px){.engine{grid-template-columns:1fr 1fr}}
+.eng{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:var(--surface2);border-radius:14px;padding:11px 12px;cursor:pointer;font-size:14px;color:var(--muted)}
+.eng b{display:block;font:600 15px var(--font-d);color:var(--text);margin-bottom:2px}
+.eng input{width:18px;height:18px;margin-top:2px;accent-color:var(--sun);flex:none}
+.eng:has(input:checked){border-color:var(--sun)}
+.swatch{display:flex;flex-direction:column;align-items:center;gap:6px;border:2px solid var(--line);background:var(--surface2);border-radius:14px;padding:8px 10px 7px;font:500 13px var(--font-d);min-width:84px}
+.swatch[aria-checked=true]{border-color:var(--sun)}
+.swatch i{display:block;width:52px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.12)}
 .mode-desc{color:var(--text)!important}
 .mode-desc strong{font-family:var(--font-d);font-weight:600}
 .how{margin:4px 0 12px;padding-left:24px}
@@ -333,7 +343,7 @@ details summary{cursor:pointer;font:500 14px var(--font-d);color:var(--muted);ma
       <label class="fld">API key<input id="setKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-..."></label>
       <p class="help">Create a key at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer">console.anthropic.com</a>. It stays in this browser only and is sent straight to Anthropic.</p>
       <div class="grid2">
-        <label class="fld">Model for grown-ups<input id="setModel" list="modelList" spellcheck="false"></label>
+        <label class="fld">Model for adults / parents<input id="setModel" list="modelList" spellcheck="false"></label>
         <label class="fld">Model for children<input id="setKidModel" list="modelList" spellcheck="false"></label>
       </div>
       <datalist id="modelList"><option value="claude-sonnet-5-5"><option value="claude-haiku-5-5"><option value="claude-opus-5-5"></datalist>
@@ -342,18 +352,37 @@ details summary{cursor:pointer;font:500 14px var(--font-d);color:var(--muted);ma
     </section>
     <section class="set">
       <h3>Voice</h3>
-      <div class="grid2">
-        <label class="fld">Listening language<select id="setLang">
+      <label class="fld">Listening language<select id="setLang">
           <option value="en-US">English (United States)</option><option value="en-GB">English (United Kingdom)</option><option value="en-IN">English (India)</option><option value="en-ZA">English (South Africa)</option><option value="en-AU">English (Australia)</option><option value="hi-IN">Hindi</option><option value="gu-IN">Gujarati</option><option value="es-ES">Spanish</option><option value="fr-FR">French</option><option value="de-DE">German</option>
-        </select></label>
+      </select></label>
+      <div class="engine" role="radiogroup" aria-label="Speaking voice type">
+        <label class="eng"><input type="radio" name="voiceEngine" value="device"><span><b>This device's voices</b>Free. Quality depends on your computer and browser.</span></label>
+        <label class="eng"><input type="radio" name="voiceEngine" value="openai"><span><b>Premium online voice</b>Very natural, close to Siri. Needs an OpenAI key; a small cost per answer.</span></label>
+      </div>
+      <div id="deviceVoiceBox">
         <label class="fld">Speaking voice<select id="setVoice"></select></label>
+        <p class="help" id="voiceHint"></p>
+        <label class="check" style="margin:0 0 10px"><input type="checkbox" id="setAllVoices">Show all voices, including basic ones</label>
+        <div><button class="sbtn" id="testVoiceBtn">Play a sample</button></div>
+      </div>
+      <div id="openaiVoiceBox" hidden>
+        <label class="fld">OpenAI API key<input id="setOpenaiKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-..."></label>
+        <p class="help">Create one at <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">platform.openai.com</a>. Only used for speaking answers. If it fails, Tarini falls back to the device voice.</p>
+        <label class="fld">Voice<select id="setOpenaiVoice"></select></label>
+        <div><button class="sbtn" id="testOpenaiBtn">Play a sample</button></div>
       </div>
       <label class="fld">Speaking speed <span id="rateOut">1.0</span><input id="setRate" type="range" min="0.7" max="1.4" step="0.05"></label>
-      <button class="sbtn" id="testVoiceBtn">Play a sample</button>
+    </section>
+    <section class="set">
+      <h3>Appearance</h3>
+      <div class="engine" role="radiogroup" aria-label="Appearance">
+        <label class="eng"><input type="radio" name="themeMode" value="dark"><span><b>Dark mode</b>True black background.</span></label>
+        <label class="eng"><input type="radio" name="themeMode" value="light"><span><b>Light mode</b>White background.</span></label>
+      </div>
     </section>
     <section class="set">
       <h3>People</h3>
-      <p class="help">Children get hints instead of answers and simple language.</p>
+      <p class="help">Mark each person as Adult / Parent or Child. Children get hints instead of answers and simple language.</p>
       <div id="peopleList"></div>
       <button class="sbtn" id="addPersonBtn">Add person</button>
     </section>
@@ -446,7 +475,7 @@ const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min
 const DEFAULTS = {
   apiKey: '', endpoint: DEFAULT_ENDPOINT,
   model: 'claude-sonnet-5-5', kidModel: 'claude-haiku-5-5',
-  lang: 'en-US', voiceURI: '', rate: 1, theme: 'dark', muted: false, autoLook: true,
+  lang: 'en-US', voiceURI: '', rate: 1, voiceEngine: 'device', openaiKey: '', openaiVoice: 'coral', showAllVoices: false, theme: 'dark', muted: false, autoLook: true,
   pinHash: '',
   profiles: [{ id: 'p-adult', name: 'Dad', kind: 'adult' }, { id: 'p-kid', name: 'Son', kind: 'kid' }],
   activeProfile: 'p-adult', mode: 'ask', seenHelp: false
@@ -669,9 +698,11 @@ const E = {};
 function applyTheme() {
   const t = S.settings.theme === 'light' ? 'light' : 'dark';
   document.documentElement.dataset.theme = t;
-  $('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#0F1530' : '#EEF1FB');
-  E.themeBtn.setAttribute('aria-label', t === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+  $('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#000000' : '#FFFFFF');
+  E.themeBtn.setAttribute('aria-label', t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  E.themeBtn.setAttribute('title', t === 'dark' ? 'Light mode' : 'Dark mode');
   if (S.pip) S.pip.document.documentElement.dataset.theme = t;
+  document.querySelectorAll('input[name="themeMode"]').forEach(r => { r.checked = r.value === t; });
 }
 
 /* ================= Orb + captions ================= */
@@ -775,37 +806,102 @@ function bindSpace(doc) {
 }
 
 /* ================= Speech out ================= */
+const NOVELTY = /\b(albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|jester|junior|organ|pipe organ|princess|ralph|trinoids|whisper|wobble|zarvox|superstar|fred|kathy|grandma|grandpa|eddy|flo|reed|rocko|sandy|shelley)\b/i;
+const OPENAI_VOICES = [
+  ['coral', 'Coral (warm, friendly)'], ['nova', 'Nova (bright, clear)'], ['shimmer', 'Shimmer (soft, calm)'],
+  ['sage', 'Sage (gentle, thoughtful)'], ['alloy', 'Alloy (neutral)'], ['ash', 'Ash (relaxed male)'],
+  ['echo', 'Echo (clear male)'], ['onyx', 'Onyx (deep male)'], ['fable', 'Fable (storyteller)'], ['ballad', 'Ballad (expressive)'], ['verse', 'Verse (lively)']
+];
+function voiceQuality(v) {
+  const n = v.name;
+  if (NOVELTY.test(n)) return { score: -1000, tag: 'Novelty' };
+  if (/natural|neural/i.test(n)) return { score: 100, tag: 'Natural' };
+  if (/premium/i.test(n)) return { score: 95, tag: 'Premium' };
+  if (/enhanced/i.test(n)) return { score: 85, tag: 'Enhanced' };
+  if (/online/i.test(n)) return { score: 80, tag: 'Online' };
+  if (/^google/i.test(n)) return { score: 70, tag: 'Good' };
+  if (/samantha|daniel|karen|moira|tessa|rishi|veena|serena|ava|allison|susan|tom|evan|zoe|nathan|joelle|noelle/i.test(n)) return { score: 55, tag: 'Good' };
+  if (/microsoft/i.test(n)) return { score: 35, tag: 'Standard' };
+  return { score: 20, tag: 'Standard' };
+}
+function rankedVoices(langCode) {
+  if (!('speechSynthesis' in window)) return [];
+  const lang = (langCode || S.settings.lang || 'en-US').toLowerCase();
+  const base = lang.split('-')[0];
+  return speechSynthesis.getVoices()
+    .map(v => {
+      const vl = (v.lang || '').toLowerCase().replace('_', '-');
+      const q = voiceQuality(v);
+      const langBonus = vl === lang ? 15 : vl.startsWith(base) ? 8 : -500;
+      return { v, q, score: q.score + langBonus };
+    })
+    .sort((a, b) => b.score - a.score || a.v.name.localeCompare(b.v.name));
+}
 function pickVoice() {
   if (!('speechSynthesis' in window)) return null;
-  const voices = speechSynthesis.getVoices();
-  if (S.settings.voiceURI) { const v = voices.find(x => x.voiceURI === S.settings.voiceURI); if (v) return v; }
-  const lang = (S.settings.lang || 'en-US').toLowerCase();
-  const base = lang.split('-')[0];
-  const same = voices.filter(v => v.lang && v.lang.toLowerCase().replace('_', '-') === lang);
-  const fam = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(base));
-  const pool = same.length ? same : fam;
-  return pool.find(v => /natural|neural|google|samantha|daniel|karen|aria|jenny/i.test(v.name)) || pool[0] || null;
+  if (S.settings.voiceURI) { const v = speechSynthesis.getVoices().find(x => x.voiceURI === S.settings.voiceURI); if (v) return v; }
+  const best = rankedVoices()[0];
+  return best && best.score > 0 ? best.v : null;
 }
-function speak(text, opts = {}) {
-  if (!text || !('speechSynthesis' in window)) return;
-  if (S.settings.muted && !opts.force) return;
-  stopSpeaking();
+function speakDone() { if (S.speaking) { S.speaking = false; touch(); if (!S.listening && !S.busy) setOrbState('idle'); } }
+function speakDevice(text, opts = {}) {
+  if (!('speechSynthesis' in window)) { speakDone(); return; }
   const parts = text.match(/[^.!?\n]+[.!?]*\s*/g) || [text];
   const isVoice = typeof SpeechSynthesisVoice !== 'undefined' && opts.voice instanceof SpeechSynthesisVoice;
   const v = isVoice ? opts.voice : pickVoice();
-  S.speaking = true; setOrbState('speaking');
   parts.forEach((p, i) => {
     const u = new SpeechSynthesisUtterance(p.trim());
     if (v) { u.voice = v; u.lang = v.lang; } else u.lang = S.settings.lang;
     u.rate = opts.rate || S.settings.rate || 1;
-    if (i === parts.length - 1) {
-      const done = () => { if (S.speaking) { S.speaking = false; touch(); if (!S.listening && !S.busy) setOrbState('idle'); } };
-      u.onend = done; u.onerror = done;
-    }
+    if (i === parts.length - 1) { u.onend = speakDone; u.onerror = speakDone; }
     speechSynthesis.speak(u);
   });
 }
+async function speakOpenAI(text, opts = {}) {
+  const key = opts.openaiKey || S.settings.openaiKey;
+  const voice = opts.openaiVoice || S.settings.openaiVoice || 'coral';
+  const token = (S.speakToken = (S.speakToken || 0) + 1);
+  const res = await fetch('https://api.openai.com/v1/audio/speech', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini-tts', voice, input: text.slice(0, 3800), response_format: 'mp3',
+      instructions: isKid() ? 'Speak warmly, clearly and a little slowly, like a kind teacher talking to a child.' : 'Speak warmly, clearly and naturally, like a friendly personal assistant.'
+    })
+  });
+  if (!res.ok) {
+    let msg = ''; try { msg = (await res.json()).error.message; } catch { /* ignore */ }
+    throw new Error(res.status === 401 ? 'The OpenAI key was not accepted.' : msg || `Voice service error ${res.status}`);
+  }
+  const blob = await res.blob();
+  if (token !== S.speakToken || !S.speaking) return;
+  const url = URL.createObjectURL(blob);
+  const audio = new Audio(url);
+  audio.playbackRate = opts.rate || S.settings.rate || 1;
+  S.audio = audio;
+  const finish = () => { URL.revokeObjectURL(url); if (S.audio === audio) S.audio = null; speakDone(); };
+  audio.onended = finish; audio.onerror = finish;
+  await audio.play();
+}
+function speak(text, opts = {}) {
+  if (!text) return;
+  if (S.settings.muted && !opts.force) return;
+  stopSpeaking();
+  S.speaking = true; setOrbState('speaking');
+  const engine = opts.engine || S.settings.voiceEngine;
+  const key = opts.openaiKey || S.settings.openaiKey;
+  if (engine === 'openai' && key) {
+    speakOpenAI(text, opts).catch(e => {
+      console.warn(e);
+      if (!S.speaking) return;
+      toast(`Premium voice unavailable (${e.message}). Using the device voice.`);
+      speakDevice(text, opts);
+    });
+  } else speakDevice(text, opts);
+}
 function stopSpeaking() {
+  S.speakToken = (S.speakToken || 0) + 1;
+  if (S.audio) { try { S.audio.pause(); } catch { /* ignore */ } S.audio = null; }
   if ('speechSynthesis' in window) speechSynthesis.cancel();
   if (S.speaking) { S.speaking = false; if (!S.listening && !S.busy) setOrbState('idle'); }
 }
@@ -954,7 +1050,7 @@ async function makeMarked(img, points) {
       const left = x > c.width * 0.64;
       const bx = left ? x - r * 2.2 - tw - padX * 2 : x + r * 2.2;
       const by = y - bh / 2;
-      g.fillStyle = 'rgba(15,21,48,0.92)'; g.fillRect(bx, by, tw + padX * 2, bh);
+      g.fillStyle = 'rgba(0,0,0,0.86)'; g.fillRect(bx, by, tw + padX * 2, bh);
       g.fillStyle = '#FFFFFF'; g.textAlign = 'left'; g.fillText(p.label, bx + padX, y + 1);
     }
   });
@@ -1397,7 +1493,7 @@ function openWho() {
     class: 'choice', 'aria-current': String(p.id === cur.id),
     onclick: async () => { $('#whoDlg').close(); await switchProfile(p.id); }
   }, el('span', { class: 'who-pill' + (p.kind === 'kid' ? ' kid' : ''), style: 'padding:0;border:0;background:none' }, el('span', { class: 'dot', text: initial(p.name) })),
-     el('span', {}, p.name, el('small', { text: p.kind === 'kid' ? 'Child: hints, not answers' : 'Grown-up: full answers' })))));
+     el('span', {}, p.name, el('small', { text: p.kind === 'kid' ? 'Child: hints, not answers' : 'Adult / Parent: full answers' })))));
   $('#whoDlg').showModal();
 }
 async function switchProfile(id) {
@@ -1407,7 +1503,7 @@ async function switchProfile(id) {
     if (!(await pinDialog({ title: `Enter the parent PIN to switch to ${next.name}` }))) return;
   }
   if (next.kind === 'kid' && !S.settings.pinHash) {
-    const set = await pinDialog({ title: `Set a parent PIN so only grown-ups can leave ${next.name}'s mode`, setMode: true });
+    const set = await pinDialog({ title: `Set a parent PIN so only an adult or parent can leave ${next.name}'s mode`, setMode: true });
     if (!set) toast('No PIN set, so anyone can switch people. You can set one in Settings.');
   }
   S.settings.activeProfile = id; saveSettings();
@@ -1598,7 +1694,7 @@ async function computeWeek(start, end) {
 function statBox(k, v) { return el('div', { class: 'stat' }, el('span', { text: k }), el('strong', { text: String(v) })); }
 function reportCard(r) {
   const card = el('section', { class: 'rep-card' });
-  card.append(el('div', { class: 'rep-head' }, el('h3', { text: r.name }), el('span', { class: 'tag', text: r.kind === 'kid' ? 'Child' : 'Grown-up' })));
+  card.append(el('div', { class: 'rep-head' }, el('h3', { text: r.name }), el('span', { class: 'tag', text: r.kind === 'kid' ? 'Child' : 'Adult / Parent' })));
   if (!r.sessions.length) { card.append(el('p', { class: 'help', text: 'Not used this week.' })); return card; }
   card.append(el('div', { class: 'stats' }, statBox('Time used', fmtDur(r.totalMs)), statBox('Days active', `${r.days.size} of 7`), statBox('Sessions', r.sessions.length), statBox('Questions', r.questions)));
   const full = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -1761,17 +1857,41 @@ async function checkWeeklyBanner() {
 /* ================= Settings ================= */
 function populateVoices() {
   const sel = document.getElementById('setVoice'); if (!sel || !('speechSynthesis' in window)) return;
-  const voices = speechSynthesis.getVoices().slice().sort((a, b) => a.lang.localeCompare(b.lang) || a.name.localeCompare(b.name));
-  const cur = sel.value || S.settings.voiceURI;
-  sel.replaceChildren(el('option', { value: '' }, 'Automatic'), ...voices.map(v => el('option', { value: v.voiceURI }, `${v.name} (${v.lang})`)));
-  sel.value = voices.some(v => v.voiceURI === cur) ? cur : '';
+  const cur = sel.dataset.chosen != null ? sel.dataset.chosen : (S.settings.voiceURI || '');
+  const showAll = document.getElementById('setAllVoices') ? document.getElementById('setAllVoices').checked : S.settings.showAllVoices;
+  const ranked = rankedVoices(document.getElementById('setLang') ? document.getElementById('setLang').value : S.settings.lang);
+  const best = ranked.filter(r => r.score > 0).slice(0, 10);
+  const opt = r => el('option', { value: r.v.voiceURI }, `${r.v.name.replace(/\s*\(.*?\)\s*$/, '')}  ·  ${r.q.tag}  ·  ${r.v.lang}`);
+  const groups = [el('option', { value: '' }, best.length ? `Automatic (best: ${best[0].v.name.replace(/\s*\(.*?\)\s*$/, '')})` : 'Automatic')];
+  if (best.length) groups.push(el('optgroup', { label: 'Best voices on this device' }, best.map(opt)));
+  if (showAll) {
+    const rest = speechSynthesis.getVoices().slice().sort((a, b) => a.lang.localeCompare(b.lang) || a.name.localeCompare(b.name))
+      .filter(v => !best.some(b => b.v.voiceURI === v.voiceURI)).map(v => ({ v, q: voiceQuality(v) }));
+    if (rest.length) groups.push(el('optgroup', { label: 'All other voices' }, rest.map(opt)));
+  }
+  sel.replaceChildren(...groups);
+  sel.value = [...sel.options].some(o => o.value === cur) ? cur : '';
+  const hint = document.getElementById('voiceHint');
+  if (hint) {
+    const top = best[0];
+    hint.textContent = !top ? 'No good voice found for this language on this device. Choose Premium online voice above.'
+      : top.q.score >= 80 ? 'Natural-sounding voices are available on this device.'
+      : /Edg\//.test(navigator.userAgent) ? 'Only basic voices found. Try Premium online voice above.'
+      : 'Only basic voices found. On Windows, open Tarini in Microsoft Edge for natural voices. On a Mac, add Premium or Enhanced voices in System Settings, Accessibility, Spoken Content, then restart the browser. Or choose Premium online voice above.';
+  }
+}
+function renderVoiceEngine() {
+  const eng = document.querySelector('input[name="voiceEngine"]:checked');
+  const online = eng && eng.value === 'openai';
+  document.getElementById('deviceVoiceBox').hidden = online;
+  document.getElementById('openaiVoiceBox').hidden = !online;
 }
 function renderPeople() {
   const box = document.getElementById('peopleList');
   box.replaceChildren(...S.peopleDraft.map((p, i) => {
     const name = el('input', { value: p.name, 'aria-label': `Person ${i + 1} name`, placeholder: 'Name', maxlength: 24 });
     name.addEventListener('input', () => { p.name = name.value; });
-    const kind = el('select', { 'aria-label': `Person ${i + 1} type` }, el('option', { value: 'adult' }, 'Grown-up'), el('option', { value: 'kid' }, 'Child'));
+    const kind = el('select', { 'aria-label': `Person ${i + 1} type` }, el('option', { value: 'adult' }, 'Adult / Parent'), el('option', { value: 'kid' }, 'Child'));
     kind.value = p.kind; kind.addEventListener('change', () => { p.kind = kind.value; });
     const rm = el('button', { class: 'icon-btn', 'aria-label': `Remove ${p.name || 'person'}`, disabled: S.peopleDraft.length <= 1 });
     rm.innerHTML = '<svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
@@ -1782,7 +1902,7 @@ function renderPeople() {
 function renderPinStatus() {
   document.getElementById('pinStatus').textContent = S.settings.pinHash
     ? 'A PIN is set. It is needed to leave child mode, show answers, and open settings, history and reports from child mode.'
-    : 'No PIN set yet. Set one so your child cannot switch to grown-up mode or reveal answers.';
+    : 'No PIN set yet. Set one so your child cannot switch to adult mode or reveal answers.';
   document.getElementById('removePinBtn').hidden = !S.settings.pinHash;
   document.getElementById('setPinBtn').textContent = S.settings.pinHash ? 'Change PIN' : 'Set PIN';
 }
@@ -1794,15 +1914,21 @@ async function openSettings(intro = false) {
   $('#setRate').value = s.rate; $('#rateOut').textContent = Number(s.rate).toFixed(2);
   $('#testOut').textContent = ''; $('#testOut').className = '';
   S.peopleDraft = structuredClone(s.profiles);
-  populateVoices(); $('#setVoice').value = s.voiceURI || '';
-  renderPeople(); renderPinStatus(); renderFolderStatus();
+  $('#setAllVoices').checked = !!s.showAllVoices; $('#setVoice').dataset.chosen = s.voiceURI || '';
+  populateVoices(); delete $('#setVoice').dataset.chosen;
+  document.querySelectorAll('input[name="voiceEngine"]').forEach(r => { r.checked = r.value === (s.voiceEngine || 'device'); });
+  $('#setOpenaiKey').value = s.openaiKey || '';
+  $('#setOpenaiVoice').replaceChildren(...OPENAI_VOICES.map(([id, label]) => el('option', { value: id }, label)));
+  $('#setOpenaiVoice').value = s.openaiVoice || 'coral';
+  renderVoiceEngine();
+  renderPeople(); renderPinStatus(); renderFolderStatus(); applyTheme();
   $('#setIntro').hidden = !intro;
   const d = $('#settingsDlg'); if (!d.open) d.showModal();
 }
 function saveSettingsFromForm() {
   const people = S.peopleDraft.map(p => ({ ...p, name: p.name.trim().slice(0, 24) })).filter(p => p.name);
   if (!people.length) { toast('Add at least one person with a name.'); return; }
-  if (!people.some(p => p.kind === 'adult')) { toast('Keep at least one grown-up so someone can manage settings.'); return; }
+  if (!people.some(p => p.kind === 'adult')) { toast('Keep at least one adult or parent so someone can manage settings.'); return; }
   const s = S.settings;
   const prevActive = activeProfile();
   s.apiKey = $('#setKey').value.trim();
@@ -1810,6 +1936,10 @@ function saveSettingsFromForm() {
   s.kidModel = $('#setKidModel').value.trim() || DEFAULTS.kidModel;
   s.endpoint = $('#setEndpoint').value.trim() || DEFAULT_ENDPOINT;
   s.lang = $('#setLang').value; s.voiceURI = $('#setVoice').value; s.rate = Number($('#setRate').value) || 1;
+  s.showAllVoices = $('#setAllVoices').checked;
+  s.voiceEngine = (document.querySelector('input[name="voiceEngine"]:checked') || {}).value || 'device';
+  s.openaiKey = $('#setOpenaiKey').value.trim(); s.openaiVoice = $('#setOpenaiVoice').value || 'coral';
+  if (s.voiceEngine === 'openai' && !s.openaiKey) { s.voiceEngine = 'device'; toast('No OpenAI key added, so the device voice is used.'); }
   s.profiles = people;
   if (!people.some(p => p.id === s.activeProfile)) s.activeProfile = (people.find(p => p.kind === 'adult') || people[0]).id;
   const firstTime = !s.seenHelp; s.seenHelp = true;
@@ -1856,6 +1986,7 @@ function bindUI() {
   E.reportBtn.addEventListener('click', () => openReport());
   E.themeBtn.addEventListener('click', () => { S.settings.theme = S.settings.theme === 'dark' ? 'light' : 'dark'; saveSettings(); applyTheme(); });
   E.settingsBtn.addEventListener('click', () => openSettings(false));
+  document.querySelectorAll('input[name="themeMode"]').forEach(r => r.addEventListener('change', () => { S.settings.theme = r.value; saveSettings(); applyTheme(); }));
   document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpDlg').showModal());
 
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
@@ -1868,11 +1999,20 @@ function bindUI() {
 
   $('#saveSettingsBtn').addEventListener('click', saveSettingsFromForm);
   $('#setRate').addEventListener('input', () => { $('#rateOut').textContent = Number($('#setRate').value).toFixed(2); });
+  const sample = `Hi, I am ${APP}. Show me something, and I will help you step by step.`;
   $('#testVoiceBtn').addEventListener('click', () => {
     const voices = 'speechSynthesis' in window ? speechSynthesis.getVoices() : [];
     const v = voices.find(x => x.voiceURI === $('#setVoice').value) || pickVoice();
-    speak(`Hi, I am ${APP}. Show me something and ask me anything.`, { rate: Number($('#setRate').value), voice: v, force: true });
+    speak(sample, { rate: Number($('#setRate').value), voice: v, force: true, engine: 'device' });
   });
+  $('#testOpenaiBtn').addEventListener('click', () => {
+    const key = $('#setOpenaiKey').value.trim();
+    if (!key) { toast('Paste your OpenAI API key first.'); $('#setOpenaiKey').focus(); return; }
+    speak(sample, { rate: Number($('#setRate').value), force: true, engine: 'openai', openaiKey: key, openaiVoice: $('#setOpenaiVoice').value });
+  });
+  $('#setAllVoices').addEventListener('change', () => { $('#setVoice').dataset.chosen = $('#setVoice').value; populateVoices(); delete $('#setVoice').dataset.chosen; });
+  $('#setLang').addEventListener('change', () => { $('#setVoice').dataset.chosen = ''; populateVoices(); delete $('#setVoice').dataset.chosen; });
+  document.querySelectorAll('input[name="voiceEngine"]').forEach(r => r.addEventListener('change', renderVoiceEngine));
   $('#testKeyBtn').addEventListener('click', async () => {
     const out = $('#testOut'); out.className = ''; out.textContent = 'Testing';
     try {
@@ -1929,7 +2069,6 @@ async function init() {
 }
 init();
 })();
-
 </script>
 </body>
 </html>
