@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarini - Do it for me</title>
+<link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="orb-mini" aria-hidden="true"></span><div><h1>Tarini</h1><p>Do it for me</p></div></div>
+  <button class="icon-btn" id="historyBtn" aria-label="Recent tasks" title="Recent tasks"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button>
+  <button class="icon-btn" id="settingsBtn" aria-label="Settings" title="Settings"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg></button>
+</header>
+
+<main>
+  <!-- Compose -->
+  <section id="composeView" class="view">
+    <div class="site" id="siteBox"><span class="site-dot"></span><div><span class="site-lbl">Working on this tab</span><b id="siteTitle">Loading</b><span id="siteUrl"></span></div></div>
+    <label class="lbl" for="taskInput">What should I do here?</label>
+    <textarea id="taskInput" rows="4" placeholder="For example: fill this form with my company details, or find last month's invoice from Acme and open it"></textarea>
+    <div class="row">
+      <button class="icon-btn mic" id="micBtn" aria-label="Speak the task" title="Speak the task" aria-pressed="false"><svg class="i" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+      <span class="mic-cap" id="micCap"></span>
+      <button class="pbtn" id="startBtn">Start</button>
+    </div>
+    <div class="seg" role="radiogroup" aria-label="When should Tarini ask you">
+      <button role="radio" data-mode="every" aria-checked="true">Ask every step</button>
+      <button role="radio" data-mode="risky" aria-checked="false">Ask for risky steps</button>
+    </div>
+    <p class="hint" id="modeHint"></p>
+    <div class="chips" id="chips"></div>
+    <div class="tipbox"><b>Quickest way:</b> on any web page, select some text or hold <kbd>Alt</kbd> and click a button or field. The Tarini face appears right there. Or press <kbd>Alt</kbd> + <kbd>T</kbd>.</div>
+    <div class="safe"><b>Built-in safety.</b> Tarini shows a plan first, highlights each element before it acts, never types passwords or card numbers, and asks before anything that sends, saves, pays or deletes.</div>
+    <h2 class="sub">Recent tasks</h2>
+    <div id="recent" class="recent"></div>
+  </section>
+
+  <!-- Running -->
+  <section id="runView" class="view" hidden>
+    <div class="taskhead"><span class="lbl">Task</span><p id="runTask"></p></div>
+    <div id="feed" class="feed" aria-live="polite"></div>
+  </section>
+
+  <!-- Settings -->
+  <section id="settingsView" class="view" hidden>
+    <h2 class="vtitle">Settings</h2>
+    <span class="fld">Appearance</span>
+    <div class="seg" role="radiogroup" aria-label="Appearance" id="themeSeg">
+      <button role="radio" data-theme="dark" aria-checked="true">Dark mode</button>
+      <button role="radio" data-theme="light" aria-checked="false">Light mode</button>
+    </div>
+    <label class="fld">Your name<input id="sName" maxlength="24"></label>
+    <label class="fld">Anthropic API key<input id="sKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-..."></label>
+    <p class="hint">Create a key at console.anthropic.com. It is stored only in this browser.</p>
+    <label class="fld">Model<input id="sModel" list="models" spellcheck="false"></label>
+    <datalist id="models"><option value="claude-sonnet-5-5"><option value="claude-opus-5-5"><option value="claude-haiku-5-5"></datalist>
+    <label class="fld">Most steps per task<input id="sMax" type="number" min="5" max="60"></label>
+    <label class="tog"><input type="checkbox" id="sLogs"> Save a log of every task to Downloads/Tarini Library</label>
+    <label class="tog"><input type="checkbox" id="sShots"> Include a screenshot of each step in the log</label>
+    <label class="tog"><input type="checkbox" id="sVoice"> Speak answers out loud</label>
+    <label class="tog"><input type="checkbox" id="sBubble"> Show the Tarini face on web pages when I select text or Alt+click</label>
+    <label class="tog"><input type="checkbox" id="sWeb"> Search the web when an answer needs fresh facts</label>
+    <div class="row wrap">
+      <button class="sbtn" id="testBtn">Test connection</button><span id="testOut" role="status"></span>
+    </div>
+    <div class="row wrap"><button class="sbtn" id="micPermBtn">Allow microphone</button></div>
+    <div class="row end"><button class="sbtn" id="cancelSettings">Cancel</button><button class="pbtn" id="saveSettings">Save</button></div>
+  </section>
+
+  <!-- History -->
+  <section id="historyView" class="view" hidden>
+    <h2 class="vtitle">Recent tasks</h2>
+    <div id="historyList" class="recent"></div>
+    <div class="row end"><button class="sbtn" id="closeHistory">Back</button></div>
+  </section>
+</main>
+
+<footer class="bar" id="runBar" hidden>
+  <span id="stepCount">Starting</span>
+  <button class="danger" id="stopBtn">Stop</button>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="sidepanel.js"></script>
+</body>
+</html>

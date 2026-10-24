@@ -12,10 +12,10 @@
 <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Tarini%22%2C%22short_name%22%3A%22Tarini%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23000000%22%2C%22theme_color%22%3A%22%23000000%22%7D">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link id="fontLink" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link id="fontLink" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Gabarito:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --font-d:'Fredoka',ui-rounded,'SF Pro Rounded','Segoe UI',system-ui,sans-serif;
+  --font-d:'Gabarito','Avenir Next','Segoe UI',system-ui,sans-serif;
   --font-b:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --sun:#FFC24B;--sun-ink:#2A1D00;--sky:#6CD2FF;--coral:#FF8F7E;--leaf:#7FE3A8;
 }
@@ -168,11 +168,56 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke
 .orb[data-state=thinking] .eye{animation:look 1.4s ease-in-out infinite}
 .orb[data-state=thinking] .mouth{width:12px;margin-left:-6px;height:4px;border-radius:4px}
 .orb[data-state=speaking] .mouth{animation:talk .28s ease-in-out infinite alternate}
-@media (max-width:600px){.orb{width:76px;height:76px}.dock{padding-top:8px}.dock-inner{gap:8px 10px}.hint-tools{flex-wrap:nowrap}.hint-tools .sbtn{padding:7px 11px;font-size:14px}.hint-level{font-size:13px;white-space:nowrap}}
+@media (max-width:600px){.dock{padding-top:8px}.dock-inner{gap:8px 10px}.hint-tools{flex-wrap:nowrap}.hint-tools .sbtn{padding:7px 11px;font-size:14px}.hint-level{font-size:13px;white-space:nowrap}}
 @keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
 @keyframes look{0%,100%{transform:translate(-3px,-2px)}50%{transform:translate(3px,-2px)}}
 @keyframes talk{from{height:4px}to{height:13px}}
 @keyframes ripple{0%{opacity:.85;transform:scale(1)}100%{opacity:0;transform:scale(1.75)}}
+
+/* simplified shell */
+.top .icon-btn.opt{margin-left:2px}
+.menu-wrap,.plus-wrap{position:relative}
+.pop{position:absolute;z-index:40;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:6px;box-shadow:var(--shadow);min-width:220px}
+.pop button,.pop label{display:flex;align-items:center;gap:11px;width:100%;border:0;background:none;border-radius:11px;padding:10px 12px;font:500 15px var(--font-d);text-align:left;color:var(--text);cursor:pointer}
+.pop button:hover,.pop label:hover,.pop button:focus-visible{background:var(--surface2)}
+.pop svg.i{color:var(--muted);flex:none}
+.menu{right:0;top:calc(100% + 6px)}
+.plus-menu{left:0;bottom:calc(100% + 10px);min-width:280px}
+.plus-menu span{display:flex;flex-direction:column;line-height:1.25}
+.plus-menu span b{font-weight:600}
+.plus-menu span{font:400 13px var(--font-b);color:var(--muted)}
+.plus-menu span b{font:600 15px var(--font-d);color:var(--text)}
+.file-item input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.layout{grid-template-columns:minmax(0,1fr)!important;max-width:860px!important}
+.stage-card{padding-top:12px}
+.stage{min-height:0!important}
+.snap img,#live{max-height:min(46vh,440px)!important}
+.talk{min-height:0;position:static!important;max-height:none!important;display:flex;flex-direction:column}
+.feed{padding:8px 2px 4px!important}
+.followups{padding:0 2px 12px!important}
+.composer{grid-area:ask;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 8px}
+.composer:focus-within{border-color:var(--muted)}
+.composer input{flex:1;min-width:0;border:0;background:transparent;font:17px var(--font-b);color:var(--text);padding:10px 4px;outline:none}
+.composer input::placeholder{color:var(--muted)}
+.plus{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--surface2);display:grid;place-items:center;color:var(--text)}
+.plus[aria-expanded=true]{background:var(--sun);color:var(--sun-ink);border-color:transparent}
+.send{width:42px;height:42px;border-radius:50%;border:0;background:var(--surface2);display:grid;place-items:center;color:var(--muted)}
+.send.ready{background:var(--sun);color:var(--sun-ink)}
+.composer .orb{flex:none}
+.dock-inner{grid-template-columns:1fr!important;grid-template-areas:"hint" "att" "ask" "foot"!important;max-width:860px!important}
+.dock-foot{grid-area:foot;display:flex;align-items:center;gap:10px;padding:0 6px}
+.dock-foot .cap{flex:1;margin:0}
+.icon-btn.small{width:34px;height:34px}
+.att-row{grid-area:att;display:flex;flex-wrap:wrap;gap:6px}
+.att{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 6px 5px 12px;font:500 13.5px var(--font-d);max-width:100%}
+.att span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.att button{width:24px;height:24px;border-radius:50%;border:0;background:var(--surface2);color:var(--muted);font:600 14px/1 var(--font-d)}
+.sources{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 8px}
+.sources .lbl{font:500 13px var(--font-d);color:var(--muted)}
+.src{font:500 13.5px var(--font-d);border:1px solid var(--line);border-radius:999px;padding:4px 11px;text-decoration:none;color:var(--text);max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.src:hover{border-color:var(--sky)}
+.msg.me .att-note{display:block;font:500 13px var(--font-d);color:var(--muted);margin-top:6px}
+@media (max-width:600px){.plus,.send{width:38px;height:38px}}
 
 /* dialogs */
 .dlg{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:22px;padding:0;width:min(560px,calc(100vw - 24px));max-height:calc(100dvh - 32px);box-shadow:var(--shadow)}
@@ -266,6 +311,165 @@ details summary{cursor:pointer;font:500 14px var(--font-d);color:var(--muted);ma
 .pip .orb{width:72px;height:72px}
 .pip .cap{font-size:13px}
 
+
+/* ===================== Tarini v3 design layer ===================== */
+html[data-theme=dark]{--bg:#000000;--surface:#141416;--surface2:#1D1D20;--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.16);--text:#F5F5F3;--muted:#8F8F97;--sun:#FFC23D;--sun-ink:#231800;--sky:#7CC7FF;--glow:rgba(255,194,61,.22);--shadow:0 30px 70px -30px rgba(0,0,0,.9)}
+html[data-theme=light]{--bg:#FFFFFF;--surface:#F4F4F3;--surface2:#EAEAE8;--line:rgba(0,0,0,.09);--line2:rgba(0,0,0,.18);--text:#0A0A0B;--muted:#67676F;--sun:#FFB81F;--sun-ink:#231800;--sky:#1C8FC9;--glow:rgba(255,184,31,.28);--shadow:0 30px 70px -34px rgba(0,0,0,.35)}
+body{font:400 17px/1.6 var(--font-b);letter-spacing:.005em}
+h1,h2,h3{font-family:var(--font-d);font-weight:700;letter-spacing:-.01em}
+:focus-visible{outline:2px solid var(--sun);outline-offset:3px}
+
+/* header */
+.top{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;padding:calc(14px + env(safe-area-inset-top)) 18px 6px 20px}
+.brand h1{font-size:21px;font-weight:700;letter-spacing:-.02em}
+.mini-orb{width:22px;height:22px;background:radial-gradient(circle at 34% 28%,#FFE7A8 0,var(--sun) 55%,#E59A0E 100%)}
+.who-pill{background:transparent;border:1px solid var(--line);padding:5px 12px 5px 6px;font:600 14px var(--font-d)}
+.who-pill:hover{border-color:var(--line2)}
+.who-pill .dot{background:var(--surface2);font:700 11px var(--font-d)}
+.who-pill.kid{border-color:var(--sun)}
+.icon-btn{border-radius:12px;color:var(--muted)}
+.icon-btn:hover{background:var(--surface);color:var(--text)}
+.pop{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:6px}
+.pop button,.pop label{font:500 15px var(--font-d);border-radius:12px}
+.pop button:hover,.pop label:hover{background:var(--surface2)}
+
+/* the buddy: proportional so it works at any size */
+.orb{--s:88px;width:var(--s)!important;height:var(--s)!important;background:radial-gradient(circle at 33% 26%,#FFF0C4 0,#FFD15C 30%,var(--sun) 58%,#E08F00 100%);box-shadow:0 calc(var(--s)*.16) calc(var(--s)*.42) calc(var(--s)*-.16) rgba(255,170,0,.55),inset 0 calc(var(--s)*-.08) calc(var(--s)*.14) rgba(140,80,0,.22),inset 0 calc(var(--s)*.05) calc(var(--s)*.08) rgba(255,255,255,.35)}
+.orb .eye{top:34%;width:12.5%;height:17%;border-radius:999px;background:#1F1500}
+.orb .eye.l{left:30%}.orb .eye.r{right:30%}
+.orb .mouth{top:61%;left:50%;width:26%;height:8%;margin-left:-13%;border-radius:0 0 999px 999px;background:#1F1500}
+.orb[data-state=listening] .eye{height:20%}
+.orb[data-state=listening] .mouth{height:12%}
+.orb[data-state=thinking] .mouth{width:12%;margin-left:-6%;height:5%;border-radius:999px}
+.orb::before,.orb::after{border:2px solid var(--sky)}
+@keyframes talk{from{height:4%}to{height:14%}}
+.composer .orb{--s:48px}
+
+/* hero (empty state) */
+.layout{max-width:760px!important;padding:0 20px 8px}
+.empty.hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:min(9vh,80px) 0 18px}
+.hero-orb-wrap{position:relative;display:grid;place-items:center;margin-bottom:26px}
+.hero-orb-wrap::before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,var(--glow) 0,transparent 62%);pointer-events:none}
+.hero .orb{--s:128px;position:relative}
+.hero h2.greet{font:700 clamp(30px,5vw,42px)/1.08 var(--font-d);letter-spacing:-.025em;margin:0 0 10px;color:var(--text)}
+.hero p.sub{font-size:17px;color:var(--muted);max-width:40ch;margin:0 auto 26px}
+.starters{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:620px}
+.starter{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:12px 16px 12px 13px;font:600 15px/1.2 var(--font-d);color:var(--text);text-align:left;cursor:pointer;transition:border-color .15s,transform .15s}
+.starter:hover{border-color:var(--line2);transform:translateY(-1px)}
+.starter .ic{width:30px;height:30px;border-radius:10px;background:var(--surface2);display:grid;place-items:center;color:var(--sun);flex:none}
+.starter .ic svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+body.is-empty .composer .orb{display:none}
+body.is-empty .dock-foot .cap{visibility:hidden}
+
+/* conversation */
+.feed{padding:18px 0 6px!important}
+.msg{max-width:100%;margin:0 0 26px}
+.msg.me{max-width:80%;background:var(--surface);border:0;border-radius:22px 22px 6px 22px;padding:11px 16px;font-size:16.5px;color:var(--text)}
+.msg.me img{max-width:180px;max-height:130px;border-radius:12px;margin-top:10px}
+.msg.bot{border:0;padding:0}
+.msg .who{gap:9px;font:700 14px var(--font-d);color:var(--text);margin-bottom:8px}
+.msg .who .mini-orb{width:20px;height:20px}
+.say{font-size:19px;line-height:1.62;margin:0 0 14px;color:var(--text)}
+.steps{list-style:none;counter-reset:st;padding:0;margin:0 0 16px;position:relative}
+.steps li{counter-increment:st;position:relative;padding:2px 0 14px 42px;margin:0}
+.steps li::before{content:counter(st);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;background:var(--sun);color:var(--sun-ink);font:700 14px/28px var(--font-d);text-align:center}
+.steps li::after{content:"";position:absolute;left:13.5px;top:30px;bottom:2px;width:1px;background:var(--line2)}
+.steps li:last-child::after{display:none}
+.steps li::marker{content:none}
+.sources{gap:8px;margin:0 0 12px}
+.sources .lbl{display:none}
+.src{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);font:600 13.5px var(--font-d);padding:5px 12px 5px 6px}
+.src img{width:18px;height:18px;border-radius:5px;background:#fff}
+.refs .lbl{font:600 13px var(--font-d)}
+.ref{background:var(--surface);border-color:var(--line)}
+.draft{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}
+.msg-actions{gap:14px}
+.tbtn{font:600 13.5px var(--font-d);text-decoration:none;color:var(--muted)}
+.tbtn:hover{color:var(--text)}
+.tag{border-color:var(--line);font:600 12.5px var(--font-d)}
+.thinking{padding:4px 0 24px;gap:7px;align-items:center}
+.thinking span{width:8px;height:8px}
+.thinking::after{content:"Thinking";font:600 14px var(--font-d);color:var(--muted);margin-left:6px}
+.followups{gap:8px;padding:0 0 18px!important}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:9px 15px;font:600 14.5px/1.2 var(--font-d);color:var(--text)}
+.chip:hover{border-color:var(--line2);background:var(--surface)}
+.divider{font:600 13px var(--font-d)}
+.msg.err{border:1px solid rgba(255,138,120,.35);background:rgba(255,138,120,.08);border-radius:16px;padding:12px 14px}
+
+/* what Tarini sees */
+.stage-card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:10px 10px 4px;margin-top:6px}
+.stage{background:var(--bg);border-radius:16px;margin:0}
+.snap img,#live{border-radius:12px}
+.stage-foot{padding:10px 4px 8px}
+.status{font:600 13.5px var(--font-d)}
+.status.on .led{background:#FF4D4D;box-shadow:0 0 0 4px rgba(255,77,77,.18)}
+.sbtn{border:1px solid var(--line);background:var(--surface2);border-radius:12px;font:600 14px/1.2 var(--font-d)}
+.sbtn:hover:not(:disabled){border-color:var(--line2)}
+.pbtn{border-radius:12px;font:700 15px/1.2 var(--font-d)}
+.mark .num{font-family:var(--font-d)}
+.mark .lab{font-family:var(--font-d);border-radius:10px}
+
+/* dock */
+.dock{background:var(--bg);border-top:0;box-shadow:none;padding:6px 20px calc(14px + env(safe-area-inset-bottom))}
+.dock::before{content:"";position:absolute;left:0;right:0;top:-32px;height:32px;background:linear-gradient(to top,var(--bg),transparent);pointer-events:none}
+.dock-inner{max-width:760px!important;gap:8px!important}
+.composer{min-height:64px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 7px 7px 9px;gap:6px;box-shadow:0 18px 40px -26px rgba(0,0,0,.7)}
+.composer:focus-within{border-color:var(--line2)}
+.composer input{font:17px var(--font-b);padding:10px 6px}
+.plus{width:42px;height:42px;border:0;background:transparent;color:var(--muted)}
+.plus:hover{background:var(--surface2);color:var(--text)}
+.plus[aria-expanded=true]{background:var(--surface2);color:var(--text)}
+.send{width:42px;height:42px;background:transparent;color:var(--muted);opacity:.5}
+.send.ready{background:var(--text);color:var(--bg);opacity:1}
+.dock-foot{padding:2px 14px 0}
+.dock-foot .cap{font:600 13px var(--font-d)}
+.hint-tools{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px;justify-self:center;gap:4px!important}
+.hint-tools .sbtn{background:transparent;border:0;border-radius:999px}
+.hint-tools .sbtn:hover:not(:disabled){background:var(--surface2)}
+.hint-level{padding:0 8px 0 10px;font:600 13px var(--font-d)}
+.att{background:var(--surface);border-color:var(--line);font:600 13.5px var(--font-d)}
+.plus-menu{min-width:300px;padding:8px}
+.plus-menu button,.plus-menu label{padding:11px 12px;align-items:flex-start}
+.plus-menu svg.i{margin-top:2px;color:var(--sun)}
+
+/* dialogs */
+.dlg{background:var(--surface);border:1px solid var(--line);border-radius:26px}
+.dlg::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.dlg-head h2{font-size:23px}
+.set h3{font-size:17px}
+.fld input,.fld select,.person input,.person select{background:var(--bg);border:1px solid var(--line);border-radius:12px}
+.eng{background:var(--bg);border-color:var(--line);border-radius:16px}
+.choice{background:var(--bg);border-color:var(--line);border-radius:16px;font-family:var(--font-d)}
+.sess{background:var(--bg);border-color:var(--line)}
+.rep-card{background:var(--bg);border-color:var(--line);border-radius:20px}
+.stat{background:var(--surface)}
+.toast{border-radius:999px;font:600 14.5px var(--font-d);padding:11px 18px}
+/* v3 refinements */
+.top{position:sticky;top:0;background:var(--bg)}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:-22px;height:22px;background:linear-gradient(to bottom,var(--bg),transparent);pointer-events:none}
+@media (min-width:700px){.starters{flex-wrap:nowrap;max-width:none}.starter{white-space:nowrap}}
+.answer-fig{display:block;margin:2px 0 16px;border-radius:16px;overflow:hidden;border:1px solid var(--line);max-width:100%;width:fit-content}
+.answer-fig img{display:block;max-width:100%;max-height:420px;border-radius:0}
+.stage-card.compact{position:sticky;top:58px;z-index:12;display:flex;flex-direction:row;align-items:center;gap:12px;padding:8px 8px 8px 8px;border-radius:18px;margin:4px 0 0}
+.stage-card.compact .stage{width:92px;height:58px;padding:0;flex:none;border-radius:11px;display:block}
+.stage-card.compact .stage img,.stage-card.compact #live{max-height:58px!important;width:92px;height:58px;object-fit:cover;border-radius:11px}
+.stage-card.compact .snap{display:block}
+.stage-card.compact .markers{display:none}
+.stage-card.compact .stage-foot{flex:1;padding:0;gap:6px;flex-wrap:nowrap}
+.stage-card.compact .status{margin-right:auto}
+.stage-card.compact #switchCamBtn,.stage-card.compact #liveBtn{display:none}
+@media (max-width:600px){
+  .empty.hero{padding-top:5vh}
+  .hero .orb{--s:108px}
+  .hero-orb-wrap::before{width:210px;height:210px}
+  .starter{width:100%}
+  .msg.me{max-width:88%}
+  .say{font-size:18px}
+  .composer{min-height:58px}
+  .composer .orb{--s:44px}
+  .layout,.dock{padding-left:14px;padding-right:14px}
+}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
   .orb[data-state=listening]::before{opacity:.85;transform:scale(1.15)}
@@ -276,43 +480,39 @@ details summary{cursor:pointer;font:500 14px var(--font-d);color:var(--muted);ma
 <header class="top">
   <div class="brand"><span class="mini-orb" aria-hidden="true"></span><h1 id="appName">Tarini</h1></div>
   <button id="whoBtn" class="who-pill" aria-haspopup="dialog" aria-label="Change person"><span class="dot" id="whoDot">D</span><span class="nm" id="whoName">Dad</span></button>
-  <div class="tools">
-    <button class="icon-btn opt" id="pipBtn" aria-pressed="false" aria-label="Open floating buddy" title="Floating buddy"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><rect x="12" y="11" width="7" height="6" rx="1"/></svg></button>
-    <button class="icon-btn" id="historyBtn" aria-label="History" title="History"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button>
-    <button class="icon-btn" id="reportBtn" aria-label="Weekly report" title="Weekly report"><svg class="i" viewBox="0 0 24 24"><path d="M5 20V11M11 20V5M17 20v-6M3 20h18"/></svg></button>
-    <button class="icon-btn opt" id="themeBtn" aria-label="Switch to light theme" title="Theme"><svg class="i" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
-    <button class="icon-btn" id="helpBtn" aria-label="How to use Tarini" title="How to use"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.6 2.3c-.8.4-1.2 1-1.2 1.9M12 16.8v.2"/></svg></button>
-    <button class="icon-btn" id="settingsBtn" aria-label="Settings" title="Settings"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg></button>
+  <button class="icon-btn opt" id="pipBtn" aria-pressed="false" aria-label="Open floating buddy" title="Floating buddy"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><rect x="12" y="11" width="7" height="6" rx="1"/></svg></button>
+  <div class="menu-wrap">
+    <button class="icon-btn" id="menuBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Menu" title="Menu"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <div class="pop menu" id="menu" role="menu" hidden>
+      <button role="menuitem" id="historyBtn"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>History</button>
+      <button role="menuitem" id="reportBtn"><svg class="i" viewBox="0 0 24 24"><path d="M5 20V11M11 20V5M17 20v-6M3 20h18"/></svg>Weekly report</button>
+      <button role="menuitem" id="themeBtn"><svg class="i" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span id="themeLabel">Light mode</span></button>
+      <button role="menuitem" id="helpBtn"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.6 2.3c-.8.4-1.2 1-1.2 1.9M12 16.8v.2"/></svg>How to use</button>
+      <button role="menuitem" id="settingsBtn"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg>Settings</button>
+    </div>
   </div>
 </header>
 
 <div id="banner" class="banner" hidden><p id="bannerText"></p><button class="sbtn" id="bannerBtn"></button><button class="tbtn" id="bannerClose">Dismiss</button></div>
-
-<nav class="modes" id="modes" aria-label="Modes"></nav>
+<nav class="modes" id="modes" hidden></nav>
 
 <main class="layout">
-  <section class="card" aria-label="What Tarini can see">
-    <div class="eyes-bar">
-      <button class="sbtn" id="screenBtn" aria-pressed="false"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Share screen</button>
-      <button class="sbtn" id="cameraBtn" aria-pressed="false"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Camera</button>
-      <label class="sbtn file-btn"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>Add photo<input type="file" id="photoInput" accept="image/*" aria-label="Add a photo"></label>
-      <label class="check"><input type="checkbox" id="autoLook" checked>Fresh look each question</label>
-    </div>
+  <section class="card stage-card" id="stageCard" aria-label="What Tarini can see" hidden>
     <div class="stage" id="stage">
-      <div class="stage-empty" id="stageEmpty"><strong>Show me something</strong>Share your screen, turn on the camera, or add a photo of your page. Then hold the yellow button and ask.</div>
+      <div class="stage-empty" id="stageEmpty"></div>
       <video id="live" playsinline muted hidden></video>
-      <div class="snap" id="snap" hidden><img id="snapImg" alt="The last picture Tarini looked at"><div class="markers" id="markers"></div></div>
+      <div class="snap" id="snap" hidden><img id="snapImg" alt="The picture Tarini is looking at"><div class="markers" id="markers"></div></div>
     </div>
     <div class="stage-foot">
-      <span class="status" id="srcStatus"><span class="led"></span><span id="srcText">Nothing shared yet</span></span>
+      <span class="status" id="srcStatus"><span class="led"></span><span id="srcText"></span></span>
       <button class="sbtn" id="switchCamBtn" hidden>Switch camera</button>
-      <button class="sbtn" id="liveBtn" hidden>Back to live view</button>
+      <button class="sbtn" id="liveBtn" hidden>Live view</button>
       <button class="sbtn" id="lookBtn" hidden>Take a look</button>
-      <button class="sbtn" id="stopSrcBtn" hidden>Stop</button>
+      <button class="sbtn" id="stopSrcBtn">Close</button>
     </div>
   </section>
 
-  <section class="card talk" aria-label="Conversation">
+  <section class="talk" aria-label="Conversation">
     <div class="feed" id="feed" aria-live="polite"></div>
     <div class="followups" id="followups"></div>
   </section>
@@ -325,11 +525,25 @@ details summary{cursor:pointer;font:500 14px var(--font-d);color:var(--muted);ma
       <button class="sbtn" id="biggerHintBtn">Bigger hint</button>
       <button class="sbtn" id="answerBtn" aria-label="Show the answer, needs the parent PIN">Answer (parent)</button>
     </div>
-    <div class="ask-row"><input id="askInput" type="text" enterkeyhint="send" autocomplete="off" placeholder="Type a question" aria-label="Type a question"><button class="pbtn" id="sendBtn">Send</button></div>
-    <div class="dock-left"><button class="sbtn" id="newTopicBtn">New topic</button></div>
-    <button class="orb" id="orb" data-state="idle" aria-label="Hold to talk"><span class="eye l"></span><span class="eye r"></span><span class="mouth"></span></button>
-    <div class="dock-right"><button class="icon-btn" id="muteBtn" aria-pressed="false" aria-label="Mute voice" title="Mute voice"><svg class="i" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path id="muteWave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button></div>
-    <p class="cap" id="cap" aria-live="polite">Hold to talk, or hold the Space bar</p>
+    <div class="att-row" id="attRow" hidden></div>
+    <div class="composer">
+      <div class="plus-wrap">
+        <button class="plus" id="plusBtn" aria-haspopup="menu" aria-expanded="false" aria-label="Share screen, camera, photo or file" title="Add"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+        <div class="pop plus-menu" id="plusMenu" role="menu" hidden>
+          <button role="menuitem" id="screenBtn"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span><b>Share screen</b>Ask about anything on your computer</span></button>
+          <button role="menuitem" id="cameraBtn"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span><b>Camera</b>Show a notebook or worksheet</span></button>
+          <label role="menuitem" class="file-item"><svg class="i" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span><b>Photo or file</b>Picture, PDF, text or CSV</span><input type="file" id="photoInput" accept="image/*,application/pdf,.pdf,.txt,.csv,.md,.json" multiple></label>
+        </div>
+      </div>
+      <input id="askInput" type="text" enterkeyhint="send" autocomplete="off" placeholder="Ask anything" aria-label="Ask anything">
+      <button class="send" id="sendBtn" aria-label="Send"><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <button class="orb" id="orb" data-state="idle" aria-label="Hold to talk"><span class="eye l"></span><span class="eye r"></span><span class="mouth"></span></button>
+    </div>
+    <div class="dock-foot">
+      <button class="tbtn" id="newTopicBtn">New topic</button>
+      <p class="cap" id="cap" aria-live="polite">Hold to talk, or hold the Space bar</p>
+      <button class="icon-btn small" id="muteBtn" aria-pressed="false" aria-label="Mute voice" title="Mute voice"><svg class="i" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path id="muteWave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button>
+    </div>
   </div>
 </footer>
 
@@ -372,6 +586,12 @@ details summary{cursor:pointer;font:500 14px var(--font-d);color:var(--muted);ma
         <div><button class="sbtn" id="testOpenaiBtn">Play a sample</button></div>
       </div>
       <label class="fld">Speaking speed <span id="rateOut">1.0</span><input id="setRate" type="range" min="0.7" max="1.4" step="0.05"></label>
+    </section>
+    <section class="set">
+      <h3>Answers</h3>
+      <label class="check" style="margin:4px 0 10px"><input type="checkbox" id="setWeb">Search the web when an answer needs fresh facts (prices, news, opening times)</label>
+      <label class="check" style="margin:0"><input type="checkbox" id="autoLook">Take a fresh look at the shared screen or camera with every question</label>
+      <p class="help" style="margin-top:8px">If web search gives an error, an admin must switch it on for your key in the Anthropic Console.</p>
     </section>
     <section class="set">
       <h3>Appearance</h3>
@@ -444,15 +664,13 @@ details summary{cursor:pointer;font:500 14px var(--font-d);color:var(--muted);ma
   <div class="dlg-head"><h2 id="helpTitle">How to use Tarini</h2><button class="icon-btn" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="dlg-body">
     <ol class="how">
-      <li><strong>Pick who is using it.</strong> Tap the name at the top. Children get hints, not answers.</li>
-      <li><strong>Pick a mode.</strong> The row of buttons under the header, such as Homework hints or Show me how.</li>
-      <li><strong>Show Tarini something.</strong> Share screen for anything on the computer, Camera for a notebook, or Add photo.</li>
-      <li><strong>Hold the yellow buddy and talk.</strong> Let go to send. A quick tap keeps listening until you tap again. You can also hold the Space bar or type.</li>
-      <li><strong>Follow the answer.</strong> Tarini speaks, writes the steps, and puts numbered circles on the picture.</li>
-      <li><strong>Keep going.</strong> Tap a suggested question, press Bigger hint, or press New topic to start fresh.</li>
+      <li><strong>Ask.</strong> Hold the yellow buddy and talk, or type in the box. Tarini works out what kind of help you need.</li>
+      <li><strong>Show it something with +.</strong> Share your screen, use the camera, or add a photo, PDF or file.</li>
+      <li><strong>Follow the answer.</strong> Tarini speaks, writes the steps, marks the spots on the picture, and searches the web when it needs fresh facts.</li>
+      <li><strong>Children get hints, not answers.</strong> Tap the name at the top to switch person. Leaving child mode needs the parent PIN.</li>
     </ol>
-    <p class="help">Working in another app? Press the window icon at the top for the floating buddy. It stays on top so you can ask without switching back.</p>
-    <p class="help">Everything is saved by day in History, and the chart icon makes a weekly PDF report.</p>
+    <p class="help">Working in another program? The window icon at the top opens a small floating buddy that stays on top.</p>
+    <p class="help">History, the weekly report and settings are in the menu at the top right.</p>
   </div>
   <div class="dlg-foot"><button class="pbtn" data-close>Got it</button></div>
 </dialog>
@@ -475,7 +693,7 @@ const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min
 const DEFAULTS = {
   apiKey: '', endpoint: DEFAULT_ENDPOINT,
   model: 'claude-sonnet-5-5', kidModel: 'claude-haiku-5-5',
-  lang: 'en-US', voiceURI: '', rate: 1, voiceEngine: 'device', openaiKey: '', openaiVoice: 'coral', showAllVoices: false, theme: 'dark', muted: false, autoLook: true,
+  webSearch: true, lang: 'en-US', voiceURI: '', rate: 1, voiceEngine: 'device', openaiKey: '', openaiVoice: 'coral', showAllVoices: false, theme: 'dark', muted: false, autoLook: true,
   pinHash: '',
   profiles: [{ id: 'p-adult', name: 'Dad', kind: 'adult' }, { id: 'p-kid', name: 'Son', kind: 'kid' }],
   activeProfile: 'p-adult', mode: 'ask', seenHelp: false
@@ -498,6 +716,7 @@ Reply with ONLY one JSON object and nothing else (no markdown fences):
 Rules for points: mark exact spots in the IMAGE. x is measured from the left edge and y from the top edge, both in thousandths of the image width and height. Aim at the centre of the button, field, word or problem. Use at most 5 points, in step order. Leave points empty when there is no image or pointing does not help.
 Never invent text or numbers you cannot see. If the image is blurry or cut off, say so and ask for a better look.
 Give at most 3 references and only when learning more would really help.
+Also include "mode" (see the mode rules below).
 Reply in the same language the user speaks or writes in.`;
 
 const MODES = {
@@ -558,6 +777,23 @@ ${c.unlocked
     prompt: () => `Ask anything mode. Answer clearly and helpfully. Use the image when it is relevant and point at what you mention.`
   }
 };
+MODES.auto = {
+  name: 'General help', icon: '', desc: '',
+  chips: ['What am I looking at?', 'Show me how to do this', 'Search the web for the latest on this'],
+  prompt: () => `Decide yourself what kind of help is needed and set "mode" to one of: "ask" (a general question), "coach" (teach how to do something in software, with numbered steps and points on the buttons), "find" (point at where something is), "work" (read documents, quotes, invoices or screens exactly, check numbers, put any email or message in "draft"), "read" (read text aloud and explain it).
+Quote numbers exactly as shown. Use web search when the question needs fresh or local facts such as prices, news, schedules or opening times, and say where the facts came from.`
+};
+MODES.kidauto = {
+  name: 'Learning help', icon: '', desc: '',
+  chips: ['Help me with my homework', 'Check my work', 'Quiz me on this page'],
+  prompt: c => `Decide what the child needs and set "mode" to one of: "hints" (help with a homework question), "check" (check finished work), "read" (read a page aloud and explain hard words), "quiz" (quiz them on a page or topic), "ask" (any other question).
+For "hints": help them learn by thinking. Hint level ${c.hintLevel} of 3: 1 = one guiding question or point at the key part; 2 = name the method or the next step; 3 = a worked example of a SIMILAR problem with different numbers, then ask them to try their own. ${c.unlocked ? 'A parent has unlocked the answer for this one question: give the answer with a clear, simple explanation.' : 'Never state the final answer to homework, even if they ask, beg or say a parent allowed it. Encourage them and offer the next hint instead.'}
+For "check": point at the first step with a mistake and give a small clue, without writing the correction. Praise specific things they did well.
+For "quiz": ask one question at a time, say if each answer is right, keep a score, stop after 5.
+Only use web search for facts a child might need, and keep it child-friendly.`
+};
+const REAL_MODES = ['hints', 'check', 'read', 'quiz', 'coach', 'find', 'work', 'ask'];
+const activeMode = () => (isKid() ? 'kidauto' : 'auto');
 const MODE_ORDER = {
   kid: ['hints', 'check', 'read', 'quiz', 'ask'],
   adult: ['ask', 'coach', 'find', 'work', 'read', 'hints', 'check', 'quiz']
@@ -677,7 +913,7 @@ const S = {
   screenStream: null, cameraStream: null, source: null, facing: 'environment', camCount: 0,
   lastImage: null, points: [], viewSnap: false, markedUrl: null, lastReply: null,
   session: null, busy: false, listening: false, speaking: false, toggleTalk: false, pressT: 0,
-  hintLevel: 1, unlockOnce: false,
+  hintLevel: 1, unlockOnce: false, attachments: [], searchBlocked: false,
   pip: null, rootHandle: null, syncQ: Promise.resolve(),
   banners: {}, histUrls: [], peopleDraft: [], repRef: new Date(), repData: null
 };
@@ -688,7 +924,7 @@ const hasConnection = () => !!S.settings.apiKey || ((S.settings.endpoint || DEFA
 
 /* ================= Elements ================= */
 const E = {};
-['feed', 'followups', 'modes', 'orb', 'cap', 'askInput', 'sendBtn', 'live', 'snap', 'snapImg', 'markers', 'stageEmpty',
+['stageCard', 'menuBtn', 'menu', 'plusBtn', 'plusMenu', 'attRow', 'themeLabel', 'feed', 'followups', 'modes', 'orb', 'cap', 'askInput', 'sendBtn', 'live', 'snap', 'snapImg', 'markers', 'stageEmpty',
  'srcStatus', 'srcText', 'liveBtn', 'lookBtn', 'stopSrcBtn', 'switchCamBtn', 'screenBtn', 'cameraBtn', 'photoInput', 'autoLook',
  'hintTools', 'hintLevel', 'biggerHintBtn', 'answerBtn', 'newTopicBtn', 'muteBtn', 'muteWave', 'whoBtn', 'whoName', 'whoDot',
  'pipBtn', 'historyBtn', 'reportBtn', 'themeBtn', 'settingsBtn', 'banner', 'bannerText', 'bannerBtn', 'bannerClose'
@@ -700,7 +936,7 @@ function applyTheme() {
   document.documentElement.dataset.theme = t;
   $('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#000000' : '#FFFFFF');
   E.themeBtn.setAttribute('aria-label', t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-  E.themeBtn.setAttribute('title', t === 'dark' ? 'Light mode' : 'Dark mode');
+  E.themeLabel.textContent = t === 'dark' ? 'Light mode' : 'Dark mode';
   if (S.pip) S.pip.document.documentElement.dataset.theme = t;
   document.querySelectorAll('input[name="themeMode"]').forEach(r => { r.checked = r.value === t; });
 }
@@ -708,7 +944,7 @@ function applyTheme() {
 /* ================= Orb + captions ================= */
 function idleCaption() {
   if (!SR) return 'Voice input needs Chrome, Edge or Safari. Type your question instead.';
-  return 'Hold to talk, or hold the Space bar';
+  return matchMedia('(pointer: coarse)').matches ? 'Hold the buddy to talk' : 'Hold to talk, or hold the Space bar';
 }
 function setCaption(text) {
   E.cap.textContent = text;
@@ -716,6 +952,7 @@ function setCaption(text) {
 }
 function setOrbState(state) {
   E.orb.dataset.state = state;
+  const hero = document.getElementById('heroOrb'); if (hero) hero.dataset.state = state;
   if (S.pip) { const o = S.pip.document.getElementById('pOrb'); if (o) o.dataset.state = state; }
   const label = { idle: 'Hold to talk', listening: 'Listening. Release to send', thinking: `${APP} is thinking`, speaking: 'Speaking. Press to interrupt' }[state];
   E.orb.setAttribute('aria-label', label);
@@ -791,7 +1028,7 @@ function bindOrb(btn) {
 function isTypingTarget(t) {
   if (!t || !t.closest) return false;
   if (t.closest('input, textarea, select, [contenteditable="true"]')) return true;
-  return t.tagName === 'BUTTON' && t.id !== 'orb' && t.id !== 'pOrb';
+  return t.tagName === 'BUTTON' && !['orb', 'pOrb', 'heroOrb'].includes(t.id);
 }
 function bindSpace(doc) {
   doc.addEventListener('keydown', e => {
@@ -1012,6 +1249,8 @@ function markerEl(p, i, animate) {
 }
 function renderStage() {
   const live = isLive();
+  E.stageCard.hidden = !live && !S.lastImage;
+  E.stageCard.classList.toggle('compact', !!E.feed.querySelector('.msg'));
   const showSnap = !!S.lastImage && (!live || S.viewSnap);
   E.stageEmpty.hidden = live || !!S.lastImage;
   E.live.hidden = !live;
@@ -1022,7 +1261,7 @@ function renderStage() {
     E.markers.replaceChildren(...S.points.map((p, i) => markerEl(p, i, true)));
   }
   E.liveBtn.hidden = !(live && showSnap);
-  E.stopSrcBtn.hidden = !live;
+  E.stopSrcBtn.textContent = live ? 'Stop sharing' : 'Close picture';
   E.lookBtn.hidden = !live;
   E.switchCamBtn.hidden = !(S.source === 'camera' && S.camCount > 1);
   E.screenBtn.setAttribute('aria-pressed', String(S.source === 'screen'));
@@ -1030,7 +1269,7 @@ function renderStage() {
   E.srcStatus.classList.toggle('on', live);
   E.srcText.textContent = S.source === 'screen' ? 'Sharing your screen'
     : S.source === 'camera' ? 'Camera is on'
-    : S.lastImage ? 'Using the last picture' : 'Nothing shared yet';
+    : S.lastImage ? (S.lastImage.kind === 'photo' ? 'Your photo' : 'Last picture') : '';
 }
 async function makeMarked(img, points) {
   const bmp = await createImageBitmap(img.blob);
@@ -1060,10 +1299,10 @@ async function makeMarked(img, points) {
 /* ================= Sessions + usage time ================= */
 function ensureSession() {
   const now = Date.now(), p = activeProfile(), s = S.session;
-  if (s && s.profileId === p.id && s.mode === S.settings.mode && now - s.lastActive < SESSION_GAP_MS) return { session: s, isNew: false };
+  if (s && s.profileId === p.id && now - s.lastActive < SESSION_GAP_MS) return { session: s, isNew: false };
   S.session = {
     id: uid(), start: now, lastActive: now, end: now,
-    profileId: p.id, profileName: p.name, profileKind: p.kind, mode: S.settings.mode,
+    profileId: p.id, profileName: p.name, profileKind: p.kind, mode: activeMode(),
     title: '', turns: [], activeMs: 0, imageFiles: {}, imageCount: 0, markedCount: 0,
     folderName: '', maxHint: 0, needsSync: false
   };
@@ -1075,7 +1314,7 @@ function touch() {
   s.activeMs += Math.min(Math.max(0, now - s.lastActive), IDLE_CAP_MS);
   s.lastActive = now; s.end = now;
 }
-async function recordTurn(s, text, img, reply, hintLevel, markedBlob) {
+async function recordTurn(s, text, img, reply, hintLevel, markedBlob, files = []) {
   const newFiles = [];
   let imageId = null, imageFile = null, markedFile = null;
   if (img) {
@@ -1088,9 +1327,11 @@ async function recordTurn(s, text, img, reply, hintLevel, markedBlob) {
   }
   if (markedBlob) { s.markedCount += 1; markedFile = `marked-${pad(s.markedCount)}.png`; newFiles.push({ name: markedFile, blob: markedBlob }); }
   const t = Date.now();
-  s.turns.push({ role: 'user', ts: t, text, imageId, imageFile });
-  s.turns.push({ role: 'assistant', ts: t, reply, imageId, markedFile, hintLevel });
-  if (s.mode === 'hints') s.maxHint = Math.max(s.maxHint || 0, hintLevel);
+  files.forEach(f => { if (f.blob) newFiles.push({ name: safeName(f.name) || 'attachment', blob: f.blob }); });
+  s.turns.push({ role: 'user', ts: t, text, imageId, imageFile, files: files.map(f => f.name) });
+  const { figure, ...savedReply } = reply;
+  s.turns.push({ role: 'assistant', ts: t, reply: savedReply, imageId, markedFile, hintLevel });
+  if (reply.mode === 'hints' || s.mode === 'hints') s.maxHint = Math.max(s.maxHint || 0, hintLevel);
   if (!s.title && reply.title) s.title = reply.title;
   touch();
   await DB.put('sessions', s);
@@ -1257,10 +1498,10 @@ function buildSystem(prof, modeId, ctx) {
   return [BASE_PROMPT, who, MODES[modeId].prompt(ctx), `Today is ${new Date().toDateString()}.`].join('\n\n');
 }
 const compactReply = r => ({ title: r.title, say: r.say, steps: r.steps, points: r.points, draft: r.draft });
-function buildMessages(s, text, img) {
+function buildMessages(s, text, img, files = []) {
   const msgs = [];
   for (const t of s.turns.slice(-16)) {
-    if (t.role === 'user') msgs.push({ role: 'user', content: t.text + (t.imageId ? ' [shared a picture]' : '') });
+    if (t.role === 'user') msgs.push({ role: 'user', content: t.text + (t.imageId ? ' [shared a picture]' : '') + ((t.files && t.files.length) ? ` [attached: ${t.files.join(', ')}]` : '') });
     else msgs.push({ role: 'assistant', content: JSON.stringify(compactReply(t.reply)) });
   }
   while (msgs.length && msgs[0].role !== 'user') msgs.shift();
@@ -1270,21 +1511,32 @@ function buildMessages(s, text, img) {
     content.push({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: img.b64 } });
     lead = img.kind === 'screen' ? 'This is a screenshot of my screen.' : 'This is a photo I took.';
   }
+  files.forEach(f => content.push(f.kind === 'pdf'
+    ? { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: f.b64 }, title: f.name }
+    : { type: 'document', source: { type: 'text', media_type: 'text/plain', data: f.text }, title: f.name }));
   content.push({ type: 'text', text: lead ? `${lead}\n\n${text}` : text });
   msgs.push({ role: 'user', content });
   return msgs;
 }
-async function callClaude({ system, messages, model, maxTokens = 1200, override }) {
+async function callClaude({ system, messages, model, maxTokens = 1200, override, search = false, full = false }) {
   const cfg = override || S.settings;
   const endpoint = (cfg.endpoint || DEFAULT_ENDPOINT).trim();
   const headers = { 'content-type': 'application/json', 'anthropic-version': '2023-06-01' };
   if (cfg.apiKey) { headers['x-api-key'] = cfg.apiKey.trim(); headers['anthropic-dangerous-direct-browser-access'] = 'true'; }
+  const useSearch = search && S.settings.webSearch !== false && !S.searchBlocked;
+  const body = { model, max_tokens: useSearch ? Math.max(maxTokens, 2000) : maxTokens, system, messages };
+  if (useSearch) body.tools = [{ type: 'web_search_20250305', name: 'web_search', max_uses: 3 }];
   let res;
-  try { res = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify({ model, max_tokens: maxTokens, system, messages }) }); }
+  try { res = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify(body) }); }
   catch { throw new Error('Could not reach Claude. Check your internet connection.'); }
   let data = null; try { data = await res.json(); } catch { /* non-JSON */ }
   if (!res.ok) {
     const msg = (data && data.error && data.error.message) || '';
+    if (useSearch && res.status === 400 && /web.?search|tool/i.test(msg)) {
+      S.searchBlocked = true;
+      toast('Web search is not switched on for this API key, so I answered without it.');
+      return callClaude({ system, messages, model, maxTokens, override, search: false, full });
+    }
     if (res.status === 401) throw new Error('Your API key was not accepted. Open Settings and check it.');
     if (res.status === 404 && /model/i.test(msg)) throw new Error(`The model "${model}" was not found. Choose another model in Settings.`);
     if (res.status === 429) throw new Error('Too many questions at once. Wait a few seconds and try again.');
@@ -1292,7 +1544,14 @@ async function callClaude({ system, messages, model, maxTokens = 1200, override 
     if (/credit balance/i.test(msg)) throw new Error('Your Anthropic account is out of credit. Add credit at console.anthropic.com.');
     throw new Error(msg || `The request failed (error ${res.status}).`);
   }
-  return ((data && data.content) || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+  const blocks = (data && data.content) || [];
+  const text = blocks.filter(b => b.type === 'text').map(b => b.text).join('').trim();
+  if (!full) return text;
+  const seen = new Set(), sources = [];
+  const add = (url, title) => { if (!url || seen.has(url) || sources.length >= 5) return; seen.add(url); sources.push({ url, title: title || url }); };
+  blocks.forEach(b => { if (b.type === 'text' && Array.isArray(b.citations)) b.citations.forEach(c => add(c.url, c.title)); });
+  if (!sources.length) blocks.forEach(b => { if (b.type === 'web_search_tool_result' && Array.isArray(b.content)) b.content.slice(0, 3).forEach(r => add(r.url, r.title)); });
+  return { text, sources, searched: blocks.some(b => b.type === 'server_tool_use') };
 }
 function parseReply(text) {
   let obj = null;
@@ -1310,7 +1569,8 @@ function parseReply(text) {
       .filter(p => Number.isFinite(p.x) && Number.isFinite(p.y)).slice(0, 5),
     draft: str(obj.draft),
     references: arr(obj.references).map(r => ({ title: str(r && r.title).slice(0, 80), search: str(r && r.search).slice(0, 160) })).filter(r => r.title || r.search).slice(0, 3),
-    followups: arr(obj.followups).map(str).filter(Boolean).slice(0, 3)
+    followups: arr(obj.followups).map(str).filter(Boolean).slice(0, 3),
+    mode: REAL_MODES.includes(str(obj.mode)) ? str(obj.mode) : ''
   };
 }
 
@@ -1322,29 +1582,36 @@ async function ask(raw, opts = {}) {
   if (!hasConnection()) { setOrbState('idle'); toast('Add your API key in Settings first.'); openSettings(true); return; }
   stopSpeaking();
   S.busy = true; setOrbState('thinking');
-  const prof = activeProfile(), modeId = S.settings.mode;
+  const prof = activeProfile(), modeId = activeMode();
+  const files = S.attachments.splice(0); renderAttachments();
 
   if (isLive() && !opts.noLook && (S.settings.autoLook || !S.lastImage)) {
     try { await captureFromLive(); } catch (e) { console.warn(e); }
   }
   const { session: s, isNew } = ensureSession();
-  const emptyEl = E.feed.querySelector('.empty'); if (emptyEl) emptyEl.remove();
+  const emptyEl = E.feed.querySelector('.empty'); if (emptyEl) emptyEl.remove(); setEmpty(false);
   if (isNew && E.feed.querySelector('.msg')) E.feed.append(el('div', { class: 'divider', text: 'New session' }));
   touch();
 
   const img = S.lastImage;
   const firstUseOfImg = img && !s.imageFiles[img.id];
-  E.feed.append(el('div', { class: 'msg me' }, text, firstUseOfImg ? el('img', { src: img.url, alt: 'Picture shared with this question' }) : null));
+  E.feed.append(el('div', { class: 'msg me' }, text, firstUseOfImg ? el('img', { src: img.url, alt: 'Picture shared with this question' }) : null,
+    files.length ? el('span', { class: 'att-note', text: `Attached: ${files.map(f => f.name).join(', ')}` }) : null));
   const thinking = el('div', { class: 'thinking', role: 'status', 'aria-label': `${APP} is thinking` }, el('span'), el('span'), el('span'));
   E.feed.append(thinking); scrollFeed();
-  E.followups.replaceChildren(); E.askInput.value = '';
+  E.followups.replaceChildren(); E.askInput.value = ''; E.sendBtn.classList.remove('ready');
 
   const hintLevel = S.hintLevel, unlocked = S.unlockOnce; S.unlockOnce = false;
   try {
     const system = buildSystem(prof, modeId, { hintLevel, unlocked });
-    const messages = buildMessages(s, text, img);
+    const messages = buildMessages(s, text, img, files);
     const model = prof.kind === 'kid' ? (S.settings.kidModel || S.settings.model) : S.settings.model;
-    const reply = parseReply(await callClaude({ system, messages, model }));
+    const out = await callClaude({ system, messages, model, search: true, full: true });
+    const reply = parseReply(out.text);
+    reply.sources = out.sources;
+    if (img && reply.points.length) reply.figure = { url: img.url };
+    if (reply.mode && (s.mode === 'auto' || s.mode === 'kidauto' || !s.turns.length)) s.mode = reply.mode;
+    if (reply.mode !== 'hints') S.hintLevel = 1;
     if (!img) reply.points = [];
     thinking.remove();
 
@@ -1359,10 +1626,11 @@ async function ask(raw, opts = {}) {
     renderFollowups(reply.followups);
     S.busy = false;
     speak(reply.say);
-    try { await recordTurn(s, text, img, reply, hintLevel, markedBlob); }
+    try { await recordTurn(s, text, img, reply, hintLevel, markedBlob, files); }
     catch (err) { console.warn(err); toast('The answer could not be saved to history.'); }
   } catch (e) {
     thinking.remove();
+    if (files.length && !S.attachments.length) { S.attachments.push(...files); renderAttachments(); }
     E.feed.append(el('div', { class: 'msg err', role: 'alert' }, e.message || 'Something went wrong. Try again.'));
     scrollFeed();
   } finally {
@@ -1382,6 +1650,10 @@ function assistantBubble(reply, opts = {}) {
   const b = el('article', { class: 'msg bot' });
   b.append(el('div', { class: 'who' }, el('span', { class: 'mini-orb', 'aria-hidden': 'true' }), APP));
   b.append(el('p', { class: 'say', text: reply.say }));
+  if (reply.figure && reply.points.length) {
+    b.append(el('div', { class: 'snap answer-fig' }, el('img', { src: reply.figure.url, alt: 'Your picture with the spots marked' }),
+      el('div', { class: 'markers' }, reply.points.map((p, i) => markerEl(p, i, true)))));
+  }
   if (reply.steps.length) b.append(el('ol', { class: 'steps' }, reply.steps.map(s => el('li', { text: s }))));
   if (reply.draft) {
     const copy = el('button', { class: 'sbtn' }, 'Copy draft');
@@ -1391,7 +1663,12 @@ function assistantBubble(reply, opts = {}) {
     });
     b.append(el('div', { class: 'draft-wrap' }, el('pre', { class: 'draft', text: reply.draft }), copy));
   }
-  if (reply.references.length) {
+  if (reply.sources && reply.sources.length) {
+    let host = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return u; } };
+    b.append(el('div', { class: 'sources' }, el('span', { class: 'lbl', text: 'Sources:' }),
+      reply.sources.map(src => el('a', { class: 'src', href: src.url, target: '_blank', rel: 'noopener noreferrer', title: src.title },
+      el('img', { src: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host(src.url))}&sz=32`, alt: '', loading: 'lazy' }), host(src.url)))));
+  } else if (reply.references.length) {
     b.append(el('div', { class: 'refs' }, el('span', { class: 'lbl', text: 'Look up:' }),
       reply.references.map(r => el('a', { class: 'ref', href: searchUrl(r.search || r.title), target: '_blank', rel: 'noopener noreferrer', text: r.title || r.search }))));
   }
@@ -1404,27 +1681,53 @@ function assistantBubble(reply, opts = {}) {
 function renderFollowups(list) {
   E.followups.replaceChildren(...list.map(q => el('button', { class: 'chip', onclick: () => ask(q) }, q)));
 }
-function emptyState() {
-  const p = activeProfile(), m = MODES[S.settings.mode];
-  const how = p.kind === 'kid'
-    ? 'Show me your page with the camera or a photo, then hold the yellow button and ask.'
-    : 'Share your screen, the camera or a photo, then hold the yellow button and ask.';
-  return el('div', { class: 'empty' },
-    el('p', { class: 'empty-title', text: `Hi ${p.name}` }),
-    el('p', { class: 'mode-desc' }, el('strong', { text: `${m.name}: ` }), m.desc),
-    el('p', { text: how }),
-    el('div', { class: 'chips' }, m.chips.map(c => el('button', { class: 'chip', onclick: () => ask(c) }, c))));
+const STARTER_ICONS = {
+  screen: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>',
+  file: '<svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>',
+  web: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+  camera: '<svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+  quiz: '<svg viewBox="0 0 24 24"><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 1-1 1.7M12 17v.01"/><circle cx="12" cy="12" r="9"/></svg>'
+};
+function greeting() {
+  const h = new Date().getHours();
+  return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
 }
+async function starterAction(kind) {
+  if (kind === 'screen') { if (!isLive()) await startScreen(); if (isLive()) ask('What am I looking at? Explain what is on my screen.'); return; }
+  if (kind === 'camera') { if (S.source !== 'camera') await startCamera(); if (S.source === 'camera') { E.askInput.focus(); toast('Point the camera at your page, then hold the buddy and ask.'); } return; }
+  if (kind === 'file') { E.photoInput.click(); return; }
+  if (kind === 'web') { E.askInput.value = 'Search the web: '; E.askInput.focus(); E.sendBtn.classList.add('ready'); return; }
+  if (kind === 'quiz') { ask('Quiz me with five questions for my age, one at a time.'); }
+}
+function emptyState() {
+  const p = activeProfile(), kid = p.kind === 'kid';
+  const starters = kid
+    ? [['camera', 'Help with my homework'], ['file', 'Check a photo of my work'], ['quiz', 'Quiz me']]
+    : [['screen', "Explain what's on my screen"], ['file', 'Read a photo or PDF'], ['web', 'Search the web']];
+  const orb = el('button', { class: 'orb', id: 'heroOrb', 'data-state': E.orb.dataset.state || 'idle', 'aria-label': 'Hold to talk' },
+    el('span', { class: 'eye l' }), el('span', { class: 'eye r' }), el('span', { class: 'mouth' }));
+  bindOrb(orb);
+  return el('div', { class: 'empty hero' },
+    el('div', { class: 'hero-orb-wrap' }, orb),
+    el('h2', { class: 'greet', text: `${greeting()}, ${p.name}` }),
+    el('p', { class: 'sub', text: kid ? 'Hold me and ask, or type below. Show me your homework and I will give you hints, so you do the thinking.' : 'Hold me and talk, or type below. Tap + to show me your screen, a photo or a file.' }),
+    el('div', { class: 'starters' }, starters.map(([k, label]) => {
+      const b = el('button', { class: 'starter', onclick: () => starterAction(k) });
+      const ic = el('span', { class: 'ic', 'aria-hidden': 'true' }); ic.innerHTML = STARTER_ICONS[k];
+      b.append(ic, label); return b;
+    })));
+}
+function setEmpty(on) { document.body.classList.toggle('is-empty', on); }
 function resetConversation() {
   S.session = null; S.hintLevel = 1; S.unlockOnce = false; S.lastReply = null; S.points = [];
   if (S.markedUrl) { URL.revokeObjectURL(S.markedUrl); S.markedUrl = null; }
-  E.feed.replaceChildren(emptyState()); E.followups.replaceChildren();
+  E.feed.replaceChildren(emptyState()); E.followups.replaceChildren(); setEmpty(true);
   renderStage(); renderHintTools(); renderPip();
 }
 
 /* ================= Hints ================= */
 function renderHintTools() {
-  const on = S.settings.mode === 'hints';
+  const on = isKid() && !!S.lastReply && S.lastReply.mode === 'hints';
   E.hintTools.hidden = !on;
   const answered = !!(S.session && S.session.turns.length);
   E.hintLevel.textContent = `Hint ${S.hintLevel} of 3`;
@@ -1511,18 +1814,7 @@ async function switchProfile(id) {
 }
 
 /* ================= Modes ================= */
-function renderModes() {
-  const list = MODE_ORDER[activeProfile().kind];
-  if (!list.includes(S.settings.mode)) { S.settings.mode = list[0]; saveSettings(); }
-  E.modes.replaceChildren(...list.map(id => el('button', {
-    class: 'mode', 'aria-pressed': String(id === S.settings.mode), onclick: () => setMode(id)
-  }, el('span', { 'aria-hidden': 'true', text: MODES[id].icon }), MODES[id].name)));
-}
-function setMode(id) {
-  if (id === S.settings.mode) return;
-  S.settings.mode = id; saveSettings();
-  renderModes(); resetConversation();
-}
+function renderModes() { E.modes.hidden = true; }
 
 /* ================= Banner ================= */
 function showBanner(key, text, btnLabel, fn) { S.banners[key] = { text, btnLabel, fn }; renderBanner(); }
@@ -1584,13 +1876,13 @@ function renderPip() {
   const w = S.pip; if (!w) return;
   const q = id => w.document.getElementById(id);
   if (!q('pMode')) return;
-  q('pMode').textContent = `${activeProfile().name}, ${MODES[S.settings.mode].name}`;
+  q('pMode').textContent = activeProfile().name;
   const img = q('pImg'), src = S.markedUrl || (S.lastImage && S.lastImage.url) || '';
   img.hidden = !src; if (src && img.getAttribute('src') !== src) img.src = src;
   q('pSay').textContent = S.lastReply ? S.lastReply.say : 'Share your screen in the main window, then hold this button and ask about any app.';
   const ol = q('pSteps');
   ol.replaceChildren(...((S.lastReply && S.lastReply.steps) || []).map(s => { const li = w.document.createElement('li'); li.textContent = s; return li; }));
-  const h = q('pHint'); h.hidden = S.settings.mode !== 'hints'; h.disabled = E.biggerHintBtn.disabled;
+  const h = q('pHint'); h.hidden = E.hintTools.hidden; h.disabled = E.biggerHintBtn.disabled;
   q('pOrb').dataset.state = E.orb.dataset.state;
 }
 
@@ -1914,6 +2206,7 @@ async function openSettings(intro = false) {
   $('#setRate').value = s.rate; $('#rateOut').textContent = Number(s.rate).toFixed(2);
   $('#testOut').textContent = ''; $('#testOut').className = '';
   S.peopleDraft = structuredClone(s.profiles);
+  $('#setWeb').checked = s.webSearch !== false; E.autoLook.checked = !!s.autoLook;
   $('#setAllVoices').checked = !!s.showAllVoices; $('#setVoice').dataset.chosen = s.voiceURI || '';
   populateVoices(); delete $('#setVoice').dataset.chosen;
   document.querySelectorAll('input[name="voiceEngine"]').forEach(r => { r.checked = r.value === (s.voiceEngine || 'device'); });
@@ -1937,6 +2230,7 @@ function saveSettingsFromForm() {
   s.endpoint = $('#setEndpoint').value.trim() || DEFAULT_ENDPOINT;
   s.lang = $('#setLang').value; s.voiceURI = $('#setVoice').value; s.rate = Number($('#setRate').value) || 1;
   s.showAllVoices = $('#setAllVoices').checked;
+  s.webSearch = $('#setWeb').checked; S.searchBlocked = false;
   s.voiceEngine = (document.querySelector('input[name="voiceEngine"]:checked') || {}).value || 'device';
   s.openaiKey = $('#setOpenaiKey').value.trim(); s.openaiVoice = $('#setOpenaiVoice').value || 'coral';
   if (s.voiceEngine === 'openai' && !s.openaiKey) { s.voiceEngine = 'device'; toast('No OpenAI key added, so the device voice is used.'); }
@@ -1949,8 +2243,39 @@ function saveSettingsFromForm() {
   const now = activeProfile();
   renderWho(); renderModes();
   if (now.id !== prevActive.id || now.kind !== prevActive.kind || now.name !== prevActive.name) resetConversation();
-  if (!E.feed.querySelector('.msg')) E.feed.replaceChildren(emptyState());
+  if (!E.feed.querySelector('.msg')) { E.feed.replaceChildren(emptyState()); setEmpty(true); }
   toast('Settings saved');
+}
+
+/* ================= Popovers + attachments ================= */
+function closePops() {
+  [[E.menu, E.menuBtn], [E.plusMenu, E.plusBtn]].forEach(([m, b]) => { m.hidden = true; b.setAttribute('aria-expanded', 'false'); });
+}
+function togglePop(menu, btn) {
+  const open = menu.hidden; closePops();
+  if (open) { menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); const f = menu.querySelector('button, label'); if (f) f.focus({ preventScroll: true }); }
+}
+function renderAttachments() {
+  E.attRow.hidden = !S.attachments.length;
+  E.attRow.replaceChildren(...S.attachments.map((f, i) => el('span', { class: 'att' },
+    el('span', { text: `${f.kind === 'pdf' ? 'PDF' : 'File'}: ${f.name}` }),
+    el('button', { 'aria-label': `Remove ${f.name}`, onclick: () => { S.attachments.splice(i, 1); renderAttachments(); } }, '\u00D7'))));
+}
+async function handleFiles(list) {
+  for (const file of list) {
+    const name = file.name || 'file';
+    if (/^image\//.test(file.type)) { await loadPhoto(file); continue; }
+    if (S.attachments.length >= 5) { toast('Up to 5 files at a time.'); break; }
+    if (file.type === 'application/pdf' || /\.pdf$/i.test(name)) {
+      if (file.size > 25 * 1024 * 1024) { toast(`${name} is too big. PDFs must be under 25 MB.`); continue; }
+      S.attachments.push({ kind: 'pdf', name, b64: await blobToB64(file), blob: file });
+    } else if (/^text\//.test(file.type) || /\.(txt|csv|md|json)$/i.test(name)) {
+      const text = (await file.text()).slice(0, 150000);
+      S.attachments.push({ kind: 'text', name, text, blob: file });
+    } else { toast(`${name}: this file type is not supported yet. Try PDF, image, text or CSV.`); }
+  }
+  renderAttachments();
+  if (S.attachments.length) { toast('File added. Now ask your question.'); E.askInput.focus(); }
 }
 
 /* ================= Wire up ================= */
@@ -1965,12 +2290,22 @@ function bindUI() {
   E.screenBtn.addEventListener('click', startScreen);
   E.cameraBtn.addEventListener('click', () => startCamera());
   E.switchCamBtn.addEventListener('click', () => startCamera(S.facing === 'environment' ? 'user' : 'environment'));
-  E.photoInput.addEventListener('change', () => { loadPhoto(E.photoInput.files[0]); E.photoInput.value = ''; });
+  E.photoInput.addEventListener('change', () => { handleFiles([...E.photoInput.files]); E.photoInput.value = ''; closePops(); });
+  E.plusBtn.addEventListener('click', e => { e.stopPropagation(); togglePop(E.plusMenu, E.plusBtn); });
+  E.menuBtn.addEventListener('click', e => { e.stopPropagation(); togglePop(E.menu, E.menuBtn); });
+  [E.menu, E.plusMenu].forEach(m => m.addEventListener('click', e => { if (e.target.closest('button')) closePops(); }));
+  document.addEventListener('click', e => { if (!e.target.closest('.pop')) closePops(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePops(); });
+  E.askInput.addEventListener('input', () => E.sendBtn.classList.toggle('ready', !!E.askInput.value.trim()));
+  if (!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia)) E.screenBtn.hidden = true;
   E.autoLook.checked = !!S.settings.autoLook;
   E.autoLook.addEventListener('change', () => { S.settings.autoLook = E.autoLook.checked; saveSettings(); });
   E.lookBtn.addEventListener('click', lookNow);
   E.liveBtn.addEventListener('click', () => { S.viewSnap = false; renderStage(); });
-  E.stopSrcBtn.addEventListener('click', () => { stopStreams(); renderStage(); });
+  E.stopSrcBtn.addEventListener('click', () => {
+    if (isLive()) stopStreams(); else { S.lastImage = null; S.points = []; }
+    renderStage(); renderPip();
+  });
 
   E.biggerHintBtn.addEventListener('click', biggerHint);
   E.answerBtn.addEventListener('click', showAnswer);
