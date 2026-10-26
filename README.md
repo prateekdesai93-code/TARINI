@@ -1,5 +1,16 @@
 # Tarini - Do it for me (browser extension)
 
+## What's new in 1.4 - the + button
+- Tap **+** in the panel (or drag a file onto it) to add a PDF, image, text or CSV file. Tarini reads it together with the page, so you can say "compare this quotation with the order lines on this page".
+- Up to 5 files, 10 MB each. They stay with the task even when Odoo changes page.
+
+## What's new in 1.3 - fewer approvals
+- **Smart mode is now the default.** Clicking, typing, scrolling and opening menus run by themselves (with a short ring so you can see them). Saving counts down 3 seconds so you can stop it. Anything that confirms, sends, posts, pays, deletes or discards ALWAYS waits for your OK.
+- **The plan starts by itself** after 6 seconds. Tap Change or Cancel before then if you want to.
+- **Prefer to approve everything?** Open Tarini and choose "Ask every step". In that mode, "Approve all low-risk" lets one tap cover the rest of the task's safe steps.
+- **Odoo aware.** On Odoo pages Tarini knows how lookup fields, order lines, Save and status buttons work.
+- Finished steps shrink to one line so the panel stays easy to read.
+
 ## What is new in 1.2: Tarini lives inside the page
 - A small **Tarini tab sits on the right edge of every web page**. Click it and the Tarini panel opens inside the page, and the page shifts left to make room. No new tab, no separate window.
 - **Toolbar icon** or **Alt + Y** also opens and closes it.
@@ -12,7 +23,7 @@
 
 
 ## Flat layout
-This build keeps every file in ONE folder (no icons/ or fonts/ subfolders), so it works exactly as you upload it to GitHub: select all files and drag them in. Nothing needs to be placed in folders.
+This build keeps every file in ONE folder (no icons/ or fonts/ subfolders), so it works exactly as you upload it to GitHub: select all files and drag them in.
 
 ## Install (Chrome or Edge, Windows or Mac)
 1. Unzip this file. Keep the folder somewhere permanent, for example Documents/Tarini_Agent.
@@ -20,7 +31,7 @@ This build keeps every file in ONE folder (no icons/ or fonts/ subfolders), so i
 3. Turn on **Developer mode** (top right in Chrome, left side in Edge).
 4. Click **Load unpacked** and choose the unzipped folder (the one that contains manifest.json).
 5. Click the puzzle icon in the toolbar and pin **Tarini**.
-6. Click the Tarini icon. The side panel opens. Paste your Anthropic API key in Settings and press Test connection.
+6. Click the Tarini icon. The side panel opens. Paste your Tarini passkey in Settings and press Test connection.
 
 ## Quickest way (no new tab, no screen share)
 - **Select text** on any web page: the yellow Tarini face appears. Click it.

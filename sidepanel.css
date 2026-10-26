@@ -23,10 +23,10 @@ h1,h2{font-family:var(--font-d);font-weight:600;margin:0}
 .brand{display:flex;gap:10px;align-items:center;margin-right:auto}
 .brand h1{font-size:19px;line-height:1}
 .brand p{margin:2px 0 0;font:500 12px var(--font-d);color:var(--sun)}
-.orb-mini{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 34% 28%,#FFE6A6 0,var(--sun) 52%,#E39A12 100%);position:relative;flex:none}
-.orb-mini::before,.orb-mini::after{content:"";position:absolute;top:30%;width:4px;height:7px;border-radius:3px;background:var(--sun-ink)}
-.orb-mini::before{left:31%}.orb-mini::after{right:31%}
-.orb-mini.busy::before,.orb-mini.busy::after{animation:look 1.3s ease-in-out infinite}
+.orb-mini{width:32px;height:32px;background:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjMgNiAyNDQgMjQ0IiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IlRhcmluaSI+PGRlZnM+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJtYm9keSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGN4PSI5MiIgY3k9IjU4IiByPSIyMTUiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjRkZGM0NCIi8+PHN0b3Agb2Zmc2V0PSIuMjYiIHN0b3AtY29sb3I9IiNGRkQ1NjEiLz48c3RvcCBvZmZzZXQ9Ii41NiIgc3RvcC1jb2xvcj0iI0ZGQzIzRCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0U1OEEwMCIvPgogIDwvcmFkaWFsR3JhZGllbnQ+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJtc2hpbmUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjeD0iOTYiIGN5PSI1MCIgcj0iNjAiIGdyYWRpZW50VHJhbnNmb3JtPSJ0cmFuc2xhdGUoOTYgNTApIHJvdGF0ZSgtMjgpIHNjYWxlKDEgLjU2KSB0cmFuc2xhdGUoLTk2IC01MCkiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii42MiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2ZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgPC9yYWRpYWxHcmFkaWVudD4KICA8bGluZWFyR3JhZGllbnQgaWQ9Im1yaW0iIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgIDxzdG9wIG9mZnNldD0iLjYyIiBzdG9wLWNvbG9yPSIjOEE0QTAwIiBzdG9wLW9wYWNpdHk9IjAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM4QTRBMDAiIHN0b3Atb3BhY2l0eT0iLjI4Ii8+CiAgPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPjxwYXRoIGQ9Ik0xMTAuNiAyMTQuNSBBMTAwIDEwMCAwIDEgMCAzOS43IDE2Mi45IFEzMSAxOTYgMjQuNSAyMjcgUTIyIDIzOC41IDMzIDIzNy41IFE3OCAyMzIgMTEwLjYgMjE0LjUgWiIgZmlsbD0idXJsKCNtYm9keSkiLz48cGF0aCBkPSJNMTEwLjYgMjE0LjUgQTEwMCAxMDAgMCAxIDAgMzkuNyAxNjIuOSBRMzEgMTk2IDI0LjUgMjI3IFEyMiAyMzguNSAzMyAyMzcuNSBRNzggMjMyIDExMC42IDIxNC41IFoiIGZpbGw9InVybCgjbXJpbSkiLz48cGF0aCBkPSJNMTEwLjYgMjE0LjUgQTEwMCAxMDAgMCAxIDAgMzkuNyAxNjIuOSBRMzEgMTk2IDI0LjUgMjI3IFEyMiAyMzguNSAzMyAyMzcuNSBRNzggMjMyIDExMC42IDIxNC41IFoiIGZpbGw9InVybCgjbXNoaW5lKSIvPgogIDxyZWN0IHg9Ijc5IiB5PSI4MCIgd2lkdGg9IjI2IiBoZWlnaHQ9IjU4IiByeD0iMTMiIGZpbGw9IiMxRjE1MDAiLz48cmVjdCB4PSIxNTEiIHk9IjgwIiB3aWR0aD0iMjYiIGhlaWdodD0iNTgiIHJ4PSIxMyIgZmlsbD0iIzFGMTUwMCIvPgogIDxjaXJjbGUgY3g9Ijk1IiBjeT0iOTciIHI9IjYuNSIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIuOTIiLz48Y2lyY2xlIGN4PSIxNjciIGN5PSI5NyIgcj0iNi41IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9Ii45MiIvPgogIDxwYXRoIGQ9Ik0xMDQgMTUzUTEyOCAxNzYgMTUyIDE1MyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMUYxNTAwIiBzdHJva2Utd2lkdGg9IjExIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=) center/contain no-repeat;position:relative;flex:none}
+.orb-mini::before,.orb-mini::after{display:none}
+.orb-mini.busy{animation:thinkbob 1.1s ease-in-out infinite}
+@keyframes thinkbob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(-6deg)}}
 @keyframes look{0%,100%{transform:translateX(-2px)}50%{transform:translateX(2px)}}
 
 .icon-btn{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;border:1px solid transparent;background:transparent;color:var(--muted);flex:none}
@@ -153,3 +153,19 @@ html.embed .icon-btn[aria-pressed=true]#pushBtn{color:var(--sun)}
 html.embed #pushBtn[aria-pressed=true]{background:transparent}
 html.embed body{min-width:0}
 html.embed .top{padding-left:16px}
+
+/* v1.3: calmer feed + save countdown */
+.risk.soft{background:rgba(255,194,61,.16);color:var(--sun)}
+.card.mini{padding:8px 12px;border-radius:14px}
+.card.mini h3,.card.mini .why,.card.mini .keys,.card.mini ol,.card.mini .k{display:none}
+.card.mini .what{font-size:13.5px;margin:0;font-weight:500;color:var(--muted)}
+.card.mini .result{margin-top:2px;font-size:12.5px}
+.seg button small{font-weight:500;opacity:.7;font-size:11.5px}
+
+/* v1.4: attached files */
+.att-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}
+.attf{display:inline-flex;align-items:center;gap:4px;max-width:100%;background:var(--surface2);border:1px solid var(--line);border-radius:999px;padding:4px 5px 4px 12px;font:500 13px var(--font-d)}
+.attf span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:210px}
+.attf button{border:0;background:transparent;color:var(--muted);width:24px;height:24px;border-radius:50%;font-size:16px;line-height:1}
+.attf button:hover{background:var(--line);color:var(--text)}
+#composeView.drop{outline:2px dashed var(--sun);outline-offset:-6px;border-radius:18px}

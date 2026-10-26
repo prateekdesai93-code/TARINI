@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Tarini - Do it for me",
   "short_name": "Tarini",
-  "version": "1.2.0",
+  "version": "1.4.1",
   "description": "Tarini lives on the right edge of every web page. Open it to ask, learn how, or have it do things for you with your OK.",
   "minimum_chrome_version": "116",
   "icons": {

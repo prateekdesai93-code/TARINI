@@ -106,7 +106,7 @@ const ASK_LABEL = { explain: 'Explain this', howto: 'How do I do this', ask: 'Qu
 
 async function answer(msg, tab) {
   const settings = await getSettings();
-  if (!settings.apiKey) throw new Error('Add your Anthropic API key first: click the yellow Tarini icon in the toolbar, then Settings.');
+  if (!settings.apiKey) throw new Error('Add your Tarini passkey first: click the yellow Tarini icon in the toolbar, then Settings.');
   const tabId = tab.id;
   let snap = null, shot = null;
   try {
@@ -141,9 +141,9 @@ Use web search only when the answer needs fresh facts from outside this page, su
     if (!res.ok) {
       const m = (data && data.error && data.error.message) || '';
       if (useSearch && res.status === 400 && /web.?search|tool/i.test(m)) return call(false);
-      if (res.status === 401) throw new Error('Your API key was not accepted. Check it in Tarini settings.');
+      if (res.status === 401) throw new Error('Your passkey was not accepted. Check it in Tarini settings.');
       if (res.status === 429) throw new Error('Too many requests. Try again in a few seconds.');
-      if (res.status === 529 || res.status === 503) throw new Error('Claude is busy. Try again shortly.');
+      if (res.status === 529 || res.status === 503) throw new Error('The AI is busy. Try again shortly.');
       throw new Error(m || `Request failed (error ${res.status}).`);
     }
     return data;

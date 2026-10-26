@@ -111,6 +111,7 @@
     const text = clean(document.body ? document.body.innerText : '', 3500);
     const doc = document.documentElement;
     return {
+      app: (document.querySelector('.o_web_client, .o_action_manager, .o_main_navbar') ? 'odoo' : ''),
       url: location.href, title: document.title, scrollY: Math.round(scrollY),
       scrollMax: Math.max(0, doc.scrollHeight - innerHeight), viewport: [innerWidth, innerHeight],
       elements: items, text, truncated: els.length > items.length

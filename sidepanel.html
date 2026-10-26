@@ -21,19 +21,22 @@
     <div class="site" id="siteBox"><span class="site-dot"></span><div><span class="site-lbl">Working on this tab</span><b id="siteTitle">Loading</b><span id="siteUrl"></span></div></div>
     <label class="lbl" for="taskInput">What should I do here?</label>
     <textarea id="taskInput" rows="4" placeholder="For example: fill this form with my company details, or find last month's invoice from Acme and open it"></textarea>
+    <div class="att-row" id="attRow" hidden></div>
+    <input type="file" id="fileInput" multiple hidden accept="application/pdf,image/*,.txt,.csv,.tsv,.md,.json,.xml,.html">
     <div class="row">
+      <button class="icon-btn" id="attachBtn" aria-label="Add a file: PDF, image, text or CSV" title="Add a file to compare or use (PDF, image, text, CSV)"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
       <button class="icon-btn mic" id="micBtn" aria-label="Speak the task" title="Speak the task" aria-pressed="false"><svg class="i" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
       <span class="mic-cap" id="micCap"></span>
       <button class="pbtn" id="startBtn">Start</button>
     </div>
     <div class="seg" role="radiogroup" aria-label="When should Tarini ask you">
-      <button role="radio" data-mode="every" aria-checked="true">Ask every step</button>
-      <button role="radio" data-mode="risky" aria-checked="false">Ask for risky steps</button>
+      <button role="radio" data-mode="every" aria-checked="false">Ask every step</button>
+      <button role="radio" data-mode="risky" aria-checked="true">Smart <small>(recommended)</small></button>
     </div>
     <p class="hint" id="modeHint"></p>
     <div class="chips" id="chips"></div>
     <div class="tipbox"><b>Quickest way:</b> select text or hold <kbd>Alt</kbd> and click any button or field on a page, and the Tarini face appears right there. <kbd>Alt</kbd> + <kbd>Y</kbd> opens or closes this panel from anywhere.</div>
-    <div class="safe"><b>Built-in safety.</b> Tarini shows a plan first, highlights each element before it acts, never types passwords or card numbers, and asks before anything that sends, saves, pays or deletes.</div>
+    <div class="safe"><b>Built-in safety.</b> Tarini shows a plan first, rings each element before it acts, never types passwords or card numbers, and always asks before anything that confirms, sends, pays or deletes. Stop is always one tap away.</div>
     <h2 class="sub">Recent tasks</h2>
     <div id="recent" class="recent"></div>
   </section>
@@ -53,8 +56,8 @@
       <button role="radio" data-theme="light" aria-checked="false">Light mode</button>
     </div>
     <label class="fld">Your name<input id="sName" maxlength="24"></label>
-    <label class="fld">Anthropic API key<input id="sKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-..."></label>
-    <p class="hint">Create a key at console.anthropic.com. It is stored only in this browser.</p>
+    <label class="fld">Tarini passkey<input id="sKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your passkey"></label>
+    <p class="hint">Your passkey is what lets Tarini think. <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer">Get your passkey here</a>. It is stored only in this browser.</p>
     <label class="fld">Model<input id="sModel" list="models" spellcheck="false"></label>
     <datalist id="models"><option value="claude-sonnet-5-5"><option value="claude-opus-5-5"><option value="claude-haiku-5-5"></datalist>
     <label class="fld">Most steps per task<input id="sMax" type="number" min="5" max="60"></label>
