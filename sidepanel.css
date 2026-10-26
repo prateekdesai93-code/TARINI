@@ -1,7 +1,7 @@
-@font-face{font-family:'Gabarito';font-weight:600;src:url(fonts/gabarito-latin-600-normal.woff2) format('woff2')}
-@font-face{font-family:'Gabarito';font-weight:700;src:url(fonts/gabarito-latin-700-normal.woff2) format('woff2')}
-@font-face{font-family:'Atkinson Hyperlegible';font-weight:400;src:url(fonts/atkinson-hyperlegible-latin-400-normal.woff2) format('woff2')}
-@font-face{font-family:'Atkinson Hyperlegible';font-weight:700;src:url(fonts/atkinson-hyperlegible-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'Gabarito';font-weight:600;src:url(gabarito-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Gabarito';font-weight:700;src:url(gabarito-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'Atkinson Hyperlegible';font-weight:400;src:url(atkinson-hyperlegible-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Atkinson Hyperlegible';font-weight:700;src:url(atkinson-hyperlegible-latin-700-normal.woff2) format('woff2')}
 :root{
   --font-d:'Gabarito','Avenir Next','Segoe UI',system-ui,sans-serif;
   --font-b:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;

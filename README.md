@@ -11,6 +11,9 @@
 - Tarini hides itself for a moment when it looks at the page, so its own panel is never part of what it reads.
 
 
+## Flat layout
+This build keeps every file in ONE folder (no icons/ or fonts/ subfolders), so it works exactly as you upload it to GitHub: select all files and drag them in. Nothing needs to be placed in folders.
+
 ## Install (Chrome or Edge, Windows or Mac)
 1. Unzip this file. Keep the folder somewhere permanent, for example Documents/Tarini_Agent.
 2. Open chrome://extensions (Edge: edge://extensions).

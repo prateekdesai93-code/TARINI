@@ -6,16 +6,16 @@
   "description": "Tarini lives on the right edge of every web page. Open it to ask, learn how, or have it do things for you with your OK.",
   "minimum_chrome_version": "116",
   "icons": {
-    "16": "icons/icon16.png",
-    "32": "icons/icon32.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
   },
   "action": {
     "default_title": "Open Tarini",
     "default_icon": {
-      "16": "icons/icon16.png",
-      "32": "icons/icon32.png"
+      "16": "icon16.png",
+      "32": "icon32.png"
     }
   },
   "side_panel": {
@@ -64,7 +64,7 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "fonts/*.woff2",
+        "*.woff2",
         "sidepanel.html"
       ],
       "matches": [

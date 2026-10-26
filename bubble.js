@@ -17,7 +17,7 @@
 
   /* ---------- fonts (from the extension, with unique names) ---------- */
   try {
-    [['TariniDisplay', 'fonts/gabarito-latin-600-normal.woff2', '600'], ['TariniDisplay', 'fonts/gabarito-latin-700-normal.woff2', '700'], ['TariniText', 'fonts/atkinson-hyperlegible-latin-400-normal.woff2', '400']]
+    [['TariniDisplay', 'gabarito-latin-600-normal.woff2', '600'], ['TariniDisplay', 'gabarito-latin-700-normal.woff2', '700'], ['TariniText', 'atkinson-hyperlegible-latin-400-normal.woff2', '400']]
       .forEach(([fam, file, w]) => { const f = new FontFace(fam, `url(${chrome.runtime.getURL(file)})`, { weight: w }); f.load().then(ff => document.fonts.add(ff)).catch(() => {}); });
   } catch { /* fonts are optional */ }
 
