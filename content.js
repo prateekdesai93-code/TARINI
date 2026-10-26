@@ -72,7 +72,7 @@
 
   function collect(root, out) {
     root.querySelectorAll(INTERACTIVE).forEach(el => out.push(el));
-    root.querySelectorAll('*').forEach(el => { if (el.shadowRoot && el.id !== 'tarini-bubble-host') collect(el.shadowRoot, out); });
+    root.querySelectorAll('*').forEach(el => { if (el.shadowRoot && el.id !== 'tarini-bubble-host' && el.id !== 'tarini-dock-host') collect(el.shadowRoot, out); });
   }
 
   function describe(el, id, r) {
@@ -257,9 +257,13 @@
     if (box) box.scrollBy({ top: dy, behavior: 'instant' }); else window.scrollBy({ top: dy, behavior: 'instant' });
     return `Scrolled ${direction}.`;
   }
+  function dockVisible(v) {
+    ['tarini-dock-host', 'tarini-bubble-host'].forEach(id => { const h = document.getElementById(id); if (h) h.style.visibility = v ? 'visible' : 'hidden'; });
+    return true;
+  }
   function isSensitive(id) { try { return isSensitiveEl(get(id)); } catch { return false; } }
 
-  const api = { snapshot, showMarks, hideMarks, highlight, clearHighlight, click, typeText, selectOption, pressKey, scrollPage, isSensitive };
+  const api = { dockVisible, snapshot, showMarks, hideMarks, highlight, clearHighlight, click, typeText, selectOption, pressKey, scrollPage, isSensitive };
   window.__tarini = {
     async call(name, args) {
       try { return { ok: true, value: await api[name](...(args || [])) }; }

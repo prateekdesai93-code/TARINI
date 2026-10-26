@@ -1,5 +1,16 @@
 # Tarini - Do it for me (browser extension)
 
+## What is new in 1.2: Tarini lives inside the page
+- A small **Tarini tab sits on the right edge of every web page**. Click it and the Tarini panel opens inside the page, and the page shifts left to make room. No new tab, no separate window.
+- **Toolbar icon** or **Alt + Y** also opens and closes it.
+- **Drag the tab up or down** to move it. Hover it and press the small x to hide it on that site (Settings brings it back).
+- **Drag the panel's left edge** to make it wider or narrower.
+- The **panel icon in the header** switches between pushing the page aside and floating over it (use floating if a site's layout looks odd when pushed).
+- If the page reloads in the middle of a task (for example after a click on a normal website), the panel reopens by itself and Tarini carries on from the same step.
+- When Tarini is waiting for your OK and the panel is closed, a red dot pulses on the tab.
+- Tarini hides itself for a moment when it looks at the page, so its own panel is never part of what it reads.
+
+
 ## Install (Chrome or Edge, Windows or Mac)
 1. Unzip this file. Keep the folder somewhere permanent, for example Documents/Tarini_Agent.
 2. Open chrome://extensions (Edge: edge://extensions).

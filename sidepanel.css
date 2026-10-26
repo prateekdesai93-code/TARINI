@@ -145,3 +145,11 @@ textarea{border-radius:18px;background:var(--surface);font-size:16px}
 .chip{font-weight:600}
 .tipbox{border-radius:16px}
 .bar{border-top:0}
+
+/* in-page dock */
+.embed-only{display:none}
+html.embed .embed-only{display:grid}
+html.embed .icon-btn[aria-pressed=true]#pushBtn{color:var(--sun)}
+html.embed #pushBtn[aria-pressed=true]{background:transparent}
+html.embed body{min-width:0}
+html.embed .top{padding-left:16px}

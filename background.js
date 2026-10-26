@@ -2,26 +2,57 @@
 const API_URL = 'https://api.anthropic.com/v1/messages';
 const DEFAULTS = { apiKey: '', model: 'claude-sonnet-5-5', person: 'Dad', webSearch: true };
 
-function setPanelBehavior() { chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {}); }
+function setPanelBehavior() { chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: false }).catch(() => {}); }
 chrome.runtime.onInstalled.addListener(setPanelBehavior);
 chrome.runtime.onStartup.addListener(setPanelBehavior);
 
-// Keyboard shortcut: open the ask card on the current page.
+const RESTRICTED = /^(chrome|edge|about|chrome-extension|devtools|view-source):|^https:\/\/(chrome\.google\.com\/webstore|chromewebstore\.google\.com|microsoftedge\.microsoft\.com\/addons)/i;
+
+// Toolbar icon and Alt+Y: open or close the Tarini panel inside the page.
+async function toggleDock(tab) {
+  if (!tab || !tab.id) return;
+  const key = `blocked:${tab.id}`;
+  const blocked = (await chrome.storage.session.get(key).catch(() => ({})))[key];
+  if (blocked || RESTRICTED.test(tab.url || '')) { chrome.sidePanel.open({ tabId: tab.id }).catch(() => {}); return; }
+  try { await chrome.tabs.sendMessage(tab.id, { type: 'tarini-toggle-dock' }); }
+  catch {
+    // The page was open before Tarini was installed or updated: add Tarini to it now.
+    try {
+      await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['bubble.js'] });
+      await new Promise(r => setTimeout(r, 250));
+      await chrome.tabs.sendMessage(tab.id, { type: 'tarini-toggle-dock' });
+    } catch { chrome.sidePanel.open({ tabId: tab.id }).catch(() => {}); }
+  }
+}
+chrome.action.onClicked.addListener(toggleDock);
+
 chrome.commands.onCommand.addListener(async command => {
-  if (command !== 'ask-on-page') return;
   const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
-  if (tab && tab.id) chrome.tabs.sendMessage(tab.id, { type: 'tarini-open-ask' }).catch(() => {});
+  if (!tab || !tab.id) return;
+  if (command === 'toggle-dock') toggleDock(tab);
+  if (command === 'ask-on-page') chrome.tabs.sendMessage(tab.id, { type: 'tarini-open-ask' }).catch(() => {});
 });
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (!msg || !msg.type) return false;
+  if (msg.type === 'tarini-init') {
+    const tabId = sender.tab && sender.tab.id;
+    chrome.storage.session.get(`dock:${tabId}`).then(g => sendResponse({ tabId, dockOpen: !!g[`dock:${tabId}`] })).catch(() => sendResponse({ tabId, dockOpen: false }));
+    return true;
+  }
+  if (msg.type === 'tarini-dock-set') {
+    const tabId = sender.tab && sender.tab.id;
+    if (tabId != null) chrome.storage.session.set({ [`dock:${tabId}`]: !!msg.open });
+    return false;
+  }
+  if (msg.type === 'tarini-dock-blocked') {
+    const tabId = sender.tab && sender.tab.id;
+    if (tabId != null) chrome.storage.session.set({ [`blocked:${tabId}`]: true });
+    return false;
+  }
   if (msg.type === 'tarini-doit') {
     const tabId = sender.tab && sender.tab.id;
-    // Open the panel first, while the click still counts as a user action.
-    let opening = Promise.resolve(false);
-    try { opening = chrome.sidePanel.open({ tabId }).then(() => true).catch(() => false); } catch { /* older Chrome */ }
-    chrome.storage.session.set({ pendingTask: { task: msg.task, context: msg.context || '', tabId, ts: Date.now() } });
-    opening.then(opened => sendResponse({ opened }));
+    chrome.storage.session.set({ pendingTask: { task: msg.task, context: msg.context || '', tabId, ts: Date.now() } }).then(() => sendResponse({ opened: true }));
     return true;
   }
   if (msg.type === 'tarini-ask') {
@@ -132,3 +163,5 @@ Use web search only when the answer needs fresh facts from outside this page, su
     .filter(s => s.text);
   return { say: String(obj.say || ''), steps, draft: String(obj.draft || ''), sources };
 }
+
+chrome.tabs.onRemoved.addListener(tabId => { chrome.storage.session.remove([`dock:${tabId}`, `blocked:${tabId}`, `run:${tabId}`]).catch(() => {}); });

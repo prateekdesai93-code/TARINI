@@ -9,6 +9,8 @@
 <body>
 <header class="top">
   <div class="brand"><span class="orb-mini" aria-hidden="true"></span><div><h1>Tarini</h1><p>Do it for me</p></div></div>
+  <button class="icon-btn embed-only" id="pushBtn" aria-pressed="true" aria-label="Push the page aside while Tarini is open" title="Push the page aside (on) or float over it (off)"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></button>
+  <button class="icon-btn embed-only" id="closeBtn" aria-label="Close Tarini" title="Close (Esc)"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   <button class="icon-btn" id="historyBtn" aria-label="Recent tasks" title="Recent tasks"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button>
   <button class="icon-btn" id="settingsBtn" aria-label="Settings" title="Settings"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg></button>
 </header>
@@ -30,7 +32,7 @@
     </div>
     <p class="hint" id="modeHint"></p>
     <div class="chips" id="chips"></div>
-    <div class="tipbox"><b>Quickest way:</b> on any web page, select some text or hold <kbd>Alt</kbd> and click a button or field. The Tarini face appears right there. Or press <kbd>Alt</kbd> + <kbd>T</kbd>.</div>
+    <div class="tipbox"><b>Quickest way:</b> select text or hold <kbd>Alt</kbd> and click any button or field on a page, and the Tarini face appears right there. <kbd>Alt</kbd> + <kbd>Y</kbd> opens or closes this panel from anywhere.</div>
     <div class="safe"><b>Built-in safety.</b> Tarini shows a plan first, highlights each element before it acts, never types passwords or card numbers, and asks before anything that sends, saves, pays or deletes.</div>
     <h2 class="sub">Recent tasks</h2>
     <div id="recent" class="recent"></div>
@@ -59,6 +61,8 @@
     <label class="tog"><input type="checkbox" id="sLogs"> Save a log of every task to Downloads/Tarini Library</label>
     <label class="tog"><input type="checkbox" id="sShots"> Include a screenshot of each step in the log</label>
     <label class="tog"><input type="checkbox" id="sVoice"> Speak answers out loud</label>
+    <label class="tog"><input type="checkbox" id="sLauncher"> Show the Tarini tab on the right edge of web pages</label>
+    <div class="row wrap" style="margin:-4px 0 6px 27px"><button class="sbtn" id="showAllSites">Show the tab on every site again</button></div>
     <label class="tog"><input type="checkbox" id="sBubble"> Show the Tarini face on web pages when I select text or Alt+click</label>
     <label class="tog"><input type="checkbox" id="sWeb"> Search the web when an answer needs fresh facts</label>
     <div class="row wrap">

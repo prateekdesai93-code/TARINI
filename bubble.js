@@ -3,11 +3,14 @@
   if (window.__tariniBubble || window.top !== window) return;
   window.__tariniBubble = true;
 
-  let enabled = true, theme = 'dark', voice = true;
+  let enabled = true, theme = 'dark', voice = true, launcherOn = true, hiddenHosts = [];
   const loadSettings = () => chrome.storage.local.get('settings').then(g => {
     const s = g.settings || {};
     enabled = s.bubble !== false; theme = s.theme === 'light' ? 'light' : 'dark'; voice = s.voice !== false;
+    launcherOn = s.launcher !== false; hiddenHosts = Array.isArray(s.hiddenHosts) ? s.hiddenHosts : [];
     if (host) host.dataset.theme = theme;
+    if (typeof dockHost !== 'undefined' && dockHost) dockHost.dataset.theme = theme;
+    if (typeof refreshLauncher === 'function') refreshLauncher();
   }).catch(() => {});
   loadSettings();
   chrome.storage.onChanged.addListener((c, area) => { if (area === 'local' && c.settings) loadSettings(); });
@@ -195,12 +198,8 @@
     const task = input.value.trim();
     if (!task) { input.placeholder = 'What should I do? For example: fill this form'; input.focus(); return; }
     const context = target ? `${target.context}${target.selection ? `. Selected text: "${target.selection.slice(0, 500)}"` : ''}` : '';
-    out.replaceChildren(el('p', 'say', 'Opening Tarini beside this page to do it step by step. You approve each step.'));
-    chrome.runtime.sendMessage({ type: 'tarini-doit', task, context }, res => {
-      if (chrome.runtime.lastError || !res || !res.opened) {
-        out.replaceChildren(el('p', 'say', 'Click the yellow Tarini icon in the toolbar to start. Your task is waiting there.'));
-      } else setTimeout(closeAll, 900);
-    });
+    out.replaceChildren(el('p', 'say', 'Opening the Tarini panel to do it step by step. You approve each step.'));
+    send({ type: 'tarini-doit', task, context }, () => { openDock(); setTimeout(closeAll, 600); });
   }
 
   function showStepMarkers(steps) {
@@ -239,8 +238,177 @@
     speechSynthesis.speak(u);
   }
 
+
+  /* =====================================================================
+     Dock: Tarini opens as a panel inside the page, with a tab on the right edge
+     ===================================================================== */
+  const EXT_ORIGIN = new URL(chrome.runtime.getURL('/')).origin;
+  const DOCK_MIN = 340, DOCK_MAX = 680;
+  let tabId = null, dockOpen = false, dockHost = null, dockRoot = null, dockEl = null, tabEl = null, frame = null, frameReady = false, readyTimer = 0, pushed = false, prevWidth = null;
+  let ui = { dockWidth: 420, launcherY: 0.62, push: true };
+
+  const send = (msg, cb) => { try { chrome.runtime.sendMessage(msg, cb || (() => void chrome.runtime.lastError)); } catch { /* extension was reloaded */ } };
+  chrome.storage.local.get('tariniUI').then(g => { if (g.tariniUI) { ui = { ...ui, ...g.tariniUI }; if (dockEl) { dockEl.style.setProperty('--w', `${ui.dockWidth}px`); tabEl.style.setProperty('--y', ui.launcherY); } } }).catch(() => {});
+  const saveUi = () => chrome.storage.local.set({ tariniUI: ui }).catch(() => {});
+
+  function ensureDock() {
+    if (dockHost) return;
+    dockHost = document.createElement('div');
+    dockHost.id = 'tarini-dock-host';
+    dockHost.dataset.theme = theme;
+    dockHost.style.cssText = 'position:fixed;top:0;right:0;width:0;height:0;z-index:2147483645;pointer-events:none;';
+    dockRoot = dockHost.attachShadow({ mode: 'open' });
+    dockRoot.innerHTML = `<style>
+      :host{--bg:#000;--bg2:#141416;--line:rgba(255,255,255,.12);--text:#F5F5F3;--muted:#8F8F97;--sun:#FFC23D;--ink:#231800}
+      :host([data-theme=light]){--bg:#fff;--bg2:#F4F4F3;--line:rgba(0,0,0,.12);--text:#0A0A0B;--muted:#67676F}
+      *{box-sizing:border-box}
+      .dock{position:fixed;top:0;right:0;bottom:0;width:var(--w,420px);max-width:100vw;background:var(--bg);border-left:1px solid var(--line);box-shadow:-34px 0 70px -40px rgba(0,0,0,.7);pointer-events:auto;transform:translateX(102%);visibility:hidden;transition:transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s .24s}
+      .dock.open{transform:none;visibility:inherit;transition:transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s}
+      iframe{display:block;width:100%;height:100%;border:0;background:var(--bg);color-scheme:normal}
+      .grip{position:absolute;left:-5px;top:0;bottom:0;width:10px;cursor:col-resize;z-index:2}
+      .grip::after{content:"";position:absolute;left:4px;top:calc(50% - 22px);width:3px;height:44px;border-radius:3px;background:var(--line);opacity:0;transition:opacity .15s}
+      .grip:hover::after,.grip.drag::after{opacity:1}
+      .tab{position:fixed;right:0;top:calc(var(--y,.62)*100vh);transform:translate(12px,-50%);transition:transform .18s ease;pointer-events:auto;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+      .tab[hidden]{display:none}
+      .tab:hover,.tab:focus-within{transform:translate(0,-50%)}
+      #open{position:relative;width:52px;height:60px;padding:0 9px 0 0;border:1px solid var(--line);border-right:0;border-radius:20px 0 0 20px;background:var(--bg);box-shadow:-10px 10px 26px -12px rgba(0,0,0,.55);cursor:grab;display:grid;place-items:center;touch-action:none}
+      #open.dragging{cursor:grabbing}
+      .face{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 33% 26%,#FFF0C4 0,#FFD15C 30%,var(--sun) 58%,#E08F00 100%);position:relative;box-shadow:0 6px 14px -6px rgba(255,170,0,.7)}
+      .face::before,.face::after{content:"";position:absolute;top:34%;width:12%;height:17%;border-radius:99px;background:#1F1500}
+      .face::before{left:30%}.face::after{right:30%}
+      .face i{position:absolute;left:37%;top:62%;width:26%;height:8%;border-radius:0 0 99px 99px;background:#1F1500}
+      .hide{width:22px;height:22px;margin-right:12px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--muted);font:700 13px/1 system-ui,sans-serif;cursor:pointer;opacity:0;transition:opacity .15s}
+      .tab:hover .hide,.tab:focus-within .hide{opacity:1}
+      .dot{position:absolute;top:-4px;left:-4px;width:14px;height:14px;border-radius:50%;background:#FF5E5E;box-shadow:0 0 0 3px rgba(255,94,94,.28);animation:pulse 1.3s ease-in-out infinite}
+      .dot[hidden]{display:none}
+      @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+      button:focus-visible{outline:2px solid var(--sun);outline-offset:2px}
+      @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+    </style>
+    <div class="tab" id="tab" hidden>
+      <button class="hide" id="hide" aria-label="Hide the Tarini tab on this site" title="Hide on this site">\u00D7</button>
+      <button class="open" id="open" aria-label="Open Tarini" title="Open Tarini  (Alt+Y). Drag to move."><span class="face"><i></i></span><span class="dot" id="dot" hidden></span></button>
+    </div>
+    <aside class="dock" id="dock" aria-label="Tarini" aria-hidden="true"><div class="grip" id="grip"></div></aside>`;
+    dockEl = dockRoot.getElementById('dock'); tabEl = dockRoot.getElementById('tab');
+    dockEl.style.setProperty('--w', `${ui.dockWidth}px`); tabEl.style.setProperty('--y', ui.launcherY);
+    ['mousedown', 'mouseup', 'click', 'keydown', 'keyup'].forEach(ev => dockHost.addEventListener(ev, e => e.stopPropagation()));
+
+    // tab: click opens, vertical drag moves
+    const openBtn = dockRoot.getElementById('open');
+    let drag = null;
+    openBtn.addEventListener('pointerdown', e => { drag = { y: e.clientY, moved: false }; try { openBtn.setPointerCapture(e.pointerId); } catch { /* ignore */ } });
+    openBtn.addEventListener('pointermove', e => {
+      if (!drag) return;
+      if (!drag.moved && Math.abs(e.clientY - drag.y) > 5) { drag.moved = true; openBtn.classList.add('dragging'); }
+      if (drag.moved) { ui.launcherY = Math.min(0.94, Math.max(0.06, e.clientY / innerHeight)); tabEl.style.setProperty('--y', ui.launcherY); }
+    });
+    openBtn.addEventListener('pointerup', () => { if (!drag) return; const moved = drag.moved; drag = null; openBtn.classList.remove('dragging'); if (moved) saveUi(); else openDock(); });
+    openBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDock(); } });
+    dockRoot.getElementById('hide').addEventListener('click', () => {
+      const h = location.hostname;
+      chrome.storage.local.get('settings').then(g => { const s = g.settings || {}; s.hiddenHosts = [...new Set([...(s.hiddenHosts || []), h])]; return chrome.storage.local.set({ settings: s }); }).catch(() => {});
+      tabEl.hidden = true;
+    });
+
+    // resize grip
+    const grip = dockRoot.getElementById('grip');
+    grip.addEventListener('pointerdown', e => { try { grip.setPointerCapture(e.pointerId); } catch { /* ignore */ } grip.classList.add('drag'); if (frame) frame.style.pointerEvents = 'none'; dockEl.style.transition = 'none'; });
+    grip.addEventListener('pointermove', e => {
+      if (!grip.classList.contains('drag')) return;
+      ui.dockWidth = Math.round(Math.min(DOCK_MAX, Math.max(DOCK_MIN, innerWidth - e.clientX)));
+      dockEl.style.setProperty('--w', `${ui.dockWidth}px`); applyPush(false);
+    });
+    const endDrag = () => { if (!grip.classList.contains('drag')) return; grip.classList.remove('drag'); if (frame) frame.style.pointerEvents = ''; dockEl.style.transition = ''; saveUi(); applyPush(); };
+    grip.addEventListener('pointerup', endDrag); grip.addEventListener('pointercancel', endDrag);
+  }
+  function attachDock() { ensureDock(); if (!dockHost.isConnected) document.documentElement.appendChild(dockHost); }
+
+  function refreshLauncher() {
+    if (!tabEl) return;
+    const hide = !launcherOn || hiddenHosts.includes(location.hostname) || dockOpen;
+    tabEl.hidden = hide;
+  }
+  function setAttention(on) { if (!dockRoot) return; dockRoot.getElementById('dot').hidden = !on || dockOpen; }
+
+  function applyPush(notify = true) {
+    const html = document.documentElement;
+    const on = dockOpen && ui.push;
+    if (on) {
+      if (!pushed) { prevWidth = { v: html.style.getPropertyValue('width'), p: html.style.getPropertyPriority('width') }; pushed = true; }
+      html.style.setProperty('width', `calc(100% - ${ui.dockWidth}px)`, 'important');
+    } else if (pushed) {
+      pushed = false;
+      if (prevWidth && prevWidth.v) html.style.setProperty('width', prevWidth.v, prevWidth.p); else html.style.removeProperty('width');
+    }
+    if (notify) requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+  }
+
+  function createFrame() {
+    frame = document.createElement('iframe');
+    frame.title = 'Tarini';
+    frame.setAttribute('allow', 'microphone; clipboard-write');
+    frame.src = chrome.runtime.getURL(`sidepanel.html?embed=1&tabId=${tabId}`);
+    dockEl.append(frame);
+    clearTimeout(readyTimer);
+    readyTimer = setTimeout(() => {
+      if (frameReady) return;
+      // This page blocks embedded panels: fall back to Chrome's side panel
+      if (frame) { frame.remove(); frame = null; }
+      closeDock(true);
+      send({ type: 'tarini-dock-blocked' });
+      send({ type: 'tarini-open-panel' });
+    }, 5000);
+  }
+
+  async function getTabId() {
+    if (tabId != null) return tabId;
+    const res = await new Promise(r => send({ type: 'tarini-init' }, x => r(chrome.runtime.lastError ? null : x)));
+    if (res) tabId = res.tabId;
+    return res;
+  }
+  async function openDock() {
+    hideOrb(); if (card) { card.remove(); card = null; }
+    attachDock();
+    if (tabId == null) await getTabId();
+    if (tabId == null) return;
+    if (!frame) { frameReady = false; createFrame(); }
+    dockOpen = true;
+    dockEl.classList.add('open'); dockEl.setAttribute('aria-hidden', 'false');
+    refreshLauncher(); setAttention(false); applyPush();
+    send({ type: 'tarini-dock-set', open: true });
+  }
+  function closeDock(silent) {
+    if (!dockEl) return;
+    dockOpen = false;
+    dockEl.classList.remove('open'); dockEl.setAttribute('aria-hidden', 'true');
+    applyPush(); refreshLauncher();
+    if (!silent) send({ type: 'tarini-dock-set', open: false });
+  }
+  const toggleDock = () => (dockOpen ? closeDock() : openDock());
+
+  window.addEventListener('message', e => {
+    if (!frame || e.source !== frame.contentWindow || e.origin !== EXT_ORIGIN) return;
+    const m = e.data || {};
+    if (m.tarini === 'ready') {
+      frameReady = true; clearTimeout(readyTimer);
+      frame.contentWindow.postMessage({ tarini: 'hello', push: ui.push }, EXT_ORIGIN);
+    } else if (m.tarini === 'close') closeDock();
+    else if (m.tarini === 'push') { ui.push = !!m.value; saveUi(); applyPush(); }
+    else if (m.tarini === 'attention') setAttention(!!m.value);
+  });
+
+  // show the tab (and re-open the dock if it was open before this page loaded)
+  (async () => {
+    const res = await getTabId();
+    if (!res) return;
+    await chrome.storage.local.get('settings').then(g => { const s = g.settings || {}; launcherOn = s.launcher !== false; hiddenHosts = Array.isArray(s.hiddenHosts) ? s.hiddenHosts : []; }).catch(() => {});
+    attachDock();
+    if (res.dockOpen) openDock(); else refreshLauncher();
+  })();
+
   /* ---------- triggers ---------- */
-  const inOurUI = e => e.composedPath && e.composedPath().includes(host);
+  const inOurUI = e => e.composedPath && (e.composedPath().includes(host) || (dockHost && e.composedPath().includes(dockHost)));
   const isEditable = n => n && n.closest && n.closest('input,textarea,[contenteditable=""],[contenteditable="true"]');
 
   // Alt+click anything
@@ -275,7 +443,8 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && (card || orb)) closeAll(); }, true);
 
   // Keyboard shortcut from the extension (Alt+T by default): ask about the whole page
-  chrome.runtime.onMessage.addListener(msg => {
+  chrome.runtime.onMessage.addListener((msg, _s, reply) => {
+    if (msg && msg.type === 'tarini-toggle-dock') { toggleDock(); reply && reply({ ok: true }); return; }
     if (msg && msg.type === 'tarini-open-ask') {
       closeAll();
       const sel = window.getSelection(); const text = sel ? sel.toString().trim() : '';

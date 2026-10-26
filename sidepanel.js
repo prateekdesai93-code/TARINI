@@ -1,4 +1,7 @@
 'use strict';
+const EMBED = new URLSearchParams(location.search).get('embed') === '1';
+if (EMBED) document.documentElement.classList.add('embed');
+const notifyParent = msg => { if (EMBED) { try { parent.postMessage(msg, '*'); } catch { /* ignore */ } } };
 
 /* ================= Settings ================= */
 function applyTheme() {
@@ -6,7 +9,7 @@ function applyTheme() {
   document.documentElement.dataset.theme = t;
   document.querySelectorAll('#themeSeg button').forEach(x => x.setAttribute('aria-checked', String(x.dataset.theme === t)));
 }
-const DEFAULTS = { theme: 'dark', bubble: true, webSearch: true, person: 'Dad', apiKey: '', model: 'claude-sonnet-5-5', mode: 'every', maxSteps: 25, saveLogs: true, saveShots: true, voice: true };
+const DEFAULTS = { launcher: true, theme: 'dark', bubble: true, webSearch: true, person: 'Dad', apiKey: '', model: 'claude-sonnet-5-5', mode: 'every', maxSteps: 25, saveLogs: true, saveShots: true, voice: true };
 const API_URL = 'https://api.anthropic.com/v1/messages';
 const RISKY = /\b(submit|send|pay|payment|buy|purchase|order now|place order|checkout|check out|confirm|validate|approve|post|publish|delete|remove|discard|archive|save|apply|transfer|book|sign|accept|agree|unsubscribe|log ?out|sign ?out|register|subscribe|cancel)\b/i;
 const BLOCKED_URL = /^(chrome|edge|about|chrome-extension|devtools|view-source|chrome-search):|^https:\/\/(chrome\.google\.com\/webstore|chromewebstore\.google\.com|microsoftedge\.microsoft\.com\/addons)/i;
@@ -117,11 +120,12 @@ async function observe() {
   const snap = await page('snapshot');
   let shot = null;
   try {
-    await page('showMarks'); await sleep(90);
+    await page('dockVisible', false);
+    await page('showMarks'); await sleep(110);
     const raw = await chrome.tabs.captureVisibleTab(tab.windowId, { format: 'jpeg', quality: 75 });
     shot = await shrink(raw);
   } catch (e) { console.warn('screenshot failed', e); }
-  finally { try { await page('hideMarks'); } catch { /* ignore */ } }
+  finally { try { await page('hideMarks'); await page('dockVisible', true); } catch { /* ignore */ } }
   S.lastSnap = snap; S.lastShot = shot;
   return { snap, shot };
 }
@@ -233,10 +237,10 @@ function thinking(on) {
 function setStatus(text) { $('#stepCount').textContent = text; }
 function waitFor(card, buttons) {
   // buttons: [{label, value, cls}]; resolves with value. Stop resolves 'stop'.
-  card.classList.add('wait');
+  card.classList.add('wait'); notifyParent({ tarini: 'attention', value: true });
   return new Promise(resolve => {
     const acts = el('div', { class: 'acts' });
-    const done = v => { card.classList.remove('wait'); acts.remove(); S.pending = null; resolve(v); };
+    const done = v => { card.classList.remove('wait'); acts.remove(); S.pending = null; notifyParent({ tarini: 'attention', value: false }); saveRun(); resolve(v); };
     buttons.forEach(b => acts.append(el('button', { class: b.cls || 'sbtn', onclick: () => done(typeof b.value === 'function' ? b.value() : b.value) }, b.label)));
     card.append(acts);
     S.pending = { done, keys: buttons.filter(b => b.key).reduce((o, b) => (o[b.key] = b.value, o), {}) };
@@ -428,6 +432,41 @@ async function handleTool(u, reason) {
 }
 
 /* ================= Task lifecycle ================= */
+/* ---- keep the task alive if the page reloads (the panel lives inside the page) ---- */
+function stripImages(messages) { return JSON.parse(JSON.stringify(messages, (k, v) => (v && typeof v === 'object' && v.type === 'image' ? { type: 'text', text: '[earlier screenshot removed]' } : v))); }
+async function saveRun() {
+  if (!EMBED || S.tabId == null || S.stopped || S.finished) return;
+  const steps = S.steps.map(({ shot, ...rest }) => rest);
+  try { await chrome.storage.session.set({ [`run:${S.tabId}`]: { ts: Date.now(), task: S.task, title: S.title, startedAt: S.startedAt, site: S.site, stepCount: S.stepCount, extraSteps: S.extraSteps, steps, messages: stripImages(S.messages) } }); }
+  catch (e) { console.warn('could not save run state', e); }
+}
+async function clearRun() { if (S.tabId != null) { try { await chrome.storage.session.remove(`run:${S.tabId}`); } catch { /* ignore */ } } }
+async function tryResume() {
+  let tab; try { tab = await targetTab(); } catch { return false; }
+  const key = `run:${tab.id}`;
+  const saved = (await chrome.storage.session.get(key).catch(() => ({})))[key];
+  if (!saved || Date.now() - saved.ts > 90000 || !settings.apiKey) return false;
+  await chrome.storage.session.remove(key);
+  Object.assign(S, { running: true, stopped: false, finished: false, tabId: tab.id, windowId: tab.windowId, messages: saved.messages, steps: saved.steps, stepCount: saved.stepCount, extraSteps: saved.extraSteps || 0, title: saved.title, task: saved.task, startedAt: saved.startedAt, site: tab.url || saved.site });
+  feed().replaceChildren(); $('#runTask').textContent = S.task;
+  $('#stopBtn').textContent = 'Stop'; $('#stopBtn').className = 'danger';
+  showView('runView'); setStatus('Looking at the new page');
+  feed().append(el('div', { class: 'card' }, el('span', { class: 'k', text: 'Continuing' }),
+    el('p', { class: 'what', text: 'The page changed, so I am carrying on from where I was.' }),
+    S.steps.length ? el('ol', {}, S.steps.slice(-4).map(x => el('li', { text: `${x.action}${x.decision ? ` (${x.decision})` : ''}` }))) : null));
+  await runLoop(async () => {
+    const o = await observe();
+    const last = S.messages[S.messages.length - 1];
+    if (last && last.role === 'assistant') {
+      const uses = (last.content || []).filter(b => b.type === 'tool_use');
+      const results = uses.map((u, i) => ({ type: 'tool_result', tool_use_id: u.id, content: i === 0
+        ? stateBlocks(o, 'The page changed or reloaded while that action was running or waiting for approval. It may or may not have taken effect. Check the new page state, then decide the next step.')
+        : [{ type: 'text', text: 'Not run.' }] }));
+      S.messages.push({ role: 'user', content: results.length ? results : [{ type: 'text', text: 'Please continue.' }] });
+    }
+  });
+  return true;
+}
 function showView(id) {
   ['composeView', 'runView', 'settingsView', 'historyView'].forEach(v => { $('#' + v).hidden = v !== id; });
   $('#runBar').hidden = id !== 'runView';
@@ -443,10 +482,15 @@ async function startTask(text) {
   feed().replaceChildren(); $('#runTask').textContent = task;
   $('#stopBtn').textContent = 'Stop'; $('#stopBtn').className = 'danger';
   showView('runView'); setStatus('Looking at the page');
-
-  try {
+  await runLoop(async () => {
     const o = await observe();
     S.messages.push({ role: 'user', content: [{ type: 'text', text: `My task: ${task}` }, ...stateBlocks(o)] });
+  });
+}
+async function runLoop(prepare) {
+  try {
+    if (prepare) await prepare();
+    await saveRun();
     let guard = 0;
     while (!S.stopped && !S.finished && guard++ < 120) {
       thinking(true);
@@ -454,6 +498,7 @@ async function startTask(text) {
       thinking(false);
       if (S.stopped) break;
       S.messages.push({ role: 'assistant', content: data.content });
+      await saveRun();
       const text = data.content.filter(b => b.type === 'text').map(b => b.text).join(' ').trim();
       const uses = data.content.filter(b => b.type === 'tool_use');
       const PAGE_ACTIONS = ['click', 'type_text', 'select_option', 'press_key', 'scroll', 'navigate', 'go_back'];
@@ -472,6 +517,7 @@ async function startTask(text) {
       const hasNewShot = results.some(r => Array.isArray(r.content) && r.content.some(c => c.type === 'image'));
       if (hasNewShot) pruneImages();
       S.messages.push({ role: 'user', content: results });
+      await saveRun();
     }
   } catch (e) {
     thinking(false);
@@ -486,13 +532,14 @@ async function startTask(text) {
 }
 function stopTask(reason) {
   if (S.stopped || S.finished) return;
-  S.stopped = true;
+  S.stopped = true; clearRun();
   if (S.pending) S.pending.done('stop');
   feed().append(el('div', { class: 'card finish fail' }, el('span', { class: 'k', text: 'Stopped' }), el('p', { class: 'what', text: reason || 'Stopped.' })));
   endTask('stopped', reason || 'Stopped by you.', null);
   scrollFeed();
 }
 async function endTask(status, summary, card) {
+  clearRun();
   setStatus(status === 'done' ? `Finished in ${S.stepCount} steps` : `Stopped after ${S.stepCount} steps`);
   const ended = Date.now();
   const record = { id: String(S.startedAt), title: S.title || S.task.slice(0, 50), task: S.task, person: settings.person, startedAt: S.startedAt, endedAt: ended, steps: S.stepCount, status, summary, site: S.site };
@@ -559,7 +606,7 @@ async function renderRecent() {
 /* ================= Settings ================= */
 function openSettings() {
   $('#sName').value = settings.person; $('#sKey').value = settings.apiKey; $('#sModel').value = settings.model;
-  $('#sMax').value = settings.maxSteps; $('#sLogs').checked = settings.saveLogs; $('#sShots').checked = settings.saveShots; $('#sVoice').checked = settings.voice; $('#sBubble').checked = settings.bubble !== false; $('#sWeb').checked = settings.webSearch !== false;
+  $('#sMax').value = settings.maxSteps; $('#sLogs').checked = settings.saveLogs; $('#sShots').checked = settings.saveShots; $('#sVoice').checked = settings.voice; $('#sBubble').checked = settings.bubble !== false; $('#sLauncher').checked = settings.launcher !== false; $('#sWeb').checked = settings.webSearch !== false;
   $('#testOut').textContent = ''; applyTheme(); showView('settingsView'); $('#sKey').focus();
 }
 async function saveSettingsForm() {
@@ -567,7 +614,7 @@ async function saveSettingsForm() {
   settings.apiKey = $('#sKey').value.trim();
   settings.model = $('#sModel').value.trim() || DEFAULTS.model;
   settings.maxSteps = Math.max(5, Math.min(60, Number($('#sMax').value) || 25));
-  settings.saveLogs = $('#sLogs').checked; settings.saveShots = $('#sShots').checked; settings.voice = $('#sVoice').checked; settings.bubble = $('#sBubble').checked; settings.webSearch = $('#sWeb').checked;
+  settings.saveLogs = $('#sLogs').checked; settings.saveShots = $('#sShots').checked; settings.voice = $('#sVoice').checked; settings.bubble = $('#sBubble').checked; settings.launcher = $('#sLauncher').checked; settings.webSearch = $('#sWeb').checked;
   await saveSettings(); toast('Settings saved'); showView('composeView'); refreshSite();
 }
 
@@ -628,16 +675,31 @@ async function init() {
     if (!S.pending || isTyping(e.target)) return;
     if (e.key in S.pending.keys) { e.preventDefault(); S.pending.done(S.pending.keys[e.key]); }
   });
+  $('#showAllSites').addEventListener('click', async () => { settings.hiddenHosts = []; await saveSettings(); toast('The Tarini tab will show on every site again.'); });
+  if (EMBED) {
+    $('#closeBtn').addEventListener('click', () => notifyParent({ tarini: 'close' }));
+    $('#pushBtn').addEventListener('click', () => { const on = $('#pushBtn').getAttribute('aria-pressed') !== 'true'; $('#pushBtn').setAttribute('aria-pressed', String(on)); notifyParent({ tarini: 'push', value: on }); });
+    window.addEventListener('message', e => { if (e.source !== parent) return; const m = e.data || {}; if (m.tarini === 'hello') $('#pushBtn').setAttribute('aria-pressed', String(m.push !== false)); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !S.pending && !isTyping(e.target)) notifyParent({ tarini: 'close' }); });
+    notifyParent({ tarini: 'ready' });
+  }
   chrome.tabs.onActivated.addListener(refreshSite);
   chrome.tabs.onUpdated.addListener((id, info) => { if (info.status === 'complete' || info.title) refreshSite(); });
   chrome.tabs.onRemoved.addListener(id => { if (S.running && id === S.tabId) stopTask('The tab was closed.'); });
   chrome.storage.onChanged.addListener((c, area) => { if (area === 'session' && c.pendingTask && c.pendingTask.newValue) takePending(); });
+  if (EMBED && settings.apiKey && await tryResume()) return;
   if (!settings.apiKey) openSettings(); else takePending();
 }
 async function takePending() {
   const got = await chrome.storage.session.get('pendingTask').catch(() => ({}));
   const p = got && got.pendingTask;
   if (!p || Date.now() - p.ts > 120000) return;
+  try {
+    const t = await targetTab();
+    if (p.tabId != null && t && p.tabId !== t.id) return;
+    // Only the in-page panel takes handed-over tasks; Chrome's side panel only does when the page blocks embedding.
+    if (!EMBED && t) { const key = `blocked:${t.id}`; const blocked = (await chrome.storage.session.get(key).catch(() => ({})))[key]; if (!blocked) return; }
+  } catch { /* ignore */ }
   await chrome.storage.session.remove('pendingTask');
   if (S.running) { toast('Finish or stop the current task first.'); return; }
   const task = p.context ? `${p.task}\n(I pointed at ${p.context})` : p.task;
