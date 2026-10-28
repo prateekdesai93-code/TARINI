@@ -3,7 +3,7 @@
   if (window.__tarini) return;
 
   const ATTR = 'data-tarini-id';
-  const MAX_ELEMENTS = 220;
+  const MAX_ELEMENTS = 150;
   const INTERACTIVE = [
     'a[href]', 'button', 'input:not([type=hidden])', 'select', 'textarea', 'summary', 'label[for]',
     '[role=button]', '[role=link]', '[role=menuitem]', '[role=menuitemcheckbox]', '[role=menuitemradio]',
@@ -108,7 +108,7 @@
       items.push(describe(el, id, r)); id++;
       if (items.length >= MAX_ELEMENTS) break;
     }
-    const text = clean(document.body ? document.body.innerText : '', 3500);
+    const text = clean(document.body ? document.body.innerText : '', 2000);
     const doc = document.documentElement;
     return {
       app: (document.querySelector('.o_web_client, .o_action_manager, .o_main_navbar') ? 'odoo' : ''),
@@ -264,7 +264,13 @@
   }
   function isSensitive(id) { try { return isSensitiveEl(get(id)); } catch { return false; } }
 
-  const api = { dockVisible, snapshot, showMarks, hideMarks, highlight, clearHighlight, click, typeText, selectOption, pressKey, scrollPage, isSensitive };
+  function readText() {
+    const clone = document.body ? document.body.innerText : '';
+    let text = String(clone || '').replace(/[ \t]+/g, ' ').replace(/\n\s*\n+/g, '\n').trim();
+    if (text.length > 40000) text = text.slice(0, 40000) + '\n[page text cut at 40000 characters]';
+    return { title: document.title, url: location.href, text };
+  }
+  const api = { readText, dockVisible, snapshot, showMarks, hideMarks, highlight, clearHighlight, click, typeText, selectOption, pressKey, scrollPage, isSensitive };
   window.__tarini = {
     async call(name, args) {
       try { return { ok: true, value: await api[name](...(args || [])) }; }

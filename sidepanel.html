@@ -21,6 +21,7 @@
     <div class="site" id="siteBox"><span class="site-dot"></span><div><span class="site-lbl">Working on this tab</span><b id="siteTitle">Loading</b><span id="siteUrl"></span></div></div>
     <label class="lbl" for="taskInput">What should I do here?</label>
     <textarea id="taskInput" rows="4" placeholder="For example: fill this form with my company details, or find last month's invoice from Acme and open it"></textarea>
+    <button class="chip pdfchip" id="pdfTabsBtn" hidden>Add open PDFs</button>
     <div class="att-row" id="attRow" hidden></div>
     <input type="file" id="fileInput" multiple hidden accept="application/pdf,image/*,.txt,.csv,.tsv,.md,.json,.xml,.html">
     <div class="row">
@@ -59,6 +60,8 @@
     <label class="fld">Tarini passkey<input id="sKey" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your passkey"></label>
     <p class="hint">Your passkey is what lets Tarini think. <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer">Get your passkey here</a>. It is stored only in this browser.</p>
     <label class="fld">Model<input id="sModel" list="models" spellcheck="false"></label>
+    <p class="hint">claude-haiku-5-5 is the cheapest and the default. claude-sonnet-5-5 is smarter but costs about 20 times more.</p>
+    <p class="hint" id="usageLine"></p>
     <datalist id="models"><option value="claude-sonnet-5-5"><option value="claude-opus-5-5"><option value="claude-haiku-5-5"></datalist>
     <label class="fld">Most steps per task<input id="sMax" type="number" min="5" max="60"></label>
     <label class="tog"><input type="checkbox" id="sLogs"> Save a log of every task to Downloads/Tarini Library</label>

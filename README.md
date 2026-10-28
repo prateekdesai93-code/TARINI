@@ -1,5 +1,18 @@
 # Tarini - Do it for me (browser extension)
 
+## What's new in 1.7 - much cheaper
+- Each step now sends only the newest page details instead of every earlier page again. Long tasks cost a fraction of before.
+- Uses claude-haiku-5-5 by default (about a twentieth of Sonnet's price). Switch back in Settings if you want.
+- Smaller page lists and screenshots.
+- Each task shows how many tokens it used and roughly what it cost; Settings shows today and the last 7 days.
+
+## What's new in 1.6 - much faster
+- Reading tasks (compare, summarise, check, find) are answered straight away: no plan, no clicking around.
+- Forms are filled in batches: several fields and a click in one step, with one screenshot instead of one per action.
+- Tarini reads a page's full text in one go instead of scrolling screen by screen.
+- PDFs open in your tabs: tap "Add open PDFs", or start a task on a PDF tab and it is added automatically.
+- Shorter waits: the plan starts after 3 seconds, and automatic steps pause 0.3 seconds.
+
 ## What's new in 1.4 - the + button
 - Tap **+** in the panel (or drag a file onto it) to add a PDF, image, text or CSV file. Tarini reads it together with the page, so you can say "compare this quotation with the order lines on this page".
 - Up to 5 files, 10 MB each. They stay with the task even when Odoo changes page.
